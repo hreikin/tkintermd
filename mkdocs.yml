@@ -20,8 +20,6 @@ theme:
   features:
     - navigation.instant
     - navigation.tracking
-    - navigation.tabs
-    - navigation.tabs.sticky
     - navigation.sections
     - navigation.expand
     - navigation.indexes
@@ -74,5 +72,10 @@ markdown_extensions:
       custom_checkbox: true
   - pymdownx.tilde
 nav:
-  - Home: 'index.md'
-  - Getting Started: 'getting-started/README.md'
+  - Home: 
+    - About: 'README.md'
+    - Contributing: 'contributing-to-tkintermd.md'
+    - Code Of Conduct: 'code-of-conduct.md'
+  - Getting Started: 
+    - Getting Started: 'getting-started/README.md'
+    
