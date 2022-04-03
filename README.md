@@ -34,11 +34,11 @@
   <p align="center">
     An embeddable tkinter based Markdown editor with HTML preview.
     <br />
-    <!-- <a href="https://github.com/hreikin/tkintermd"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/hreikin/tkintermd">View Demo</a>
-    · -->
+    <a href="https://hreikin.github.io/tkintermd"><strong>Explore the docs »</strong></a>
+    <!-- <br /> -->
+    <!-- <br /> -->
+    <!-- <a href="https://github.com/hreikin/tkintermd">View Demo</a> -->
+    <!-- · -->
     <a href="https://pypi.org/project/tkintermd/">PyPi</a>
     ·
     <a href="https://github.com/hreikin/tkintermd/issues">Report Bug</a>
@@ -164,7 +164,7 @@ app.pack(fill="both", expand=1)
 app.mainloop()
 ```
 
-<!-- _For more examples, please refer to the [Documentation](https://example.com)_ -->
+_For more examples, please refer to the [Documentation](https://hreikin.github.io/tkintermd)_
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -208,6 +208,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 Github Link: [https://github.com/hreikin/tkintermd](https://github.com/hreikin/tkintermd)  
 PyPi Link: [https://pypi.org/project/tkintermd/](https://pypi.org/project/tkintermd/)  
+Documentation: [https://hreikin.github.io/tkintermd/](https://hreikin.github.io/tkintermd/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
