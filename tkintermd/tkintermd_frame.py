@@ -117,6 +117,8 @@ class TkinterMDFrame(tk.Frame):
 
         # Bind mouse/key events to functions.
         self.text_area.bind("<<Modified>>", self.on_input_change)
+        self.text_area.edit_modified(0)#resets the text widget to generate another event when another change occours
+        
         self.text_area.bind_all("<Control-f>", self.find)
         self.text_area.bind_all("<Control-a>", self.select_all)
         self.text_area.bind("<Button-3>", self.popup)
@@ -208,7 +210,7 @@ class TkinterMDFrame(tk.Frame):
         self.preview_area.load_html(html)
         # self.preview_area.add_css("body {background-color: #272822; color: white;}")
         self.check_markdown(start="1.0", end=END)
-        self.text_area.edit_modified(0)
+        self.text_area.edit_modified(0)#resets the text widget to generate another event when another change occours
 
     def load_style(self, stylename):
         """Load Pygments style for syntax highlighting within the editor."""
