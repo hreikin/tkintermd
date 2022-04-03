@@ -181,6 +181,7 @@ _For more examples, please refer to the [Documentation](https://hreikin.github.i
 - [ ] Feature 3
     - [ ] Nested Feature -->
 
+Check out the [Github Project - tkintermd v0.1.0](https://github.com/users/hreikin/projects/1/) for an overview of the work being done towards the release.
 See the [open issues](https://github.com/hreikin/tkintermd/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
