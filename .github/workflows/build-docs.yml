@@ -11,5 +11,7 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: 3.x
-      - run: pip install -r requirements-dev.txt 
+      - run: |
+          apt install -y libpango-1.0-0 libharfbuzz0b libpangoft2-1.0-0 libffi-dev libjpeg-dev libopenjp2-7-dev
+          pip install -r requirements-dev.txt 
       - run: mkdocs gh-deploy --force
