@@ -79,6 +79,14 @@ class TkinterMDFrame(tk.Frame):
         # self.link_btn.pack(side="left", padx=0, pady=0)
         # self.image_btn = tk.Button(self.top_bar, text="Image")
         # self.image_btn.pack(side="left", padx=0, pady=0)
+        
+        self.style_opt = tk.Menubutton(self.top_bar, text='Style =', relief='raised')
+        self.style_opt.pack(side="left", padx=0, pady=0)
+        stylemenu = tk.Menu(self.style_opt, tearoff=False)
+        stylemenu.add_command(label='Light', command=lambda: self.load_style('stata'))
+        stylemenu.add_command(label='Dark', command=lambda: self.load_style('stata-dark'))
+        self.style_opt['menu'] = stylemenu
+        
         self.top_bar.pack(side="top", fill="x")
 
         # Creating the widgets
@@ -208,7 +216,7 @@ class TkinterMDFrame(tk.Frame):
         markdownText = self.text_area.get("1.0", END)
         html = md2html.convert(markdownText)
         self.preview_area.load_html(html)
-        # self.preview_area.add_css("body {background-color: #272822; color: white;}")
+        self.preview_area.add_css(self.css)
         self.check_markdown(start="1.0", end=END)
         self.text_area.edit_modified(0)#resets the text widget to generate another event when another change occours
 
@@ -234,6 +242,12 @@ class TkinterMDFrame(tk.Frame):
                         selectbackground=self.style.highlight_color)
         self.text_area.tag_configure(str(Generic.StrongEmph), font=('Monospace', 10, 'bold', 'italic'))
         self.syntax_highlighting_tags.append(str(Generic.StrongEmph))
+        
+        self.css = 'body {background-color: %s; color: %s}' % (
+            self.style.background_color,
+            self.text_area.tag_cget("Token.Text", "foreground")
+            )#used string%interpolation here because f'string' interpolation is too annoying with embeded { and }
+        self.preview_area.add_css(self.css)
         return self.syntax_highlighting_tags    
 
     def check_markdown(self, start='insert linestart', end='insert lineend'):
