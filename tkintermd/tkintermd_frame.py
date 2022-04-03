@@ -189,13 +189,13 @@ class TkinterMDFrame(tk.Frame):
         
         Provides the following options:
         
-            - Cut
-            - Copy
-            - Paste
-            - Undo
-            - Redo
-            - Find
-            - Select All
+        - Cut
+        - Copy
+        - Paste
+        - Undo
+        - Redo
+        - Find
+        - Select All
         """
         self.right_click.tk_popup(event.x_root, event.y_root)
 
@@ -289,11 +289,11 @@ class TkinterMDFrame(tk.Frame):
         
         When the user types:
         
-            - Get the current text area contents 
-            - Convert the markdown formatted string to HTML
-            - Load the HTML string and apply CSS styling to the HTML frame.
-            - Check the markdown and apply formatting to the text area
-            - Reset the modified flag
+        - Get the current text area contents 
+        - Convert the markdown formatted string to HTML
+        - Load the HTML string and apply CSS styling to the HTML frame.
+        - Check the markdown and apply formatting to the text area
+        - Reset the modified flag
         """
         md2html = Markdown()
         markdownText = self.text_area.get("1.0", END)
