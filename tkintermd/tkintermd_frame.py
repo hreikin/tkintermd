@@ -185,17 +185,28 @@ class TkinterMDFrame(tk.Frame):
         # self.preview_area.html['yscrollcommand'] = self.on_mousewheel
 
     def popup(self, event):
-        """Right-click popup at mouse location."""
+        """Right-click popup at mouse location within the text area only.
+        
+        Provides the following options:
+        
+            - Cut
+            - Copy
+            - Paste
+            - Undo
+            - Redo
+            - Find
+            - Select All
+        """
         self.right_click.tk_popup(event.x_root, event.y_root)
 
     def on_scrollbar(self, *args):
-        '''Scrolls both text widgets when the scrollbar is moved'''
+        """Scrolls the text area scrollbar when clicked/dragged with a mouse."""
         self.text_area.yview(*args)
         # # This links the scrollbars but is currently causing issues.
         # self.preview_area.html.yview(*args)
 
     def on_mousewheel(self, *args):
-        '''Moves the scrollbar and scrolls the widgets on mousewheel event'''
+        """Moves the scrollbar and scrolls the text area on mousewheel event."""
         self.scrollbar.set(*args)
         # # This links the scrollbars but is currently causing issues.
         # self.preview_area.vsb.set(*args)
@@ -208,7 +219,11 @@ class TkinterMDFrame(tk.Frame):
         self.text_area.see(INSERT)
 
     def find(self, *args):
-        """Search for a string within the editor window."""
+        """Simple search for a string within the editor window.
+        
+        Displays a simple dialog with a field to enter the search string into and
+        two buttons.
+        """
         self.text_area.tag_remove('found', '1.0', END)
         target = simpledialog.askstring('Find', 'Search String:')
 
@@ -223,7 +238,11 @@ class TkinterMDFrame(tk.Frame):
             self.text_area.tag_config('found', foreground='white', background='blue')
 
     def open_md_file(self):
-        """Open a file and clear/insert the text into the text_area."""
+        """Open a file and clear/insert the text into the text_area.
+        
+        Opens a native OS dialog and expects markdown formatted files. Shows an 
+        error message if it fails.
+        """
         open_filename_md = filedialog.askopenfilename(filetypes=(("Markdown File", "*.md , *.mdown , *.markdown"), ("Text File", "*.txt"), ("All Files", "*.*")))
         if open_filename_md:
             try:
@@ -237,7 +256,11 @@ class TkinterMDFrame(tk.Frame):
                 mbox.showerror(title="Error", message=f"Error Opening Selected File\n\nThe file you selected: {open_filename_md} can not be opened!")
     
     def save_as_md_file(self):
-        """Saves the file with the given filename."""
+        """Saves the file with the given filename.
+        
+        Opens a native OS dialog for saving the file with a name and markdown 
+        extension. Shows an error message if it fails.'
+        """
         self.file_data = self.text_area.get("1.0" , END)
         self.save_filename_md = filedialog.asksaveasfilename(filetypes = (("Markdown File", "*.md"), ("Text File", "*.txt")) , title="Save Markdown File")
         if self.save_filename_md:
@@ -251,7 +274,9 @@ class TkinterMDFrame(tk.Frame):
     def save_md_file(self):
         """Quick saves the file with its current name.
 
-        If it fails because no name exists it calls the "save_as_md_file" function."""
+        If it fails because no name exists it calls the "save_as_md_file" 
+        function.
+        """
         self.file_data = self.text_area.get("1.0" , END)
         try:
             with open(constants.cur_file, "w") as stream:
@@ -260,7 +285,16 @@ class TkinterMDFrame(tk.Frame):
             self.save_as_md_file()
 
     def on_input_change(self, event):
-        """When the user types update the preview and editors line numbers."""
+        """Converts the text area input into html output for the HTML preview.
+        
+        When the user types:
+        
+            - Get the current text area contents 
+            - Convert the markdown formatted string to HTML
+            - Load the HTML string and apply CSS styling to the HTML frame.
+            - Check the markdown and apply formatting to the text area
+            - Reset the modified flag
+        """
         md2html = Markdown()
         markdownText = self.text_area.get("1.0", END)
         html = md2html.convert(markdownText)
@@ -352,12 +386,15 @@ class TkinterMDFrame(tk.Frame):
                 self.text_area.insert(INSERT, self.with_md_selection)
                 return
         except:
+            # This needs replacing with logging.
             print("EXCEPTION: Application/removal of markdown formatting failed.")
             pass
 
 class Lexer(MarkdownLexer):
-    """Extend MarkdownLexer to add markup for bold-italic. This needs extending 
-    further before being complete."""
+    """Extend MarkdownLexer to add markup for bold-italic. 
+    
+    This needs extending further before being complete.
+    """
     tokens = {key: val.copy() for key, val in MarkdownLexer.tokens.items()}
     # # bold-italic fenced by '***'
     tokens['inline'].insert(2, (r'(\*\*\*[^* \n][^*\n]*\*\*\*)',
