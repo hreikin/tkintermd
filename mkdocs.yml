@@ -30,6 +30,10 @@ theme:
     - search.share
 plugins:
   - search
+  - mkdocstrings:
+      default_handler: python
+      watch:
+        - tkintermd/
   - git-revision-date
 extra:
   social:
@@ -78,4 +82,9 @@ nav:
     - Code Of Conduct: 'code-of-conduct.md'
   - Getting Started: 
     - Getting Started: 'getting-started/README.md'
+  - Reference:
+    - Reference: 'reference/README.md'
+    - TkinterMDFrame: 'reference/tkintermd-frame.md'
+    - Lexer: 'reference/tkintermd-lexer.md'
+    - Constants: 'reference/tkintermd-constants.md'
     
