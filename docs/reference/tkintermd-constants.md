@@ -1,3 +1,9 @@
+---
+title: Constants
+summary: API reference for the tkintermd constants and variables.
+authors:
+    - hreikin
+---
 # `constants`
 
 ::: tkintermd.tkintermd_constants

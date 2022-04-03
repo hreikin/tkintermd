@@ -1,3 +1,9 @@
+---
+title: Lexer
+summary: API reference for the Lexer extension.
+authors:
+    - hreikin
+---
 # `Lexer`
 
 ::: tkintermd.tkintermd_frame.Lexer
