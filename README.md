@@ -94,7 +94,7 @@
 
 An embeddable tkinter based Markdown editor with HTML preview.
 
-<p align="right">(<a href="#top">back to top</a>)</p>
+<!-- <p align="right">(<a href="#top">back to top</a>)</p> -->
 
 ### Built With
 
