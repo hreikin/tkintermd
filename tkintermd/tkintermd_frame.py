@@ -16,22 +16,27 @@ from pygments.lexer import bygroups
 from pygments.styles import get_style_by_name
 
 class TkinterMDFrame(tk.Frame):
+    """An embeddable tkinter based Markdown editor with HTML preview. 
+    
+    The editor has syntax highlighting supplied by `Pygments` and the HTML 
+    preview window is provided by `tkinterweb`.
+    
+    Import it into your own scripts like so:
+    
+    ```python
+    from tkintermd.tkintermd_frame import TkinterMDFrame
+
+    import tkinter as tk
+    from tkinter.constants import *
+
+    root = tk.Tk()
+    app = TkinterMDFrame(root)
+    app.pack(fill="both", expand=1)
+    app.mainloop()
+    ```
+    
+    """
     def __init__(self, master, **kwargs):
-        """
-        A Markdown editor with HTML Preview window in a tkinter frame. Import it 
-        into your own scripts like so:
-        
-            from tkintermd.tkintermd_frame import TkinterMDFrame
-
-            import tkinter as tk
-            from tkinter.constants import *
-
-            root = tk.Tk()
-            app = TkinterMDFrame(root)
-            app.pack(fill="both", expand=1)
-            app.mainloop()
-        
-        """
         tk.Frame.__init__(self, master) # no need for super
 
         # Toolbar.
@@ -190,8 +195,7 @@ class TkinterMDFrame(tk.Frame):
         # self.preview_area.html.yview(*args)
 
     def on_mousewheel(self, *args):
-        '''Moves the scrollbar and scrolls text widgets when the mousewheel
-        is moved on a text widget'''
+        '''Moves the scrollbar and scrolls the widgets on mousewheel event'''
         self.scrollbar.set(*args)
         # # This links the scrollbars but is currently causing issues.
         # self.preview_area.vsb.set(*args)
@@ -245,8 +249,9 @@ class TkinterMDFrame(tk.Frame):
                 mbox.showerror(title="Error", message=f"Error Saving File\n\nThe file: {self.save_filename_md} can not be saved!")
 
     def save_md_file(self):
-        """Quick saves the file with its current name, if it fails because no 
-        name exists it calls the "save_as_md_file" function."""
+        """Quick saves the file with its current name.
+
+        If it fails because no name exists it calls the "save_as_md_file" function."""
         self.file_data = self.text_area.get("1.0" , END)
         try:
             with open(constants.cur_file, "w") as stream:
@@ -311,12 +316,11 @@ class TkinterMDFrame(tk.Frame):
             self.text_area.mark_set("range_start", "range_end")
 
     def apply_markdown_both_sides(self, md_syntax, md_ignore):
-        """
-        A generic, catch-all attempt to apply and remove markdown from either 
-        side of a selection.
+        """Apply and remove markdown from either side of a selection.
 
-        :param md_syntax: Tuple of markdown strings to apply/remove.
-        :param md_ignore: Tuple of markdown strings to ignore.
+        Args:
+            md_syntax (tuple): Tuple of markdown strings to apply/remove.
+            md_ignore (tuple): Tuple of markdown strings to ignore.
         """
         self.md_syntax = md_syntax
         self.md_ignore = md_ignore
