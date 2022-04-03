@@ -9,6 +9,7 @@ from tkinterweb import HtmlFrame
 
 from markdown import Markdown
 from pygments import lex
+from pygments.styles import get_all_styles
 from pygments.lexers.markup import MarkdownLexer
 from pygments.token import Generic
 from pygments.lexer import bygroups
@@ -53,10 +54,10 @@ class TkinterMDFrame(tk.Frame):
         self.paste_btn.pack(side="left", padx=0, pady=0)
         self.find_btn = tk.Button(self.top_bar, text="Find", command=self.find)
         self.find_btn.pack(side="left", padx=0, pady=0)
-        # self.bold_btn = tk.Button(self.top_bar, text="Bold")
-        # self.bold_btn.pack(side="left", padx=0, pady=0)
-        # self.italic_btn = tk.Button(self.top_bar, text="Italic")
-        # self.italic_btn.pack(side="left", padx=0, pady=0)
+        self.bold_btn = tk.Button(self.top_bar, text="Bold", command=lambda: self.apply_markdown_both_sides(constants.bold_md_syntax, constants.bold_md_ignore))
+        self.bold_btn.pack(side="left", padx=0, pady=0)
+        self.italic_btn = tk.Button(self.top_bar, text="Italic", command=lambda: self.apply_markdown_both_sides(constants.italic_md_syntax, constants.italic_md_ignore))
+        self.italic_btn.pack(side="left", padx=0, pady=0)
         # self.bold_italic_btn = tk.Button(self.top_bar, text="Bold Italic")
         # self.bold_italic_btn.pack(side="left", padx=0, pady=0)
         # self.heading_btn = tk.Button(self.top_bar, text="Heading")
@@ -266,16 +267,46 @@ class TkinterMDFrame(tk.Frame):
                 self.text_area.tag_add(str(t), "range_start", "range_end")
             self.text_area.mark_set("range_start", "range_end")
 
-    # def bold(self):
-    #     try:
-    #         self.cur_selection = self.text_area.selection_get()
-    #         print(self.cur_selection)
-    #         self.bold_selection = f"**{self.cur_selection}**"
-    #         self.text_area.delete(index1=SEL_FIRST, index2=SEL_LAST)
-    #         self.text_area.insert(INSERT, self.bold_selection)
-    #     except:
-    #         # self.text_area.insert(INSERT, "****")
-    #         pass
+    def apply_markdown_both_sides(self, md_syntax, md_ignore):
+        """
+        A generic, catch-all attempt to apply and remove markdown from either 
+        side of a selection.
+
+        :param md_syntax: Tuple of markdown strings to apply/remove.
+        :param md_ignore: Tuple of markdown strings to ignore.
+        """
+        self.md_syntax = md_syntax
+        self.md_ignore = md_ignore
+        try:
+            self.cur_selection = self.text_area.selection_get()
+            if len(self.md_syntax) == 2 and self.md_syntax[0] == "**" and self.md_syntax[1] == "__" and str(self.cur_selection)[1] != "*" and str(self.cur_selection)[1] != "_":
+                if str(self.cur_selection).startswith(self.md_syntax) == False and str(self.cur_selection).startswith(self.md_ignore) == False and str(self.cur_selection)[0] != "*" and str(self.cur_selection)[0] != "_":
+                    self.with_md_selection = f"{self.md_syntax[0]}{self.cur_selection}{self.md_syntax[0]}"
+                    self.text_area.delete(index1=SEL_FIRST, index2=SEL_LAST)
+                    self.text_area.insert(INSERT, self.with_md_selection)
+                    return
+                else:
+                    return
+            if str(self.cur_selection).startswith(self.md_syntax) == True and str(self.cur_selection).endswith(self.md_syntax) == True and str(self.cur_selection).startswith(self.md_ignore) == False:
+                self.without_md_selection = str(self.cur_selection).replace(self.md_syntax[0], "").replace(self.md_syntax[1], "")
+                self.text_area.delete(index1=SEL_FIRST, index2=SEL_LAST)
+                self.text_area.insert(INSERT, self.without_md_selection)
+                return
+            elif str(self.cur_selection).startswith(self.md_syntax) == True and str(self.cur_selection).startswith(self.md_ignore) == True:
+                return
+            elif str(self.cur_selection).startswith(self.md_syntax) == True and str(self.cur_selection).startswith(self.md_ignore) == False:
+                self.without_md_selection = str(self.cur_selection).replace(self.md_syntax[0], "").replace(self.md_syntax[1], "")
+                self.text_area.delete(index1=SEL_FIRST, index2=SEL_LAST)
+                self.text_area.insert(INSERT, self.without_md_selection)
+                return
+            elif str(self.cur_selection).startswith(self.md_syntax) == False and str(self.cur_selection).startswith(self.md_ignore) == False:
+                self.with_md_selection = f"{self.md_syntax[0]}{self.cur_selection}{self.md_syntax[0]}"
+                self.text_area.delete(index1=SEL_FIRST, index2=SEL_LAST)
+                self.text_area.insert(INSERT, self.with_md_selection)
+                return
+        except:
+            print("EXCEPTION: Application/removal of markdown formatting failed.")
+            pass
 
 class Lexer(MarkdownLexer):
     """Extend MarkdownLexer to add markup for bold-italic. This needs extending 
