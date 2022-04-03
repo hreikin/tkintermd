@@ -73,3 +73,6 @@ markdown_extensions:
   - pymdownx.tasklist:
       custom_checkbox: true
   - pymdownx.tilde
+nav:
+  - Home: 'index.md'
+  - Getting Started: 'getting-started/installation-and-usage.md'
