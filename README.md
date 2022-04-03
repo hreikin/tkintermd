@@ -35,8 +35,10 @@
     An embeddable tkinter based Markdown editor with HTML preview.
     <br />
     <a href="https://hreikin.github.io/tkintermd"><strong>Explore the docs »</strong></a>
-    <!-- <br /> -->
-    <!-- <br /> -->
+    <br />
+    <a href="https://hreikin.github.io/tkintermd/pdf/tkintermd-documentation-LATEST.pdf">Download the docs »</a>
+    <br />
+    <br />
     <!-- <a href="https://github.com/hreikin/tkintermd">View Demo</a> -->
     <!-- · -->
     <a href="https://pypi.org/project/tkintermd/">PyPi</a>

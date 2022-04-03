@@ -14,7 +14,7 @@ provided by `tkinterweb`.
 
 - Github Link: [https://github.com/hreikin/tkintermd](https://github.com/hreikin/tkintermd)  
 - PyPi Link: [https://pypi.org/project/tkintermd/](https://pypi.org/project/tkintermd/)  
-- Documentation: [https://hreikin.github.io/tkintermd/](https://hreikin.github.io/tkintermd/)  
+- PDF Documentation: [https://hreikin.github.io/tkintermd/pdf/tkintermd-documentation-LATEST.pdf](https://hreikin.github.io/tkintermd/pdf/tkintermd-documentation-LATEST.pdf)
 
 ### Built With
 
