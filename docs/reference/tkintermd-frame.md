@@ -1,4 +1,4 @@
-# TkinterMDFrame
+# `TkinterMDFrame`
 
 ::: tkintermd.tkintermd_frame.TkinterMDFrame
     handler: python
@@ -17,5 +17,5 @@
         - check_markdown
         - apply_markdown_both_sides
     rendering:
-      show_root_heading: false
+      show_root_heading: true
       show_source: false

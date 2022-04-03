@@ -11,7 +11,9 @@ authors:
 
 <!-- [![Product Name Screen Shot][product-screenshot]](https://example.com) -->
 
-An embeddable tkinter based Markdown editor with HTML preview.
+An embeddable tkinter based Markdown editor with HTML preview. The editor has 
+syntax highlighting supplied by `Pygments` and the HTML preview window is 
+provided by `tkinterweb`.
 
 - Github Link: [https://github.com/hreikin/tkintermd](https://github.com/hreikin/tkintermd)  
 - PyPi Link: [https://pypi.org/project/tkintermd/](https://pypi.org/project/tkintermd/)  

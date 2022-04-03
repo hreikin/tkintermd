@@ -1,4 +1,4 @@
-# Lexer
+# `Lexer`
 
 ::: tkintermd.tkintermd_frame.Lexer
     handler: python
@@ -18,4 +18,4 @@
         - apply_markdown_both_sides -->
     rendering:
       show_root_heading: true
-      show_source: true
+      show_source: false
