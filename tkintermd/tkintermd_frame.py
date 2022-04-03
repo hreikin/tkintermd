@@ -80,12 +80,12 @@ class TkinterMDFrame(tk.Frame):
         # self.image_btn = tk.Button(self.top_bar, text="Image")
         # self.image_btn.pack(side="left", padx=0, pady=0)
         
-        self.style_opt = tk.Menubutton(self.top_bar, text='Style =', relief='raised')
-        self.style_opt.pack(side="left", padx=0, pady=0)
-        stylemenu = tk.Menu(self.style_opt, tearoff=False)
-        stylemenu.add_command(label='Light', command=lambda: self.load_style('stata'))
-        stylemenu.add_command(label='Dark', command=lambda: self.load_style('stata-dark'))
-        self.style_opt['menu'] = stylemenu
+        self.style_opt_btn = tk.Menubutton(self.top_bar, text='Style =', relief='raised')
+        self.style_opt_btn.pack(side="left", padx=0, pady=0)
+        self.style_menu = tk.Menu(self.style_opt_btn, tearoff=False)
+        self.style_menu.add_command(label='Light', command=lambda: self.load_style('stata'))
+        self.style_menu.add_command(label='Dark', command=lambda: self.load_style('stata-dark'))
+        self.style_opt_btn['menu'] = self.style_menu
         
         self.top_bar.pack(side="top", fill="x")
 
@@ -218,7 +218,7 @@ class TkinterMDFrame(tk.Frame):
         self.preview_area.load_html(html)
         self.preview_area.add_css(self.css)
         self.check_markdown(start="1.0", end=END)
-        self.text_area.edit_modified(0)#resets the text widget to generate another event when another change occours
+        self.text_area.edit_modified(0) # resets the text widget to generate another event when another change occours
 
     def load_style(self, stylename):
         """Load Pygments style for syntax highlighting within the editor."""
@@ -242,7 +242,6 @@ class TkinterMDFrame(tk.Frame):
                         selectbackground=self.style.highlight_color)
         self.text_area.tag_configure(str(Generic.StrongEmph), font=('Monospace', 10, 'bold', 'italic'))
         self.syntax_highlighting_tags.append(str(Generic.StrongEmph))
-        
         self.css = 'body {background-color: %s; color: %s}' % (
             self.style.background_color,
             self.text_area.tag_cget("Token.Text", "foreground")
