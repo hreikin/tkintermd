@@ -13,7 +13,8 @@ An embeddable tkinter based Markdown editor with HTML preview.
 
 ### Built With
 
-* [Python](https://www.python.org/)
-* [Python Markdown](https://github.com/Python-Markdown/markdown)
-* [tkinter](https://docs.python.org/3/library/tkinter.html)
-* [tkinterweb](https://github.com/Andereoo/TkinterWeb)
+- [Pygments](https://github.com/pygments/pygments)
+- [Python](https://www.python.org/)
+- [Python Markdown](https://github.com/Python-Markdown/markdown)
+- [tkinter](https://docs.python.org/3/library/tkinter.html)
+- [tkinterweb](https://github.com/Andereoo/TkinterWeb)
