@@ -1,4 +1,10 @@
-# Welcome To The tkintermd Docs
+---
+title: tkintermd Documentation
+summary: About tkintermd.
+authors:
+    - hreikin
+---
+# The `tkintermd` Docs
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project

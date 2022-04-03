@@ -1,3 +1,9 @@
+---
+title: Getting Started
+summary: Quick installation and usage instructions.
+authors:
+    - hreikin
+---
 <!-- GETTING STARTED -->
 # Getting Started
 <!-- ### Prerequisites
