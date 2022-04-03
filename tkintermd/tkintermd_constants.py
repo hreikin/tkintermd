@@ -4,6 +4,21 @@ from pathlib import Path
 # remain constant.
 cur_file = Path()
 
+bold_md_syntax = ("**", "__")
+bold_md_ignore = (
+    "- ", "> ", "# ", "`", 
+    "--", ">> ", "## ",
+    "***", "___", "---", ">>> ", "### ", "```", "===",
+    "####", "#####", "######"
+    )
+italic_md_syntax = ("*", "_")
+italic_md_ignore = (
+    "**", "__", "- ", "> ", "# ", "`", 
+    "--", ">> ", "## ",
+    "***", "___", "---", ">>> ", "### ", "```", "===",
+    "####", "#####", "######"
+    )
+
 default_md_string = """
 # Heading 1
 ## Heading 2
