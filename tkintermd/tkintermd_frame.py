@@ -79,6 +79,14 @@ class TkinterMDFrame(tk.Frame):
         # self.link_btn.pack(side="left", padx=0, pady=0)
         # self.image_btn = tk.Button(self.top_bar, text="Image")
         # self.image_btn.pack(side="left", padx=0, pady=0)
+        
+        self.style_opt = tk.Menubutton(self.top_bar, text='Style =', relief='raised')
+        self.style_opt.pack(side="left", padx=0, pady=0)
+        stylemenu = tk.Menu(self.style_opt, tearoff=False)
+        stylemenu.add_command(label='Light', command=lambda: self.load_style('stata'))
+        stylemenu.add_command(label='Dark', command=lambda: self.load_style('stata-dark'))
+        self.style_opt['menu'] = stylemenu
+        
         self.top_bar.pack(side="top", fill="x")
 
         # Creating the widgets
@@ -117,6 +125,8 @@ class TkinterMDFrame(tk.Frame):
 
         # Bind mouse/key events to functions.
         self.text_area.bind("<<Modified>>", self.on_input_change)
+        self.text_area.edit_modified(0)#resets the text widget to generate another event when another change occours
+        
         self.text_area.bind_all("<Control-f>", self.find)
         self.text_area.bind_all("<Control-a>", self.select_all)
         self.text_area.bind("<Button-3>", self.popup)
@@ -127,7 +137,7 @@ class TkinterMDFrame(tk.Frame):
 
     def popup(self, event):
         """Right-click popup at mouse location."""
-        self.right_click.post(event.x_root, event.y_root)
+        self.right_click.tk_popup(event.x_root, event.y_root)
 
     def on_scrollbar(self, *args):
         '''Scrolls both text widgets when the scrollbar is moved'''
@@ -206,9 +216,9 @@ class TkinterMDFrame(tk.Frame):
         markdownText = self.text_area.get("1.0", END)
         html = md2html.convert(markdownText)
         self.preview_area.load_html(html)
-        # self.preview_area.add_css("body {background-color: #272822; color: white;}")
+        self.preview_area.add_css(self.css)
         self.check_markdown(start="1.0", end=END)
-        self.text_area.edit_modified(0)
+        self.text_area.edit_modified(0)#resets the text widget to generate another event when another change occours
 
     def load_style(self, stylename):
         """Load Pygments style for syntax highlighting within the editor."""
@@ -232,6 +242,12 @@ class TkinterMDFrame(tk.Frame):
                         selectbackground=self.style.highlight_color)
         self.text_area.tag_configure(str(Generic.StrongEmph), font=('Monospace', 10, 'bold', 'italic'))
         self.syntax_highlighting_tags.append(str(Generic.StrongEmph))
+        
+        self.css = 'body {background-color: %s; color: %s}' % (
+            self.style.background_color,
+            self.text_area.tag_cget("Token.Text", "foreground")
+            )#used string%interpolation here because f'string' interpolation is too annoying with embeded { and }
+        self.preview_area.add_css(self.css)
         return self.syntax_highlighting_tags    
 
     def check_markdown(self, start='insert linestart', end='insert lineend'):
