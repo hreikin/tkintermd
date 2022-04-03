@@ -2,45 +2,45 @@
 from pathlib import Path
 
 cur_file = Path()
-"""Variable for tracking current open file."""
+"""Path: Variable for tracking current open file."""
 
 bold_md_syntax = ("**", "__")
-"""Markdown syntax for bold highlighting."""
+"""tuple: Markdown syntax for bold highlighting."""
 bold_md_ignore = (
     "- ", "> ", "# ", "`", 
     "--", ">> ", "## ",
     "***", "___", "---", ">>> ", "### ", "```", "===",
     "####", "#####", "######",
 )
-"""Markdown syntax to ignore for bold highlighting."""
+"""tuple: Markdown syntax to ignore for bold highlighting."""
 italic_md_syntax = ("*", "_")
-"""Markdown syntax for italic highlighting."""
+"""tuple: Markdown syntax for italic highlighting."""
 italic_md_ignore = (
     "**", "__", "- ", "> ", "# ", "`", 
     "--", ">> ", "## ",
     "***", "___", "---", ">>> ", "### ", "```", "===",
     "####", "#####", "######",
 )
-"""Markdown syntax to ignore for italic highlighting."""
+"""tuple: Markdown syntax to ignore for italic highlighting."""
 # Needs adjusting.
 bold_italic_md_syntax = ("***", "___")
-"""Markdown syntax for bold-italic highlighting."""
+"""tuple: Markdown syntax for bold-italic highlighting."""
 bold_italic_md_ignore = (
     "*", "_", "- ", "> ", "# ", "`", 
     "**", "__", "--", ">> ", "## ",
     "***", "___", "---", ">>> ", "### ", "```", "===",
     "####", "#####", "######",
 )
-"""Markdown syntax to ignore for bold-italic highlighting."""
+"""tuple: Markdown syntax to ignore for bold-italic highlighting."""
 strikethrough_md_syntax = ("~~", "~~")
-"""Markdown syntax for strikethrough highlighting."""
+"""tuple: Markdown syntax for strikethrough highlighting."""
 strikethrough_md_ignore = (
     "*", "_", "- ", "> ", "# ", "`", 
     "**", "__", "--", ">> ", "## ",
     "***", "___", "---", ">>> ", "### ", "```", "===",
     "####", "#####", "######",
 )
-"""Markdown syntax to ignore for strikethrough highlighting."""
+"""tuple: Markdown syntax to ignore for strikethrough highlighting."""
 default_md_string = """
 # Heading 1
 ## Heading 2
@@ -112,4 +112,4 @@ Here is an `inline` code block.
 This is a fenced code block.
 ```
 """
-"""Default string to show in editor when it loads."""
+"""str: Default string to show in editor when it loads."""
