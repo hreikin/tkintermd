@@ -92,7 +92,9 @@
 
 <!-- [![Product Name Screen Shot][product-screenshot]](https://example.com) -->
 
-An embeddable tkinter based Markdown editor with HTML preview.
+An embeddable `tkinter` based Markdown editor with HTML preview. The editor has 
+syntax highlighting provided by `Pygments` and the HTML preview window is 
+provided by `tkinterweb`.
 
 <!-- <p align="right">(<a href="#top">back to top</a>)</p> -->
 
