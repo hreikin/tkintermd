@@ -39,7 +39,7 @@ jobs:
         uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: "${{ secrets.GH_WORKFLOW_TOKEN }}"
-          prerelease: True
+          prerelease: False
           files: |
             LICENSE.txt
             dist/*.tar.gz
