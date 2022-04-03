@@ -25,7 +25,7 @@ setup(
     ],
     packages=["tkintermd"],
     include_package_data=True,
-    install_requires=["markdown", "pygments", "tkinter", "tkinterweb"],
+    install_requires=["markdown", "pygments", "tkinterweb"],
     entry_points={
         "console_scripts": [
             "tkintermd=tkintermd.__main__:main",
