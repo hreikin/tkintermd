@@ -75,4 +75,4 @@ markdown_extensions:
   - pymdownx.tilde
 nav:
   - Home: 'index.md'
-  - Getting Started: 'getting-started/installation-and-usage.md'
+  - Getting Started: 'getting-started/getting-started.md'
