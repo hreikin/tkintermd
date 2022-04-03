@@ -150,7 +150,7 @@ Alternatively you can install from source by following the steps below:
 
 #### Embedded
 
-To use `tkinter` styled `tkintermd_frame` in one of your own python scripts:
+To use the `TkinterMDFrame` in one of your own python scripts:
 
 ```python
 from tkintermd.tkintermd_frame import TkinterMDFrame
