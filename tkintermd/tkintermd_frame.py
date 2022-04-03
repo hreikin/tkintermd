@@ -137,7 +137,7 @@ class TkinterMDFrame(tk.Frame):
 
     def popup(self, event):
         """Right-click popup at mouse location."""
-        self.right_click.post(event.x_root, event.y_root)
+        self.right_click.tk_popup(event.x_root, event.y_root)
 
     def on_scrollbar(self, *args):
         '''Scrolls both text widgets when the scrollbar is moved'''
