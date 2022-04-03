@@ -18,7 +18,7 @@ To get a local copy up and running choose one of the below install instructions 
 
 ### Install With PIP
 
-The simplest way to install the PyMD Editor is to use `pip`:
+The simplest way to install tkintermd is to use `pip`:
 
 ```sh
 pip install tkintermd
