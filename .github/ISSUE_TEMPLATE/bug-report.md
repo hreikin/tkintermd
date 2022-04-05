@@ -8,8 +8,8 @@ assignees: ''
 ---
 
 **Desktop (please complete the following information):**
- - OS: [e.g. Fedora, Ubuntu, Windows]
- - Python Version [e.g. 3.7]
+- OS: [e.g. Fedora, Ubuntu, Windows]
+- Python Version [e.g. 3.7]
 - Install Type [e.g. via pip, via git]
 
 **Describe the bug**
