@@ -10,7 +10,7 @@ README = (HERE / "README.md").read_text()
 # This call to setup() does all the work
 setup(
     name="tkintermd",
-    version="0.0.3",
+    version="0.0.4",
     description="A Python based Markdown editor with HTML preview",
     long_description=README,
     long_description_content_type="text/markdown",
