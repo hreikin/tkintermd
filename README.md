@@ -19,6 +19,7 @@
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
+![PyPI - Downloads](https://img.shields.io/pypi/dm/tkintermd?style=for-the-badge)    <!-- This link wont work in the reference style. -->
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 
