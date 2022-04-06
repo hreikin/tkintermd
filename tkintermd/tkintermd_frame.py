@@ -360,8 +360,11 @@ class TkinterMDFrame(tk.Frame):
         # self.md_ignore = md_ignore
         try:
 
-            # Try to remove formatting from start/end of string for each option if that 
-            # fails apply the formatting, these need to be in the correct order
+            # Try to remove formatting from start/end of string for each option 
+            # if none of the options are True then apply the formatting, these 
+            # need to be in the correct order. Custom logic for each formatting 
+            # option (headings, lists, etc) should now be easier to 
+            # differentiate and stop things firing incorrectly.
             self.cur_selection = self.text_area.selection_get()
             # Bold-italic
             if str(self.cur_selection).startswith(constants.bold_italic_md_syntax) and str(self.cur_selection).endswith(constants.bold_italic_md_syntax):
@@ -370,19 +373,19 @@ class TkinterMDFrame(tk.Frame):
                 self.text_area.insert(INSERT, self.remove_md)
                 return
             # Bold
-            elif str(self.cur_selection).startswith(constants.bold_md_syntax) and str(self.cur_selection).endswith(constants.bold_md_syntax):
+            if str(self.cur_selection).startswith(constants.bold_md_syntax) and str(self.cur_selection).endswith(constants.bold_md_syntax):
                 self.remove_md = str(self.cur_selection).strip(self.md_syntax[0]).strip(self.md_syntax[1])
                 self.text_area.delete(index1=SEL_FIRST, index2=SEL_LAST)
                 self.text_area.insert(INSERT, self.remove_md)
                 return
             # Italic
-            elif str(self.cur_selection).startswith(constants.italic_md_syntax) and str(self.cur_selection).endswith(constants.italic_md_syntax):
+            if str(self.cur_selection).startswith(constants.italic_md_syntax) and str(self.cur_selection).endswith(constants.italic_md_syntax):
                 self.remove_md = str(self.cur_selection).strip(self.md_syntax[0]).strip(self.md_syntax[1])
                 self.text_area.delete(index1=SEL_FIRST, index2=SEL_LAST)
                 self.text_area.insert(INSERT, self.remove_md)
                 return
-            # Strikehtrough
-            elif str(self.cur_selection).startswith(constants.strikethrough_md_syntax) and str(self.cur_selection).endswith(constants.strikethrough_md_syntax):
+            # Strikethrough
+            if str(self.cur_selection).startswith(constants.strikethrough_md_syntax) and str(self.cur_selection).endswith(constants.strikethrough_md_syntax):
                 self.remove_md = str(self.cur_selection).strip(self.md_syntax[0]).strip(self.md_syntax[1])
                 self.text_area.delete(index1=SEL_FIRST, index2=SEL_LAST)
                 self.text_area.insert(INSERT, self.remove_md)
