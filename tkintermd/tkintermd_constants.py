@@ -34,16 +34,15 @@ bold_italic_md_ignore = (
 )
 """tuple: Markdown syntax to ignore for bold-italic highlighting."""
 bold_italic_md_special = ("*","**", "_", "__")
-strikethrough_md_syntax = ("~~", "~~~")
+strikethrough_md_syntax = ("~~", "~~")
 """tuple: Markdown syntax for strikethrough highlighting."""
 strikethrough_md_ignore = (
-    "`", "```",
-    "> ", ">> ",
-    "- ",
-    "#", "##", "###", "####", "#####", "######", "---", "===",
+    "*", "_", "- ", "> ", "# ", "`", 
+    "**", "__", "--", ">> ", "## ",
+    "***", "___", "---", ">>> ", "### ", "```", "===",
+    "####", "#####", "######",
 )
 """tuple: Markdown syntax to ignore for strikethrough highlighting."""
-strikethrough_md_special = None
 default_md_string = """
 # Heading 1
 ## Heading 2
