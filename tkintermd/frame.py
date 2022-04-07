@@ -199,29 +199,46 @@ class TkintermdFrame(tk.Frame):
         self.right_click.tk_popup(event.x_root, event.y_root)
 
     def on_scrollbar(self, *args):
-        """Scrolls the text area scrollbar when clicked/dragged with a mouse."""
+        """Scrolls the text area scrollbar when clicked/dragged with a mouse.
+        
+        - Queries and changes the vertical position of the text area view.
+        """
         self.text_area.yview(*args)
         # # This links the scrollbars but is currently causing issues.
         # self.preview_area.html.yview(*args)
 
     def on_mousewheel(self, *args):
-        """Moves the scrollbar and scrolls the text area on mousewheel event."""
+        """Moves the scrollbar and scrolls the text area on mousewheel event.
+        
+        - Sets the fractional values of the slider position (upper and lower 
+            ends as value between 0 and 1).
+        - Calls `on_scrollbar` function.
+        """
         self.scrollbar.set(*args)
         # # This links the scrollbars but is currently causing issues.
         # self.preview_area.vsb.set(*args)
         self.on_scrollbar('moveto', args[0])
 
     def select_all(self, *args):
-        """Select all text within the editor window."""
+        """Select all text within the editor window.
+        
+        - Add tag TAGNAME to all characters between INDEX1 and INDEX2.
+        - Set mark MARKNAME before the character at index.
+        - Scroll so that the character at INDEX is visible.
+        """
         self.text_area.tag_add(SEL, "1.0", END)
         self.text_area.mark_set(0.0, END)
         self.text_area.see(INSERT)
 
     def find(self, *args):
-        """Simple search for a string within the editor window.
+        """Simple search dialog for within the editor window.
         
-        Displays a simple dialog with a field to enter the search string into and
-        two buttons.
+        - Get the current text area content.
+        - Displays a simple dialog with a field to enter a search string into 
+            and two buttons.
+        - If a string is provided then search for it within the text area.
+        - Add tag TAGNAME to all characters between INDEX1 and INDEX2.
+        - Highlight any found strings within the text editor.
         """
         self.text_area.tag_remove('found', '1.0', END)
         target = simpledialog.askstring('Find', 'Search String:')
@@ -241,6 +258,12 @@ class TkintermdFrame(tk.Frame):
         
         Opens a native OS dialog and expects markdown formatted files. Shows an 
         error message if it fails.
+
+        - Display a native OS dialog and request a filename to open.
+        - If a filename is provided then `try` to open it in "read" mode.
+        - Replace the text area content.
+        - Set the `constants.cur_file` value to the filename that was opened.
+        - If any of the above fails then display an error message.
         """
         open_filename_md = filedialog.askopenfilename(filetypes=(("Markdown File", "*.md , *.mdown , *.markdown"), ("Text File", "*.txt"), ("All Files", "*.*")))
         if open_filename_md:
@@ -258,7 +281,12 @@ class TkintermdFrame(tk.Frame):
         """Saves the file with the given filename.
         
         Opens a native OS dialog for saving the file with a name and markdown 
-        extension. Shows an error message if it fails.'
+        extension. Shows an error message if it fails.
+
+        - Display a native OS dialog and request a filename to save.
+        - If a filename is provided then `try` to open it in "write" mode.
+        - Set the `constants.cur_file` value to the filename that was opened.
+        - If any of the above fails then display an error message.
         """
         self.file_data = self.text_area.get("1.0" , END)
         self.save_filename_md = filedialog.asksaveasfilename(filetypes = (("Markdown File", "*.md"), ("Text File", "*.txt")) , title="Save Markdown File")
@@ -273,8 +301,10 @@ class TkintermdFrame(tk.Frame):
     def save_md_file(self):
         """Quick saves the file with its current name.
 
-        If it fails because no name exists it calls the "save_as_md_file" 
-        function.
+        - Get the current text area content.
+        - `try` to save the file with the `constants.cur_file` variable.
+        - If it fails because no name exists it calls the "save_as_md_file" 
+            function.
         """
         self.file_data = self.text_area.get("1.0" , END)
         try:
@@ -303,7 +333,14 @@ class TkintermdFrame(tk.Frame):
         self.text_area.edit_modified(0) # resets the text widget to generate another event when another change occours
 
     def load_style(self, stylename):
-        """Load Pygments style for syntax highlighting within the editor."""
+        """Load Pygments style for syntax highlighting within the editor.
+        
+        - Load and configure the text area and `tags` with the Pygments styles 
+            and custom `Lexer` tags.
+        - Set the background and text colour CSS values to match the values of 
+            the currently selected style.
+        - Load the CSS into the HTML previeW area.
+        """
         self.style = get_style_by_name(stylename)
         self.syntax_highlighting_tags = []
         for token, opts in self.style.list_styles():
