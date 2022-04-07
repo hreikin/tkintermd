@@ -4,7 +4,7 @@ summary: API reference for the tkintermd constants and variables.
 authors:
     - hreikin
 ---
-# `constants`
+## `constants`
 
 ::: tkintermd.tkintermd_constants
     handler: python

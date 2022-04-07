@@ -4,7 +4,7 @@ summary: API reference for the TkinterMDFrame.
 authors:
     - hreikin
 ---
-# `TkinterMDFrame`
+## `TkinterMDFrame`
 
 ::: tkintermd.tkintermd_frame.TkinterMDFrame
     handler: python
@@ -22,6 +22,8 @@ authors:
         - load_style
         - check_markdown
         - apply_markdown_both_sides
+        - remove_markdown_both_sides
+        - check_bold_italic
     rendering:
       show_root_heading: true
       show_source: false

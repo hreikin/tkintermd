@@ -5,7 +5,7 @@ authors:
     - hreikin
 ---
 <!-- GETTING STARTED -->
-# Getting Started
+## Getting Started
 <!-- ### Prerequisites
 
 This is an example of how to list things you need to use the software and how to install them.
@@ -13,7 +13,9 @@ This is an example of how to list things you need to use the software and how to
   ```sh
   npm install npm@latest -g
   ``` -->
+
 ## Installation
+
 To get a local copy up and running choose one of the below install instructions and follow the steps provided.
 
 ### Install With PIP
@@ -29,16 +31,21 @@ pip install tkintermd
 Alternatively you can install from source by following the steps below:
 
 1. Clone the repo:
+
    ```sh
    git clone https://github.com/hreikin/tkintermd.git
    cd tkintermd/
    ```
+
 2. Create and source a Python virtual environment:
+
    ```sh
    python3 -m venv .venv
    source .venv/bin/activate
    ```
+
 3. Install requirements with `pip`:
+
    ```sh
    pip install -r requirements.txt
    ```

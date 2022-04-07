@@ -4,7 +4,7 @@ summary: API reference for the Lexer extension.
 authors:
     - hreikin
 ---
-# `Lexer`
+## `Lexer`
 
 ::: tkintermd.tkintermd_frame.Lexer
     handler: python

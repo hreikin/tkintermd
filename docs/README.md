@@ -4,12 +4,12 @@ summary: About tkintermd.
 authors:
     - hreikin
 ---
-# The `tkintermd` Docs
+## The `tkintermd` Docs
 
 ## About The Project
 
-An embeddable tkinter based Markdown editor with HTML preview. The editor has 
-syntax highlighting provided by `Pygments` and the HTML preview window is 
+An embeddable tkinter based Markdown editor with HTML preview. The editor has
+syntax highlighting provided by `Pygments` and the HTML preview window is
 provided by `tkinterweb`.
 
 - Github Link: [https://github.com/hreikin/tkintermd](https://github.com/hreikin/tkintermd)  
