@@ -1,48 +1,60 @@
-"""Variables and constants to be used by tkintermd."""
+"""Variables and constants to be used by tkintermd.
+
+Args:
+    cur_file (Path): Variable for tracking current open file.
+    bold_md_syntax (tuple): Markdown syntax for bold highlighting.
+    bold_md_ignore (tuple): Markdown syntax to ignore for bold highlighting.
+    bold_md_special (tuple): Markdown syntax to ignore for bold highlighting 
+        that requires special handling.
+    italic_md_syntax (tuple): Markdown syntax for italic highlighting.
+    italic_md_ignore (tuple): Markdown syntax to ignore for italic highlighting.
+    italic_md_special (tuple): Markdown syntax to ignore for italic highlighting 
+        that requires special handling.
+    bold_italic_md_syntax (tuple): Markdown syntax for bold-italic highlighting.
+    bold_italic_md_ignore (tuple): Markdown syntax to ignore for bold-italic 
+        highlighting.
+    bold_italic_md_special (tuple): Markdown syntax to ignore for bold-italic 
+        highlighting that requires special handling.
+    strikethrough_md_syntax (tuple): Markdown syntax for strikethrough 
+        highlighting.
+    strikethrough_md_ignore (tuple): Markdown syntax to ignore for strikethrough 
+        highlighting.
+    default_md_string (str): Default string to show in the editor when it loads.
+"""
 from pathlib import Path
 
 cur_file = Path()
-"""Path: Variable for tracking current open file."""
-
 bold_md_syntax = ("**", "__")
-"""tuple: Markdown syntax for bold highlighting."""
 bold_md_ignore = (
     "- ", "> ", "# ", "`", 
     "--", ">> ", "## ",
     "***", "___", "---", ">>> ", "### ", "```", "===",
     "####", "#####", "######",
 )
-"""tuple: Markdown syntax to ignore for bold highlighting."""
 bold_md_special = ("*","***", "_", "___")
 italic_md_syntax = ("*", "_")
-"""tuple: Markdown syntax for italic highlighting."""
 italic_md_ignore = (
     "- ", "> ", "# ", "`", 
     "**", "__", "--", ">> ", "## ",
     "***", "___", "---", ">>> ", "### ", "```", "===",
     "####", "#####", "######",
 )
-"""tuple: Markdown syntax to ignore for italic highlighting."""
 italic_md_special = ("**","***", "__", "___")
 bold_italic_md_syntax = ("***", "___")
-"""tuple: Markdown syntax for bold-italic highlighting."""
 bold_italic_md_ignore = (
     "- ", "> ", "# ", "`", 
     "--", ">> ", "## ",
     "---", ">>> ", "### ", "```", "===",
     "####", "#####", "######",
 )
-"""tuple: Markdown syntax to ignore for bold-italic highlighting."""
 bold_italic_md_special = ("*","**", "_", "__")
 strikethrough_md_syntax = ("~~", "~~")
-"""tuple: Markdown syntax for strikethrough highlighting."""
 strikethrough_md_ignore = (
     "*", "_", "- ", "> ", "# ", "`", 
     "**", "__", "--", ">> ", "## ",
     "***", "___", "---", ">>> ", "### ", "```", "===",
     "####", "#####", "######",
 )
-"""tuple: Markdown syntax to ignore for strikethrough highlighting."""
 default_md_string = """
 # Heading 1
 ## Heading 2
@@ -114,4 +126,3 @@ Here is an `inline` code block.
 This is a fenced code block.
 ```
 """
-"""str: Default string to show in editor when it loads."""
