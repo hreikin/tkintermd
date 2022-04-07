@@ -1,10 +1,10 @@
 ---
 title: TkintermdFrame
-summary: API reference for the TkinterMDFrame.
+summary: API reference for the TkintermdFrame.
 authors:
     - hreikin
 ---
-::: tkintermd.frame.TkinterMDFrame
+::: tkintermd.frame.TkintermdFrame
     handler: python
     selection:
       members:
