@@ -383,7 +383,7 @@ class TkinterMDFrame(tk.Frame):
         # Ignore items in the md_ignore variable and then deal with special
         # syntax individually. If string starts with anything in md_ignore do 
         # nothing and return from the function.
-        if str(self.cur_selection).startswith(self.md_ignore):
+        if str(self.cur_selection).startswith(self.md_ignore) or str(self.cur_selection).endswith(self.md_ignore):
             return
         # If the formatting requires special items which can't go in md_ignore
         # because they cause issues with markdown being applied incorrectly.
