@@ -63,7 +63,6 @@ class TkinterMDFrame(tk.Frame):
         self.bold_btn.pack(side="left", padx=0, pady=0)
         self.italic_btn = tk.Button(self.top_bar, text="Italic", command=lambda: self.check_bold_italic(constants.italic_md_syntax, constants.italic_md_ignore, constants.italic_md_special))
         self.italic_btn.pack(side="left", padx=0, pady=0)
-        # # Currently has issues, needs constants adjusting.
         self.bold_italic_btn = tk.Button(self.top_bar, text="Bold Italic", command=lambda: self.check_bold_italic(constants.bold_italic_md_syntax, constants.bold_italic_md_ignore, constants.bold_italic_md_special))
         self.bold_italic_btn.pack(side="left", padx=0, pady=0)
         # self.heading_btn = tk.Button(self.top_bar, text="Heading")
@@ -353,6 +352,7 @@ class TkinterMDFrame(tk.Frame):
         """Apply markdown to both sides of a selection.
 
         Args:
+            selection (str): Text selection from the editor.
             md_syntax (tuple): Tuple of markdown strings to apply.
         """
         self.md_syntax = md_syntax
@@ -366,6 +366,7 @@ class TkinterMDFrame(tk.Frame):
         """Remove markdown from both sides of a selection.
 
         Args:
+            selection (str): Text selection from the editor.
             md_syntax (tuple): Tuple of markdown strings to remove.
         """
         self.md_syntax = md_syntax
@@ -376,20 +377,34 @@ class TkinterMDFrame(tk.Frame):
         return
 
     def check_bold_italic(self, md_syntax, md_ignore, md_special):
+        """Specific checks for bold, italic and bold-italic markdown syntax. 
+
+        This will ignore items in the md_ignore variable and then deal with 
+        special syntax individually before applying or removing the markdown 
+        formatting.
+        
+        - If string starts with anything in md_ignore do 
+        nothing and return from the function.
+        - If the formatting requires special items which can't go in md_ignore
+        because they cause issues with markdown being applied incorrectly do 
+        nothing and return from the function.
+        - Apply or remove the markdown once we reach the end.
+
+        Args:
+            selection (str): Text selection from the editor.
+            md_syntax (tuple): Tuple of markdown strings to remove.
+            md_ignore (tuple): Tuple of markdown strings to ignore.
+            md_special (tuple): Tuple of special markdown strings to ignore that 
+                cause unexpected issues when included in md_ignore.
+        """
         self.md_syntax = md_syntax
         self.md_ignore = md_ignore
         self.md_special = md_special
         self.cur_selection = self.text_area.selection_get()
-        # Ignore items in the md_ignore variable and then deal with special
-        # syntax individually. If string starts with anything in md_ignore do 
-        # nothing and return from the function.
         if str(self.cur_selection).startswith(self.md_ignore) or str(self.cur_selection).endswith(self.md_ignore):
             return
-        # If the formatting requires special items which can't go in md_ignore
-        # because they cause issues with markdown being applied incorrectly.
         elif str(self.cur_selection).startswith(self.md_special) and str(self.cur_selection).endswith(self.md_special) and not str(self.cur_selection).startswith(self.md_syntax) and not str(self.cur_selection).startswith(self.md_syntax):
-            return
-        # Apply or remove the markdown once we reach this stage. 
+            return 
         elif str(self.cur_selection).startswith(self.md_syntax) and str(self.cur_selection).endswith(self.md_syntax):
             self.remove_markdown_both_sides(self.cur_selection, self.md_syntax)
         else:
