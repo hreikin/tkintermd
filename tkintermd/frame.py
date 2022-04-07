@@ -30,7 +30,7 @@ class TkintermdFrame(tk.Frame):
     from tkinter.constants import *
 
     root = tk.Tk()
-    app = TkinterMDFrame(root)
+    app = TkintermdFrame(root)
     app.pack(fill="both", expand=1)
     app.mainloop()
     ```

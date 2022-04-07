@@ -121,7 +121,7 @@ nav:
   - Getting Started: 'getting-started/README.md'
   - Reference:
     - Reference: 'reference/README.md'
-    - TkinterMDFrame: 'reference/tkintermd-frame.md'
+    - TkintermdFrame: 'reference/tkintermd-frame.md'
     - Lexer: 'reference/tkintermd-lexer.md'
     - Constants: 'reference/tkintermd-constants.md'
     
