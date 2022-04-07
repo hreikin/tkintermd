@@ -59,12 +59,12 @@ class TkinterMDFrame(tk.Frame):
         self.paste_btn.pack(side="left", padx=0, pady=0)
         self.find_btn = tk.Button(self.top_bar, text="Find", command=self.find)
         self.find_btn.pack(side="left", padx=0, pady=0)
-        # self.bold_btn = tk.Button(self.top_bar, text="Bold")
-        # self.bold_btn.pack(side="left", padx=0, pady=0)
-        # self.italic_btn = tk.Button(self.top_bar, text="Italic")
-        # self.italic_btn.pack(side="left", padx=0, pady=0)
+        self.bold_btn = tk.Button(self.top_bar, text="Bold", command=lambda: self.check_bold_italic(constants.bold_md_syntax, constants.bold_md_ignore, constants.bold_md_special))
+        self.bold_btn.pack(side="left", padx=0, pady=0)
+        self.italic_btn = tk.Button(self.top_bar, text="Italic", command=lambda: self.check_bold_italic(constants.italic_md_syntax, constants.italic_md_ignore, constants.italic_md_special))
+        self.italic_btn.pack(side="left", padx=0, pady=0)
         # # Currently has issues, needs constants adjusting.
-        self.bold_italic_btn = tk.Button(self.top_bar, text="Bold Italic", command=lambda: self.check_bold_italic(constants.bold_italic_md_syntax, constants.bold_italic_md_ignore))
+        self.bold_italic_btn = tk.Button(self.top_bar, text="Bold Italic", command=lambda: self.check_bold_italic(constants.bold_italic_md_syntax, constants.bold_italic_md_ignore, constants.bold_italic_md_special))
         self.bold_italic_btn.pack(side="left", padx=0, pady=0)
         # self.heading_btn = tk.Button(self.top_bar, text="Heading")
         # self.heading_btn.pack(side="left", padx=0, pady=0)
@@ -375,18 +375,19 @@ class TkinterMDFrame(tk.Frame):
         self.text_area.insert(INSERT, self.remove_md)
         return
 
-    def check_bold_italic(self, md_syntax, md_ignore):
+    def check_bold_italic(self, md_syntax, md_ignore, md_special):
         self.md_syntax = md_syntax
         self.md_ignore = md_ignore
+        self.md_special = md_special
         self.cur_selection = self.text_area.selection_get()
-        # Ignore items in the md_ignore variable and then deal with bold and 
-        # italic syntax individually. If string starts with anything in 
-        # md_ignore do nothing and return from the function.
+        # Ignore items in the md_ignore variable and then deal with special
+        # syntax individually. If string starts with anything in md_ignore do 
+        # nothing and return from the function.
         if str(self.cur_selection).startswith(self.md_ignore):
             return
-        # If the string already has bold or italic formatting and doesnt start 
-        # with bold-italic formatting do nothing and return from the function.
-        elif str(self.cur_selection).startswith(("*","**", "_", "__")) and str(self.cur_selection).endswith(("*","**", "_", "__")) and not str(self.cur_selection).startswith(self.md_syntax) and not str(self.cur_selection).startswith(self.md_syntax):
+        # If the formatting requires special items which can't go in md_ignore
+        # because they cause issues with markdown being applied incorrectly.
+        elif str(self.cur_selection).startswith(self.md_special) and str(self.cur_selection).endswith(self.md_special) and not str(self.cur_selection).startswith(self.md_syntax) and not str(self.cur_selection).startswith(self.md_syntax):
             return
         # Apply or remove the markdown once we reach this stage. 
         elif str(self.cur_selection).startswith(self.md_syntax) and str(self.cur_selection).endswith(self.md_syntax):

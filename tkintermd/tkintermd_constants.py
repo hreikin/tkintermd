@@ -13,6 +13,7 @@ bold_md_ignore = (
     "####", "#####", "######",
 )
 """tuple: Markdown syntax to ignore for bold highlighting."""
+bold_md_special = ("*","***", "_", "___")
 italic_md_syntax = ("*", "_")
 """tuple: Markdown syntax for italic highlighting."""
 italic_md_ignore = (
@@ -22,7 +23,7 @@ italic_md_ignore = (
     "####", "#####", "######",
 )
 """tuple: Markdown syntax to ignore for italic highlighting."""
-# Needs adjusting.
+italic_md_special = ("**","***", "__", "___")
 bold_italic_md_syntax = ("***", "___")
 """tuple: Markdown syntax for bold-italic highlighting."""
 bold_italic_md_ignore = (
@@ -32,6 +33,7 @@ bold_italic_md_ignore = (
     "####", "#####", "######",
 )
 """tuple: Markdown syntax to ignore for bold-italic highlighting."""
+bold_italic_md_special = ("*","**", "_", "__")
 strikethrough_md_syntax = ("~~", "~~")
 """tuple: Markdown syntax for strikethrough highlighting."""
 strikethrough_md_ignore = (
