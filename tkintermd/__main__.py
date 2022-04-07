@@ -1,11 +1,11 @@
-from tkintermd.tkintermd_frame import TkinterMDFrame
+from tkintermd.frame import TkintermdFrame
 
 import tkinter as tk
 from tkinter.constants import *
 
 def main():
     root = tk.Tk()
-    app = TkinterMDFrame(root)
+    app = TkintermdFrame(root)
     app.pack(fill="both", expand=1)
     app.mainloop()
 
