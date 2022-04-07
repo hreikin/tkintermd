@@ -59,17 +59,17 @@ class TkinterMDFrame(tk.Frame):
         self.paste_btn.pack(side="left", padx=0, pady=0)
         self.find_btn = tk.Button(self.top_bar, text="Find", command=self.find)
         self.find_btn.pack(side="left", padx=0, pady=0)
-        self.bold_btn = tk.Button(self.top_bar, text="Bold", command=lambda: self.apply_markdown_both_sides(constants.bold_md_syntax))
-        self.bold_btn.pack(side="left", padx=0, pady=0)
-        self.italic_btn = tk.Button(self.top_bar, text="Italic", command=lambda: self.apply_markdown_both_sides(constants.italic_md_syntax))
-        self.italic_btn.pack(side="left", padx=0, pady=0)
-        # Currently has issues, needs constants adjusting.
+        # self.bold_btn = tk.Button(self.top_bar, text="Bold")
+        # self.bold_btn.pack(side="left", padx=0, pady=0)
+        # self.italic_btn = tk.Button(self.top_bar, text="Italic")
+        # self.italic_btn.pack(side="left", padx=0, pady=0)
+        # # Currently has issues, needs constants adjusting.
         self.bold_italic_btn = tk.Button(self.top_bar, text="Bold Italic", command=lambda: self.check_bold_italic(constants.bold_italic_md_syntax, constants.bold_italic_md_ignore))
         self.bold_italic_btn.pack(side="left", padx=0, pady=0)
         # self.heading_btn = tk.Button(self.top_bar, text="Heading")
         # self.heading_btn.pack(side="left", padx=0, pady=0)
-        self.strikethrough_btn = tk.Button(self.top_bar, text="Strikethrough", command=lambda: self.apply_markdown_both_sides(constants.strikethrough_md_syntax))
-        self.strikethrough_btn.pack(side="left", padx=0, pady=0)
+        # self.strikethrough_btn = tk.Button(self.top_bar, text="Strikethrough")
+        # self.strikethrough_btn.pack(side="left", padx=0, pady=0)
         # self.unordered_list_btn = tk.Button(self.top_bar, text="Unordered List")
         # self.unordered_list_btn.pack(side="left", padx=0, pady=0)
         # self.ordered_list_btn = tk.Button(self.top_bar, text="Ordered List")
@@ -380,9 +380,8 @@ class TkinterMDFrame(tk.Frame):
         self.md_ignore = md_ignore
         self.cur_selection = self.text_area.selection_get()
         # Ignore items in the md_ignore variable and then deal with bold and 
-        # italic syntax individually. 
-        # If string starts with anything in md_ignore do nothing and return from 
-        # the function.
+        # italic syntax individually. If string starts with anything in 
+        # md_ignore do nothing and return from the function.
         if str(self.cur_selection).startswith(self.md_ignore):
             return
         # If the string already has bold or italic formatting and doesnt start 
