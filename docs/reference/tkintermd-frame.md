@@ -4,8 +4,6 @@ summary: API reference for the TkinterMDFrame.
 authors:
     - hreikin
 ---
-## `TkinterMDFrame`
-
 ::: tkintermd.tkintermd_frame.TkinterMDFrame
     handler: python
     selection:

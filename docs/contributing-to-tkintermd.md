@@ -4,8 +4,6 @@ summary: Contribution guidelines for tkintermd.
 authors:
     - hreikin
 ---
-## Contributing
-
 Check out the [Github Project - tkintermd v0.1.0](https://github.com/users/hreikin/projects/1/) for an overview of the work being done towards the release.
 See the [open issues](https://github.com/hreikin/tkintermd/issues) for a full list of proposed features (and known issues).
 

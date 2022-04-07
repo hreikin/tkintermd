@@ -4,16 +4,6 @@ summary: Quick installation and usage instructions.
 authors:
     - hreikin
 ---
-<!-- GETTING STARTED -->
-## Getting Started
-<!-- ### Prerequisites
-
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ``` -->
-
 ## Installation
 
 To get a local copy up and running choose one of the below install instructions and follow the steps provided.

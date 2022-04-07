@@ -4,8 +4,6 @@ summary: About tkintermd.
 authors:
     - hreikin
 ---
-## The `tkintermd` Docs
-
 ## About The Project
 
 An embeddable tkinter based Markdown editor with HTML preview. The editor has
