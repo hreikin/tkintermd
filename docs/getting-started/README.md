@@ -45,16 +45,16 @@ Alternatively you can install from source by following the steps below:
 
 ### Embedded
 
-To use the `TkinterMDFrame` in one of your own python scripts:
+To use the `TkintermdFrame` in one of your own python scripts:
 
 ```python
-from tkintermd.tkintermd_frame import TkinterMDFrame
+from tkintermd.frame import TkintermdFrame
 
 import tkinter as tk
 from tkinter.constants import *
 
 root = tk.Tk()
-app = TkinterMDFrame(root)
+app = TkintermdFrame(root)
 app.pack(fill="both", expand=1)
 app.mainloop()
 ```

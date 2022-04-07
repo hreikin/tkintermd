@@ -7,5 +7,5 @@ authors:
 ## `tkintermd`
 
 - [Constants](./tkintermd-constants.md)
-- [TkinterMDFrame](./tkintermd-frame.md)
+- [TkintermdFrame](./tkintermd-frame.md)
 - [Lexer](tkintermd-lexer.md)

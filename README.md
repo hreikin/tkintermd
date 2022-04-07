@@ -33,7 +33,7 @@
 <h3 align="center">tkintermd</h3>
 
   <p align="center">
-    An embeddable tkinter based Markdown editor with HTML preview.
+    A Markdown editor with HTML preview for use in tkinter projects.
     <br />
     <a href="https://hreikin.github.io/tkintermd"><strong>Explore the docs »</strong></a>
     <br />
@@ -93,7 +93,7 @@
 
 <!-- [![Product Name Screen Shot][product-screenshot]](https://example.com) -->
 
-An embeddable `tkinter` based Markdown editor with HTML preview. The editor has 
+A Markdown editor with HTML preview for use in tkinter projects. The editor has 
 syntax highlighting provided by `Pygments` and the HTML preview window is 
 provided by `tkinterweb`.
 
@@ -156,16 +156,16 @@ Alternatively you can install from source by following the steps below:
 
 #### Embedded
 
-To use the `TkinterMDFrame` in one of your own python scripts:
+To use the `TkintermdFrame` in one of your own python scripts:
 
 ```python
-from tkintermd.tkintermd_frame import TkinterMDFrame
+from tkintermd.tkintermd_frame import TkintermdFrame
 
 import tkinter as tk
 from tkinter.constants import *
 
 root = tk.Tk()
-app = TkinterMDFrame(root)
+app = TkintermdFrame(root)
 app.pack(fill="both", expand=1)
 app.mainloop()
 ```

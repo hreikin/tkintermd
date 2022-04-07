@@ -1,5 +1,5 @@
 ---
-title: TkinterMDFrame
+title: TkintermdFrame
 summary: API reference for the TkinterMDFrame.
 authors:
     - hreikin
