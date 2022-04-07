@@ -15,7 +15,7 @@ from pygments.token import Generic
 from pygments.lexer import bygroups
 from pygments.styles import get_style_by_name
 
-class TkintemdFrame(tk.Frame):
+class TkintermdFrame(tk.Frame):
     """A Markdown editor with HTML preview for use in tkinter projects. 
     
     The editor has syntax highlighting supplied by `Pygments` and the HTML 
