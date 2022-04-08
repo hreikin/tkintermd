@@ -5,7 +5,7 @@ import tkinter as tk
 from tkinter import filedialog, simpledialog
 from tkinter import messagebox as mbox
 from tkinter.constants import *
-from tkinterweb import HtmlFrame
+from tkinterweb import HtmlFrame, Notebook
 
 from markdown import Markdown
 from pygments import lex
@@ -47,6 +47,8 @@ class TkintermdFrame(tk.Frame):
         self.save_as_btn.pack(side="left", padx=0, pady=0)
         self.save_btn = tk.Button(self.top_bar, text="Save", command=self.save_md_file)
         self.save_btn.pack(side="left", padx=0, pady=0)
+        self.export_as_btn = tk.Button(self.top_bar, text="Export HTML", command=self.save_as_html_file)
+        self.export_as_btn.pack(side="left", padx=0, pady=0)
         self.undo_btn = tk.Button(self.top_bar, text="Undo", command=lambda: self.text_area.event_generate("<<Undo>>"))
         self.undo_btn.pack(side="left", padx=0, pady=0)
         self.redo_btn = tk.Button(self.top_bar, text="Redo", command=lambda: self.text_area.event_generate("<<Redo>>"))
@@ -144,9 +146,15 @@ class TkintermdFrame(tk.Frame):
         self.text_area.pack(side="left", fill="both", expand=1)
         self.scrollbar = tk.Scrollbar(self.editor_frame, command=self.on_scrollbar)
         self.scrollbar.pack(side="left", fill="y")
-        self.preview_area = HtmlFrame(self.editor_pw)
+        self.preview_tabs = Notebook(self.editor_pw)
+        #make the previews
+        self.preview_area = HtmlFrame(self.preview_tabs)
+        self.preview_html = tk.Text(self.preview_tabs)
+        self.preview_tabs.add(self.preview_area, text="Preview Format")
+        self.preview_tabs.add(self.preview_html, text="Preview HTML code")
+        #add the areas to the paned window
         self.editor_pw.add(self.editor_frame)
-        self.editor_pw.add(self.preview_area)
+        self.editor_pw.add(self.preview_tabs)
         self.editor_pw.pack(side="left", fill="both", expand=1)
 
         # Set Pygments syntax highlighting style.
@@ -313,6 +321,26 @@ class TkintermdFrame(tk.Frame):
         except:
             self.save_as_md_file()
 
+    def save_as_html_file(self):
+        """Exports the current contents of the HTML preview pane to the given filename.
+        
+        Opens a native OS dialog for saving the file with a html
+        extension. Shows an error message if it fails.
+
+        - Display a native OS dialog and request a filename to save.
+        - If a filename is provided then `try` to open it in "write" mode.
+        - If any of the above fails then display an error message.
+        """
+        html_file_data = self.preview_html.get("1.0" , END)
+        self.html_save_filename = filedialog.asksaveasfilename(filetypes = (("HTML file", ("*.html", "*.htm")),) , title="Save HTML File")
+        if self.html_save_filename:
+            try:
+                with open(self.html_save_filename, "w") as stream:
+                    stream.write(html_file_data)
+                    #constants.cur_file = Path(self.html_save_filename)
+            except:
+                mbox.showerror(title="Error", message=f"Error Saving File\n\nThe file: {self.html_save_filename} can not be saved!")
+
     def on_input_change(self, event):
         """Converts the text area input into html output for the HTML preview.
         
@@ -327,6 +355,8 @@ class TkintermdFrame(tk.Frame):
         md2html = Markdown()
         markdownText = self.text_area.get("1.0", END)
         html = md2html.convert(markdownText)
+        self.preview_html.delete("1.0" , END)
+        self.preview_html.insert(END, html)
         self.preview_area.load_html(html)
         self.preview_area.add_css(self.css)
         self.check_markdown(start="1.0", end=END)
