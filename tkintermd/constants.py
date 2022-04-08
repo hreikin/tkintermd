@@ -22,7 +22,44 @@ Args:
     default_md_string (str): Default string to show in the editor when it loads.
 """
 from pathlib import Path
+from pymdownx import emoji
 
+extensions = [
+    'markdown.extensions.tables',
+    'pymdownx.magiclink',
+    'pymdownx.betterem',
+    'pymdownx.tilde',
+    'pymdownx.emoji',
+    'pymdownx.tasklist',
+    'pymdownx.superfences',
+    'pymdownx.saneheaders'
+]
+extension_configs = {
+    "pymdownx.magiclink": {
+        "repo_url_shortener": True,
+        "repo_url_shorthand": True,
+        "provider": "github",
+        "user": "hreikin",
+        "repo": "tkintermd"
+    },
+    "pymdownx.tilde": {
+        "subscript": False
+    },
+    "pymdownx.emoji": {
+        "emoji_index": emoji.gemoji,
+        "emoji_generator": emoji.to_png,
+        "alt": "short",
+        "options": {
+            "attributes": {
+                "align": "absmiddle",
+                "height": "20px",
+                "width": "20px"
+            },
+            "image_path": "https://assets-cdn.github.com/images/icons/emoji/unicode/",
+            "non_standard_image_path": "https://assets-cdn.github.com/images/icons/emoji/"
+        }
+    }
+}
 cur_file = Path()
 bold_md_syntax = ("**", "__")
 bold_md_ignore = (
@@ -122,7 +159,19 @@ ___Bold Italic___
 Here is an `inline` code block.
 
 
+```python
+
+# This is a fenced code block with the language defined.
+
+def foo():
+    print("Bar")
+
 ```
-This is a fenced code block.
+
+```
+# This is a fenced code block without the language defined.
+
+def foo():
+    print("Bar")
 ```
 """
