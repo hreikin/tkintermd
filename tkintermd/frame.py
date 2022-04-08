@@ -9,7 +9,6 @@ from tkinterweb import HtmlFrame
 
 from markdown import Markdown
 from pygments import lex
-#from pygments.styles import 
 from pygments.lexers.markup import MarkdownLexer
 from pygments.token import Generic
 from pygments.lexer import bygroups
