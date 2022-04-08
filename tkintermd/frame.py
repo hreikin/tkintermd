@@ -6,6 +6,7 @@ from tkinter import filedialog, simpledialog
 from tkinter import messagebox as mbox
 from tkinter.constants import *
 from tkinterweb import HtmlFrame
+from tkinterweb.utilities import ScrolledTextBox
 
 from markdown import Markdown
 from pygments import lex
@@ -139,11 +140,11 @@ class TkintermdFrame(tk.Frame):
 
         # Creating the widgets
         self.editor_pw = tk.PanedWindow(self.master, orient="horizontal")
-        self.editor_frame = tk.Frame(self.editor_pw)
-        self.text_area = tk.Text(self.editor_frame, state="normal", wrap="none", pady=2, padx=3, undo=True, width=100, height=25, yscrollcommand=self.on_mousewheel)
-        self.text_area.pack(side="left", fill="both", expand=1)
-        self.scrollbar = tk.Scrollbar(self.editor_frame, command=self.on_scrollbar)
-        self.scrollbar.pack(side="left", fill="y")
+        self.editor_frame = ScrolledTextBox(self.editor_pw)
+        self.text_area = self.editor_frame.tbox#tk.Text(self.editor_frame, state="normal", wrap="none", pady=2, padx=3, undo=True, width=100, height=25, yscrollcommand=self.on_mousewheel)
+##        self.text_area.pack(side="left", fill="both", expand=1)
+##        self.scrollbar = tk.Scrollbar(self.editor_frame, command=self.on_scrollbar)
+##        self.scrollbar.pack(side="left", fill="y")
         self.preview_area = HtmlFrame(self.editor_pw)
         self.editor_pw.add(self.editor_frame)
         self.editor_pw.add(self.preview_area)
