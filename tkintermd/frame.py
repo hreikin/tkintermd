@@ -7,6 +7,8 @@ from tkinter import messagebox as mbox
 from tkinter.constants import *
 from tkinterweb import HtmlFrame
 
+from sys import stderr
+from traceback import print_exc
 from markdown import Markdown
 from pygments import lex
 from pygments.lexers.markup import MarkdownLexer
@@ -87,14 +89,6 @@ class TkintermdFrame(tk.Frame):
         
         self.style_opt_btn = tk.Menubutton(self.top_bar, text="Editor Style", relief="raised")
         self.style_opt_btn.pack(side="left", padx=0, pady=0)
-        self.style_menu = tk.Menu(self.style_opt_btn, tearoff=False)
-        for style_name in get_all_styles():
-            self.style_menu.add_command(
-                label=style_name,
-                command=(lambda sn:lambda: self.load_style(sn))(style_name)
-                #unfortunately lambdas inside loops need to be stacked 2 deep to get closure variables instead of cell variables
-                )
-        self.style_opt_btn["menu"] = self.style_menu
         
         self.top_bar.pack(side="top", fill="x")
 
@@ -109,6 +103,25 @@ class TkintermdFrame(tk.Frame):
         self.editor_pw.add(self.editor_frame)
         self.editor_pw.add(self.preview_area)
         self.editor_pw.pack(side="left", fill="both", expand=1)
+
+        #load the self.style_opt_btn menu
+        self.style_menu = tk.Menu(self.style_opt_btn, tearoff=False)
+        for style_name in get_all_styles():
+            #dynamcially get names of styles exported by pygments
+            try:
+                #test them for compatability
+                self.load_style(style_name)
+            except Exception as E:
+                print_exc()
+                print(f"Warning: style {style_name} failed ({E}), removing from style menu.\n", file=stderr)
+                continue#don't add them to the menu
+            #add the rest to the menu
+            self.style_menu.add_command(
+                label=style_name,
+                command=(lambda sn:lambda: self.load_style(sn))(style_name)
+                #unfortunately lambdas inside loops need to be stacked 2 deep to get closure variables instead of cell variables
+                )
+        self.style_opt_btn["menu"] = self.style_menu
 
         # Set Pygments syntax highlighting style.
         self.lexer = Lexer()
@@ -317,14 +330,15 @@ class TkintermdFrame(tk.Frame):
             kwargs['underline'] = opts['underline']
             self.text_area.tag_configure(str(token), **kwargs)
             self.syntax_highlighting_tags.append(str(token))
-        self.text_area.configure(bg=self.style.background_color,
-                        fg=self.text_area.tag_cget("Token.Text", "foreground"),
+        #print(self.style.background_color or 'white', self.text_area.tag_cget("Token.Text", "foreground") or 'black', stylename)
+        self.text_area.configure(bg=self.style.background_color or 'white',
+                        fg=self.text_area.tag_cget("Token.Text", "foreground") or 'black',
                         selectbackground=self.style.highlight_color)
         self.text_area.tag_configure(str(Generic.StrongEmph), font=('Monospace', 10, 'bold', 'italic'))
         self.syntax_highlighting_tags.append(str(Generic.StrongEmph))
         self.css = 'body {background-color: %s; color: %s}' % (
-            self.style.background_color,
-            self.text_area.tag_cget("Token.Text", "foreground")
+            self.style.background_color or 'white',
+            self.text_area.tag_cget("Token.Text", "foreground") or 'black'
             )#used string%interpolation here because f'string' interpolation is too annoying with embeded { and }
         self.preview_area.add_css(self.css)
         return self.syntax_highlighting_tags    
