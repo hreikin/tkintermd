@@ -9,11 +9,11 @@ from tkinterweb import HtmlFrame
 
 from markdown import Markdown
 from pygments import lex
-from pygments.styles import get_all_styles
+#from pygments.styles import 
 from pygments.lexers.markup import MarkdownLexer
 from pygments.token import Generic
 from pygments.lexer import bygroups
-from pygments.styles import get_style_by_name
+from pygments.styles import get_style_by_name, get_all_styles
 
 class TkintermdFrame(tk.Frame):
     """A Markdown editor with HTML preview for use in tkinter projects. 
@@ -89,50 +89,12 @@ class TkintermdFrame(tk.Frame):
         self.style_opt_btn = tk.Menubutton(self.top_bar, text="Editor Style", relief="raised")
         self.style_opt_btn.pack(side="left", padx=0, pady=0)
         self.style_menu = tk.Menu(self.style_opt_btn, tearoff=False)
-        self.style_menu.add_command(label='default', command=lambda: self.load_style('default'))
-        self.style_menu.add_command(label='emacs', command=lambda: self.load_style('emacs'))
-        self.style_menu.add_command(label='friendly', command=lambda: self.load_style('friendly'))
-        self.style_menu.add_command(label='friendly_grayscale', command=lambda: self.load_style('friendly_grayscale'))
-        self.style_menu.add_command(label='colorful', command=lambda: self.load_style('colorful'))
-        self.style_menu.add_command(label='autumn', command=lambda: self.load_style('autumn'))
-        self.style_menu.add_command(label='murphy', command=lambda: self.load_style('murphy'))
-        self.style_menu.add_command(label='manni', command=lambda: self.load_style('manni'))
-        self.style_menu.add_command(label='material', command=lambda: self.load_style('material'))
-        self.style_menu.add_command(label='monokai', command=lambda: self.load_style('monokai'))
-        self.style_menu.add_command(label='perldoc', command=lambda: self.load_style('perldoc'))
-        self.style_menu.add_command(label='pastie', command=lambda: self.load_style('pastie'))
-        self.style_menu.add_command(label='borland', command=lambda: self.load_style('borland'))
-        self.style_menu.add_command(label='trac', command=lambda: self.load_style('trac'))
-        self.style_menu.add_command(label='native', command=lambda: self.load_style('native'))
-        self.style_menu.add_command(label='fruity', command=lambda: self.load_style('fruity'))
-        self.style_menu.add_command(label='bw', command=lambda: self.load_style('bw'))
-        self.style_menu.add_command(label='vim', command=lambda: self.load_style('vim'))
-        self.style_menu.add_command(label='vs', command=lambda: self.load_style('vs'))
-        self.style_menu.add_command(label='tango', command=lambda: self.load_style('tango'))
-        self.style_menu.add_command(label='rrt', command=lambda: self.load_style('rrt'))
-        self.style_menu.add_command(label='xcode', command=lambda: self.load_style('xcode'))
-        self.style_menu.add_command(label='igor', command=lambda: self.load_style('igor'))
-        self.style_menu.add_command(label='paraiso-light', command=lambda: self.load_style('paraiso-light'))
-        self.style_menu.add_command(label='paraiso-dark', command=lambda: self.load_style('paraiso-dark'))
-        self.style_menu.add_command(label='lovelace', command=lambda: self.load_style('lovelace'))
-        self.style_menu.add_command(label='algol', command=lambda: self.load_style('algol'))
-        self.style_menu.add_command(label='algol_nu', command=lambda: self.load_style('algol_nu'))
-        self.style_menu.add_command(label='arduino', command=lambda: self.load_style('arduino'))
-        self.style_menu.add_command(label='rainbow_dash', command=lambda: self.load_style('rainbow_dash'))
-        self.style_menu.add_command(label='abap', command=lambda: self.load_style('abap'))
-        self.style_menu.add_command(label='solarized-dark', command=lambda: self.load_style('solarized-dark'))
-        self.style_menu.add_command(label='solarized-light', command=lambda: self.load_style('solarized-light'))
-        self.style_menu.add_command(label='sas', command=lambda: self.load_style('sas'))
-        self.style_menu.add_command(label='stata', command=lambda: self.load_style('stata'))
-        self.style_menu.add_command(label='stata-light', command=lambda: self.load_style('stata-light'))
-        self.style_menu.add_command(label='stata-dark', command=lambda: self.load_style('stata-dark'))
-        self.style_menu.add_command(label='inkpot', command=lambda: self.load_style('inkpot'))
-        self.style_menu.add_command(label='zenburn', command=lambda: self.load_style('zenburn'))
-        self.style_menu.add_command(label='gruvbox-dark', command=lambda: self.load_style('gruvbox-dark'))
-        self.style_menu.add_command(label='gruvbox-light', command=lambda: self.load_style('gruvbox-light'))
-        self.style_menu.add_command(label='dracula', command=lambda: self.load_style('dracula'))
-        self.style_menu.add_command(label='one-dark', command=lambda: self.load_style('one-dark'))
-        self.style_menu.add_command(label='lilypond', command=lambda: self.load_style('lilypond'))
+        for style_name in get_all_styles():
+            self.style_menu.add_command(
+                label=style_name,
+                command=(lambda sn:lambda: self.load_style(sn))(style_name)
+                #unfortunately lambdas inside loops need to be stacked 2 deep to get closure variables instead of cell variables
+                )
         self.style_opt_btn["menu"] = self.style_menu
         
         self.top_bar.pack(side="top", fill="x")
