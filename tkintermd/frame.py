@@ -11,6 +11,7 @@ from markdown import Markdown
 from pygments import lex
 from pygments.styles import get_all_styles
 from pygments.lexers.markup import MarkdownLexer
+from pygments.formatters.html import HtmlFormatter
 from pygments.token import Generic
 from pygments.lexer import bygroups
 from pygments.styles import get_style_by_name
@@ -152,6 +153,8 @@ class TkintermdFrame(tk.Frame):
         # Set Pygments syntax highlighting style.
         self.lexer = Lexer()
         self.syntax_highlighting_tags = self.load_style("stata")
+        self.formatter = HtmlFormatter()
+        self.pygments = self.formatter.get_style_defs(".highlight")
         # Default markdown string.
         default_text = constants.default_md_string
         self.text_area.insert(0.0, default_text)
@@ -324,7 +327,7 @@ class TkintermdFrame(tk.Frame):
         - Check the markdown and apply formatting to the text area
         - Reset the modified flag
         """
-        md2html = Markdown()
+        md2html = Markdown(extensions=constants.extensions, extension_configs=constants.extension_configs)
         markdownText = self.text_area.get("1.0", END)
         html = md2html.convert(markdownText)
         self.preview_area.load_html(html)
@@ -361,12 +364,20 @@ class TkintermdFrame(tk.Frame):
                         selectbackground=self.style.highlight_color)
         self.text_area.tag_configure(str(Generic.StrongEmph), font=('Monospace', 10, 'bold', 'italic'))
         self.syntax_highlighting_tags.append(str(Generic.StrongEmph))
-        self.css = 'body {background-color: %s; color: %s}' % (
+        self.formatter = HtmlFormatter()
+        self.pygments = self.formatter.get_style_defs(".highlight")
+        # Previous version.
+        self.css = 'body {background-color: %s; color: %s }\nbody .highlight{ background-color: %s; }\n%s' % (
             self.style.background_color,
-            self.text_area.tag_cget("Token.Text", "foreground")
+            self.text_area.tag_cget("Token.Text", "foreground"),
+            self.style.background_color,
+            self.pygments
             )#used string%interpolation here because f'string' interpolation is too annoying with embeded { and }
         self.preview_area.add_css(self.css)
         return self.syntax_highlighting_tags    
+        
+
+        
 
     def check_markdown(self, start='insert linestart', end='insert lineend'):
         """Formats editor content using the Pygments style."""
