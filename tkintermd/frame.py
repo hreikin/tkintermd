@@ -1,4 +1,5 @@
 import tkintermd.constants as constants
+import tkintermd.log as log
 
 from pathlib import Path
 import tkinter as tk
@@ -39,6 +40,8 @@ class TkintermdFrame(tk.Frame):
     """
     def __init__(self, master, **kwargs):
         tk.Frame.__init__(self, master) # no need for super
+
+        logger = log.create_logger()
 
         # Toolbar.
         self.top_bar = tk.Frame(self.master)
@@ -112,22 +115,21 @@ class TkintermdFrame(tk.Frame):
         self.editor_pw.add(self.preview_tabs)
         self.editor_pw.pack(side="left", fill="both", expand=1)
 
-        #load the self.style_opt_btn menu
+        # load the self.style_opt_btn menu
         self.style_menu = tk.Menu(self.style_opt_btn, tearoff=False)
         for style_name in get_all_styles():
-            #dynamcially get names of styles exported by pygments
+            # dynamcially get names of styles exported by pygments
             try:
-                #test them for compatability
+                # test them for compatability
                 self.load_style(style_name)
             except Exception as E:
-                print_exc()
-                print(f"Warning: style {style_name} failed ({E}), removing from style menu.\n", file=stderr)
-                continue#don't add them to the menu
-            #add the rest to the menu
+                logger.exception(f"WARNING: style {style_name} failed ({E}), removing from style menu.")
+                continue # don't add them to the menu
+            # add the rest to the menu
             self.style_menu.add_command(
                 label=style_name,
                 command=(lambda sn:lambda: self.load_style(sn))(style_name)
-                #unfortunately lambdas inside loops need to be stacked 2 deep to get closure variables instead of cell variables
+                # unfortunately lambdas inside loops need to be stacked 2 deep to get closure variables instead of cell variables
                 )
         self.style_opt_btn["menu"] = self.style_menu
 
@@ -360,16 +362,17 @@ class TkintermdFrame(tk.Frame):
             kwargs['underline'] = opts['underline']
             self.text_area.tag_configure(str(token), **kwargs)
             self.syntax_highlighting_tags.append(str(token))
-        #print(self.style.background_color or 'white', self.text_area.tag_cget("Token.Text", "foreground") or 'black', stylename)
+        # print(self.style.background_color or 'white', self.text_area.tag_cget("Token.Text", "foreground") or 'black', stylename)
         self.text_area.configure(bg=self.style.background_color or 'white',
                         fg=self.text_area.tag_cget("Token.Text", "foreground") or 'black',
-                        selectbackground=self.style.highlight_color)
+                        selectbackground=self.style.highlight_color
+                        )
         self.text_area.tag_configure(str(Generic.StrongEmph), font=('Monospace', 10, 'bold', 'italic'))
         self.syntax_highlighting_tags.append(str(Generic.StrongEmph))
         self.css = 'body {background-color: %s; color: %s}' % (
             self.style.background_color or 'white',
             self.text_area.tag_cget("Token.Text", "foreground") or 'black'
-            )#used string%interpolation here because f'string' interpolation is too annoying with embeded { and }
+            )# used string%interpolation here because f'string' interpolation is too annoying with embeded { and }
         self.preview_area.add_css(self.css)
         return self.syntax_highlighting_tags    
 
