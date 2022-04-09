@@ -55,13 +55,26 @@ strikethrough_md_ignore = (
     "***", "___", "---", ">>> ", "### ", "```", "===",
     "####", "#####", "######",
 )
-default_md_string = """
-# Heading 1
+default_md_string = """# Heading 1
 ## Heading 2
 ### Heading 3
 #### Heading 4
 ##### Heading 5
 ###### Heading 6
+
+Here is an `inline` code block.
+
+```python
+# This is a fenced code block with the language defined.
+def foo():
+    print("Bar")
+```
+
+```
+# This is a fenced code block without the language defined.
+def foo():
+    print("Bar")
+```
 
 Heading 1
 =========
@@ -70,7 +83,6 @@ Heading 2
 ---------
 
 Some paragraph text.
-
 Line Breaks with two spaces on the end of the line.  
 Line two.  
 Line three.
@@ -82,7 +94,6 @@ Line three.
 - item three
 
 Horizontal rule.
-
 ---
 
 1. item one
@@ -91,16 +102,11 @@ Horizontal rule.
     2. item two
 3. item three
 
-_Italic_
-
 *italic*
-
+_Italic_
 **bold**
-
 __Bold__
-
 ***Bold Italic***
-
 ___Bold Italic___
 
 > Blockquotes.
@@ -110,7 +116,6 @@ ___Bold Italic___
 > Blockquotes.
 >
 >> Nested paragraphs with a >> symbol.
-
 > #### Using other elements
 >
 > - works with blockquotes
@@ -118,11 +123,4 @@ ___Bold Italic___
 >
 >  *do* **normally**.
 
-
-Here is an `inline` code block.
-
-
-```
-This is a fenced code block.
-```
 """
