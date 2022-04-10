@@ -64,16 +64,16 @@ class TkintermdFrame(tk.Frame):
         self.paste_btn.pack(side="left", padx=0, pady=0)
         self.find_btn = tk.Button(self.top_bar, text="Find", command=self.find)
         self.find_btn.pack(side="left", padx=0, pady=0)
-        self.bold_btn = tk.Button(self.top_bar, text="Bold", command=lambda: self.check_bold_italic(constants.bold_md_syntax, constants.bold_md_ignore, constants.bold_md_special))
+        self.bold_btn = tk.Button(self.top_bar, text="Bold", command=lambda: self.check_markdown_both_sides(constants.bold_md_syntax, constants.bold_md_ignore, constants.bold_md_special))
         self.bold_btn.pack(side="left", padx=0, pady=0)
-        self.italic_btn = tk.Button(self.top_bar, text="Italic", command=lambda: self.check_bold_italic(constants.italic_md_syntax, constants.italic_md_ignore, constants.italic_md_special))
+        self.italic_btn = tk.Button(self.top_bar, text="Italic", command=lambda: self.check_markdown_both_sides(constants.italic_md_syntax, constants.italic_md_ignore, constants.italic_md_special))
         self.italic_btn.pack(side="left", padx=0, pady=0)
-        self.bold_italic_btn = tk.Button(self.top_bar, text="Bold Italic", command=lambda: self.check_bold_italic(constants.bold_italic_md_syntax, constants.bold_italic_md_ignore, constants.bold_italic_md_special))
+        self.bold_italic_btn = tk.Button(self.top_bar, text="Bold Italic", command=lambda: self.check_markdown_both_sides(constants.bold_italic_md_syntax, constants.bold_italic_md_ignore, constants.bold_italic_md_special))
         self.bold_italic_btn.pack(side="left", padx=0, pady=0)
+        self.strikethrough_btn = tk.Button(self.top_bar, text="Strikethrough", command=lambda: self.check_markdown_both_sides(constants.strikethrough_md_syntax, constants.strikethrough_md_ignore, md_special=None, strikethrough=True))
+        self.strikethrough_btn.pack(side="left", padx=0, pady=0)
         # self.heading_btn = tk.Button(self.top_bar, text="Heading")
         # self.heading_btn.pack(side="left", padx=0, pady=0)
-        # self.strikethrough_btn = tk.Button(self.top_bar, text="Strikethrough")
-        # self.strikethrough_btn.pack(side="left", padx=0, pady=0)
         # self.unordered_list_btn = tk.Button(self.top_bar, text="Unordered List")
         # self.unordered_list_btn.pack(side="left", padx=0, pady=0)
         # self.ordered_list_btn = tk.Button(self.top_bar, text="Ordered List")
@@ -363,13 +363,13 @@ class TkintermdFrame(tk.Frame):
         # print(self.style.background_color or 'white', self.text_area.tag_cget("Token.Text", "foreground") or 'black', stylename)
         self.text_area.configure(bg=self.style.background_color or 'white',
                         fg=self.text_area.tag_cget("Token.Text", "foreground") or 'black',
-                        selectbackground=self.style.highlight_color
+                        selectbackground=self.style.highlight_color,
                         )
         self.text_area.tag_configure(str(Generic.StrongEmph), font=('Monospace', 10, 'bold', 'italic'))
         self.syntax_highlighting_tags.append(str(Generic.StrongEmph))
         self.css = 'body {background-color: %s; color: %s}' % (
             self.style.background_color or 'white',
-            self.text_area.tag_cget("Token.Text", "foreground") or 'black'
+            self.text_area.tag_cget("Token.Text", "foreground") or 'black',
             )# used string%interpolation here because f'string' interpolation is too annoying with embeded { and }
         self.preview_area.add_css(self.css)
         return self.syntax_highlighting_tags    
@@ -419,7 +419,7 @@ class TkintermdFrame(tk.Frame):
         self.text_area.insert(INSERT, self.remove_md)
         return
 
-    def check_bold_italic(self, md_syntax, md_ignore, md_special):
+    def check_markdown_both_sides(self, md_syntax, md_ignore, md_special, strikethrough=None):
         """Specific checks for bold, italic and bold-italic markdown syntax. 
 
         This will ignore items in the md_ignore variable and then deal with 
@@ -446,6 +446,13 @@ class TkintermdFrame(tk.Frame):
         self.cur_selection = self.text_area.selection_get()
         if str(self.cur_selection).startswith(self.md_ignore) or str(self.cur_selection).endswith(self.md_ignore):
             return
+        elif strikethrough == True:
+            if str(self.cur_selection).startswith(self.md_syntax) and str(self.cur_selection).endswith(self.md_syntax):
+                self.remove_markdown_both_sides(self.cur_selection, self.md_syntax)
+                return
+            else:
+                self.apply_markdown_both_sides(self.cur_selection, self.md_syntax)
+                return
         elif str(self.cur_selection).startswith(self.md_special) and str(self.cur_selection).endswith(self.md_special) and not str(self.cur_selection).startswith(self.md_syntax) and not str(self.cur_selection).startswith(self.md_syntax):
             return 
         elif str(self.cur_selection).startswith(self.md_syntax) and str(self.cur_selection).endswith(self.md_syntax):
