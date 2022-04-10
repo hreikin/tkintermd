@@ -6,36 +6,36 @@ labels: bug
 assignees: ''
 
 ---
-
 **Desktop (please complete the following information):**
-- OS: [e.g. Fedora, Ubuntu, Windows]
-- Python Version [e.g. 3.7]
-- Install Type [e.g. via pip, via git]
 
-**Describe the bug**
+- OS [e.g. Fedora, Ubuntu, Windows]:
+- Python Version [e.g. 3.7]:
+- Install Type [e.g. via pip, via git]:
+
+**Describe the bug:**
 A clear and concise description of what the bug is.
 
-**To Reproduce**
+**To Reproduce:**
 Steps to reproduce the behavior:
+
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
 4. See error
 
-**Expected behavior**
+**Expected behavior:**
 A clear and concise description of what you expected to happen.
 
-**Reproducible Code Example**
+**Reproducible Code Example:**
 Please provide a minimal reproducible code example that causes the error.
 
-```
-your example 
-code goes 
-here
+```python
+def example_function():
+    print("Hello")
 ```
 
-**Screenshots**
+**Screenshots:**
 If applicable, add screenshots to help explain your problem.
 
-**Additional context**
+**Additional context:**
 Add any other context about the problem here.
