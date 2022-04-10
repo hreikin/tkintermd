@@ -138,7 +138,7 @@ class TkintermdFrame(tk.Frame):
         default_text = constants.default_md_string
         self.text_area.insert(0.0, default_text)
         # Applies markdown formatting to default file.
-        self.check_markdown(start="1.0", end=END)
+        self.check_markdown_highlighting(start="1.0", end=END)
         self.text_area.focus_set()
 
         # Create right click menu layout for the editor.
@@ -254,7 +254,7 @@ class TkintermdFrame(tk.Frame):
                     open_filename_contents = stream.read()
                 self.text_area.delete(1.0, END)
                 self.text_area.insert(END, open_filename_contents)
-                self.check_markdown(start="1.0", end=END)
+                self.check_markdown_highlighting(start="1.0", end=END)
                 constants.cur_file = Path(open_filename_md)
             except:
                 mbox.showerror(title="Error", message=f"Error Opening Selected File\n\nThe file you selected: {open_filename_md} can not be opened!")
@@ -333,7 +333,7 @@ class TkintermdFrame(tk.Frame):
         self.preview_html.insert(END, html)
         self.preview_area.load_html(html)
         self.preview_area.add_css(self.css)
-        self.check_markdown(start="1.0", end=END)
+        self.check_markdown_highlighting(start="1.0", end=END)
         self.text_area.edit_modified(0) # resets the text widget to generate another event when another change occours
 
     def load_style(self, stylename):
@@ -374,7 +374,7 @@ class TkintermdFrame(tk.Frame):
         self.preview_area.add_css(self.css)
         return self.syntax_highlighting_tags    
 
-    def check_markdown(self, start='insert linestart', end='insert lineend'):
+    def check_markdown_highlighting(self, start='insert linestart', end='insert lineend'):
         """Formats editor content using the Pygments style."""
         self.data = self.text_area.get(start, end)
         while self.data and self.data[0] == '\n':
