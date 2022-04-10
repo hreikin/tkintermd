@@ -420,14 +420,15 @@ class TkintermdFrame(tk.Frame):
         return
 
     def check_markdown_both_sides(self, md_syntax, md_ignore, md_special, strikethrough=None):
-        """Check markdown formatting to be applied to both sides. 
+        """Check markdown formatting to be applied to both sides of a selection. 
 
         This will ignore items in the md_ignore variable and then deal with 
         special syntax individually before applying or removing the markdown 
         formatting.
         
-        - If string starts with anything in md_ignore do 
-        nothing and return from the function.
+        - If string starts with anything in md_ignore do nothing and return from
+        the function.
+        - If strikethrough is set to `True` then apply or remove the markdown.
         - If the formatting requires special items which can't go in md_ignore
         because they cause issues with markdown being applied incorrectly do 
         nothing and return from the function.
@@ -439,7 +440,8 @@ class TkintermdFrame(tk.Frame):
             md_ignore (tuple): Tuple of markdown strings to ignore.
             md_special (tuple): Tuple of special markdown strings to ignore that 
                 cause unexpected issues when included in md_ignore.
-            strikethrough (bool): Set to True for strikethrough.
+            strikethrough (bool): Set to True for strikethrough. Default is 
+                `None`.
         """
         self.md_syntax = md_syntax
         self.md_ignore = md_ignore
