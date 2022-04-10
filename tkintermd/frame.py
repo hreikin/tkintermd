@@ -40,7 +40,7 @@ class TkintermdFrame(tk.Frame):
     def __init__(self, master, **kwargs):
         tk.Frame.__init__(self, master) # no need for super
 
-        logger = log.create_logger()
+        self.logger = log.create_logger()
 
         # Toolbar.
         self.top_bar = tk.Frame(self.master)
@@ -121,7 +121,7 @@ class TkintermdFrame(tk.Frame):
                 # test them for compatability
                 self.load_style(style_name)
             except Exception as E:
-                logger.exception(f"WARNING: style {style_name} failed ({E}), removing from style menu.")
+                self.logger.exception(f"WARNING: style {style_name} failed ({E}), removing from style menu.")
                 continue # don't add them to the menu
             # add the rest to the menu
             self.style_menu.add_command(
@@ -133,7 +133,7 @@ class TkintermdFrame(tk.Frame):
 
         # Set Pygments syntax highlighting style.
         self.lexer = Lexer()
-        self.syntax_highlighting_tags = self.load_style("stata")
+        self.syntax_highlighting_tags = self.load_style("monokai")
         # Default markdown string.
         default_text = constants.default_md_string
         self.text_area.insert(0.0, default_text)
@@ -180,26 +180,26 @@ class TkintermdFrame(tk.Frame):
         """
         self.right_click.tk_popup(event.x_root, event.y_root)
 
-    def on_scrollbar(self, *args):
-        """Scrolls the text area scrollbar when clicked/dragged with a mouse.
+    # def on_scrollbar(self, *args):
+    #     """Scrolls the text area scrollbar when clicked/dragged with a mouse.
         
-        - Queries and changes the vertical position of the text area view.
-        """
-        self.text_area.yview(*args)
-        # # This links the scrollbars but is currently causing issues.
-        # self.preview_area.html.yview(*args)
+    #     - Queries and changes the vertical position of the text area view.
+    #     """
+    #     self.text_area.yview(*args)
+    #     # # This links the scrollbars but is currently causing issues.
+    #     # self.preview_area.html.yview(*args)
 
-    def on_mousewheel(self, *args):
-        """Moves the scrollbar and scrolls the text area on mousewheel event.
+    # def on_mousewheel(self, *args):
+    #     """Moves the scrollbar and scrolls the text area on mousewheel event.
         
-        - Sets the fractional values of the slider position (upper and lower 
-            ends as value between 0 and 1).
-        - Calls `on_scrollbar` function.
-        """
-        self.scrollbar.set(*args)
-        # # This links the scrollbars but is currently causing issues.
-        # self.preview_area.vsb.set(*args)
-        self.on_scrollbar('moveto', args[0])
+    #     - Sets the fractional values of the slider position (upper and lower 
+    #         ends as value between 0 and 1).
+    #     - Calls `on_scrollbar` function.
+    #     """
+    #     self.scrollbar.set(*args)
+    #     # # This links the scrollbars but is currently causing issues.
+    #     # self.preview_area.vsb.set(*args)
+    #     self.on_scrollbar('moveto', args[0])
 
     def select_all(self, *args):
         """Select all text within the editor window.
