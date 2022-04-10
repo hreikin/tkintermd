@@ -6,8 +6,8 @@ import logging
 
 def create_logger():
     logging.basicConfig(level=logging.DEBUG,
-                        format='[%(levelname)s][%(name)s][%(asctime)s]: %(message)s',
-                        datefmt='%d-%m-%y-%H:%M:%S',
+                        format='[%(levelname)s][tkintermd][%(asctime)s]: %(message)s',
+                        datefmt='%H:%M:%S',
                         filename='debug.log',
                         filemode='a')
 
@@ -16,7 +16,7 @@ def create_logger():
     console.setLevel(logging.WARNING)
 
     # Set a format which is simpler for console messages.
-    formatter = logging.Formatter('[%(levelname)s][%(asctime)s]: %(message)s', datefmt='%H:%M:%S')
+    formatter = logging.Formatter('[%(levelname)s][tkintermd]: %(message)s', datefmt='%H:%M:%S')
 
     # Tell the console "handler" to use this format.
     console.setFormatter(formatter)
