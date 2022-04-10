@@ -9,8 +9,6 @@ from tkinter.constants import *
 from tkinterweb import HtmlFrame, Notebook
 from tkinterweb.utilities import ScrolledTextBox
 
-from sys import stderr
-from traceback import print_exc
 from markdown import Markdown
 from pygments import lex
 from pygments.lexers.markup import MarkdownLexer
