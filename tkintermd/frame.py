@@ -420,7 +420,7 @@ class TkintermdFrame(tk.Frame):
         return
 
     def check_markdown_both_sides(self, md_syntax, md_ignore, md_special, strikethrough=None):
-        """Specific checks for bold, italic and bold-italic markdown syntax. 
+        """Check markdown formatting to be applied to both sides. 
 
         This will ignore items in the md_ignore variable and then deal with 
         special syntax individually before applying or removing the markdown 
@@ -439,6 +439,7 @@ class TkintermdFrame(tk.Frame):
             md_ignore (tuple): Tuple of markdown strings to ignore.
             md_special (tuple): Tuple of special markdown strings to ignore that 
                 cause unexpected issues when included in md_ignore.
+            strikethrough (bool): Set to True for strikethrough.
         """
         self.md_syntax = md_syntax
         self.md_ignore = md_ignore
