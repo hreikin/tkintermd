@@ -7,6 +7,7 @@ from tkinter import filedialog, simpledialog
 from tkinter import messagebox as mbox
 from tkinter.constants import *
 from tkinterweb import HtmlFrame, Notebook
+from tkinterweb.utilities import ScrolledTextBox
 
 from sys import stderr
 from traceback import print_exc
@@ -99,17 +100,16 @@ class TkintermdFrame(tk.Frame):
 
         # Creating the widgets
         self.editor_pw = tk.PanedWindow(self.master, orient="horizontal")
-        self.editor_frame = tk.Frame(self.editor_pw)
-        self.text_area = tk.Text(self.editor_frame, state="normal", wrap="none", pady=2, padx=3, undo=True, width=100, height=25, yscrollcommand=self.on_mousewheel)
-        self.text_area.pack(side="left", fill="both", expand=1)
-        self.scrollbar = tk.Scrollbar(self.editor_frame, command=self.on_scrollbar)
-        self.scrollbar.pack(side="left", fill="y")
+        self.editor_frame = ScrolledTextBox(self.editor_pw)
+        self.text_area = self.editor_frame.tbox
         self.preview_tabs = Notebook(self.editor_pw)
         #make the previews
         self.preview_area = HtmlFrame(self.preview_tabs)
-        self.preview_html = tk.Text(self.preview_tabs)
+        
+        self.preview_html_frame = ScrolledTextBox(self.preview_tabs)
+        self.preview_html = self.preview_html_frame.tbox
         self.preview_tabs.add(self.preview_area, text="Preview Format")
-        self.preview_tabs.add(self.preview_html, text="Preview HTML code")
+        self.preview_tabs.add(self.preview_html_frame, text="Preview HTML code")
         #add the areas to the paned window
         self.editor_pw.add(self.editor_frame)
         self.editor_pw.add(self.preview_tabs)
