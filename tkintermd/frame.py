@@ -10,6 +10,7 @@ from tkinterweb import HtmlFrame, Notebook
 from tkinterweb.utilities import ScrolledTextBox
 
 from markdown import Markdown
+from markdownify import markdownify
 from pygments import lex
 from pygments.lexers.markup import MarkdownLexer
 from pygments.token import Generic
@@ -505,7 +506,10 @@ class TkintermdFrame(tk.Frame):
         self.text_area.edit_modified(0) # resets the text widget to generate another event when another change occours
 
     def html_to_md(self):
-        pass
+        html_text = self.text_area.get("1.0", END)
+        html2md = markdownify(html_text, heading_style="ATX")
+        self.text_area.delete("1.0" , END)
+        self.text_area.insert(END, html2md)
             
 
 
