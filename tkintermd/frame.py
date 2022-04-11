@@ -502,7 +502,7 @@ class TkintermdFrame(tk.Frame):
         html = md2html.convert(markdownText)
         self.text_area.delete("1.0" , END)
         self.text_area.insert(END, html)
-        self.focus_get().event_generate("<<Modified>>")
+        self.text_area.focus_get().event_generate("<<Modified>>")
 
     def convert_editor_to_md(self):
         """Converts editor content to markdown."""
@@ -510,7 +510,7 @@ class TkintermdFrame(tk.Frame):
         html2md = markdownify(html_text, heading_style="ATX")
         self.text_area.delete("1.0" , END)
         self.text_area.insert(END, html2md)
-        self.focus_get().event_generate("<<Modified>>")
+        self.text_area.focus_get().event_generate("<<Modified>>")
 
 class Lexer(MarkdownLexer):
     """Extend MarkdownLexer to add markup for bold-italic. 
