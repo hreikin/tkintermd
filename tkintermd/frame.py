@@ -93,6 +93,14 @@ class TkintermdFrame(tk.Frame):
         
         self.style_opt_btn = tk.Menubutton(self.top_bar, text="Editor Style", relief="raised")
         self.style_opt_btn.pack(side="left", padx=0, pady=0)
+
+        # Create editor type menu button and items.
+        self.edit_type_opt_btn = tk.Menubutton(self.top_bar, text="Editor Type", relief="raised")
+        self.edit_type_menu = tk.Menu(self.edit_type_opt_btn, tearoff=False)
+        self.edit_type_menu.add_command(label="HTML", command=lambda: self.change_editor_type())
+        self.edit_type_menu.add_command(label="Markdown", command=lambda: self.change_editor_type())
+        self.edit_type_opt_btn["menu"] = self.edit_type_menu
+        self.edit_type_opt_btn.pack(side="left", padx=0, pady=0)
         
         self.top_bar.pack(side="top", fill="x")
 
@@ -467,6 +475,9 @@ class TkintermdFrame(tk.Frame):
             self.remove_markdown_both_sides(self.cur_selection, self.md_syntax)
         else:
             self.apply_markdown_both_sides(self.cur_selection, self.md_syntax)
+
+    def change_editor_type(self):
+        pass
 
 
 class Lexer(MarkdownLexer):
