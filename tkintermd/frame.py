@@ -343,7 +343,7 @@ class TkintermdFrame(tk.Frame):
         - Check the markdown and apply formatting to the text area
         - Reset the modified flag
         """
-        md2html = Markdown()
+        md2html = Markdown(extensions=constants.extensions, extension_configs=constants.extension_configs)
         markdownText = self.text_area.get("1.0", END)
         html = md2html.convert(markdownText)
         self.preview_html.delete("1.0" , END)
@@ -495,7 +495,7 @@ class TkintermdFrame(tk.Frame):
 
     def convert_editor_to_html(self):
         """Converts editor content to HTML."""
-        md2html = Markdown()
+        md2html = Markdown(extensions=constants.extensions, extension_configs=constants.extension_configs)
         markdownText = self.text_area.get("1.0", END)
         html = md2html.convert(markdownText)
         self.text_area.delete("1.0" , END)
