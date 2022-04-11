@@ -42,72 +42,79 @@ class TkintermdFrame(tk.Frame):
 
         self.log = logger.create_logger()
 
-        # Toolbar.
-        self.top_bar = tk.Frame(self.master)
-        self.open_btn = tk.Button(self.top_bar, text="Open", command=self.open_md_file)
-        self.open_btn.pack(side="left", padx=0, pady=0)
-        self.save_as_btn = tk.Button(self.top_bar, text="Save As", command=self.save_as_md_file)
-        self.save_as_btn.pack(side="left", padx=0, pady=0)
-        self.save_btn = tk.Button(self.top_bar, text="Save", command=self.save_md_file)
-        self.save_btn.pack(side="left", padx=0, pady=0)
-        self.export_as_btn = tk.Button(self.top_bar, text="Export HTML", command=self.save_as_html_file)
-        self.export_as_btn.pack(side="left", padx=0, pady=0)
-        self.undo_btn = tk.Button(self.top_bar, text="Undo", command=lambda: self.text_area.event_generate("<<Undo>>"))
-        self.undo_btn.pack(side="left", padx=0, pady=0)
-        self.redo_btn = tk.Button(self.top_bar, text="Redo", command=lambda: self.text_area.event_generate("<<Redo>>"))
-        self.redo_btn.pack(side="left", padx=0, pady=0)
-        self.cut_btn = tk.Button(self.top_bar, text="Cut", command=lambda: self.text_area.event_generate("<<Cut>>"))
-        self.cut_btn.pack(side="left", padx=0, pady=0)
-        self.copy_btn = tk.Button(self.top_bar, text="Copy", command=lambda: self.text_area.event_generate("<<Copy>>"))
-        self.copy_btn.pack(side="left", padx=0, pady=0)
-        self.paste_btn = tk.Button(self.top_bar, text="Paste", command=lambda: self.text_area.event_generate("<<Paste>>"))
-        self.paste_btn.pack(side="left", padx=0, pady=0)
-        self.find_btn = tk.Button(self.top_bar, text="Find", command=self.find)
-        self.find_btn.pack(side="left", padx=0, pady=0)
-        self.bold_btn = tk.Button(self.top_bar, text="Bold", command=lambda: self.check_markdown_both_sides(constants.bold_md_syntax, constants.bold_md_ignore, constants.bold_md_special))
-        self.bold_btn.pack(side="left", padx=0, pady=0)
-        self.italic_btn = tk.Button(self.top_bar, text="Italic", command=lambda: self.check_markdown_both_sides(constants.italic_md_syntax, constants.italic_md_ignore, constants.italic_md_special))
-        self.italic_btn.pack(side="left", padx=0, pady=0)
-        self.bold_italic_btn = tk.Button(self.top_bar, text="Bold Italic", command=lambda: self.check_markdown_both_sides(constants.bold_italic_md_syntax, constants.bold_italic_md_ignore, constants.bold_italic_md_special))
-        self.bold_italic_btn.pack(side="left", padx=0, pady=0)
-        self.strikethrough_btn = tk.Button(self.top_bar, text="Strikethrough", command=lambda: self.check_markdown_both_sides(constants.strikethrough_md_syntax, constants.strikethrough_md_ignore, md_special=None, strikethrough=True))
-        self.strikethrough_btn.pack(side="left", padx=0, pady=0)
-        # self.heading_btn = tk.Button(self.top_bar, text="Heading")
-        # self.heading_btn.pack(side="left", padx=0, pady=0)
-        # self.unordered_list_btn = tk.Button(self.top_bar, text="Unordered List")
-        # self.unordered_list_btn.pack(side="left", padx=0, pady=0)
-        # self.ordered_list_btn = tk.Button(self.top_bar, text="Ordered List")
-        # self.ordered_list_btn.pack(side="left", padx=0, pady=0)
-        # self.checklist_btn = tk.Button(self.top_bar, text="Checklist")
-        # self.checklist_btn.pack(side="left", padx=0, pady=0)
-        # self.blockquote_btn = tk.Button(self.top_bar, text="Blockquote")
-        # self.blockquote_btn.pack(side="left", padx=0, pady=0)
-        # self.codeblock_btn = tk.Button(self.top_bar, text="Codeblock")
-        # self.codeblock_btn.pack(side="left", padx=0, pady=0)
-        # self.table_btn = tk.Button(self.top_bar, text="Table")
-        # self.table_btn.pack(side="left", padx=0, pady=0)
-        # self.link_btn = tk.Button(self.top_bar, text="Link")
-        # self.link_btn.pack(side="left", padx=0, pady=0)
-        # self.image_btn = tk.Button(self.top_bar, text="Image")
-        # self.image_btn.pack(side="left", padx=0, pady=0)
-        
-        self.style_opt_btn = tk.Menubutton(self.top_bar, text="Editor Style", relief="raised")
-        self.style_opt_btn.pack(side="left", padx=0, pady=0)
 
+        # Creating the widgets
+        self.editor_pw = tk.PanedWindow(self.master, orient="horizontal")
+        self.editor_frame = tk.Frame(self.editor_pw)
+
+        # Toolbar one.
+        self.bar_one = tk.Frame(self.editor_frame)
+        self.open_btn = tk.Button(self.bar_one, text="Open", command=self.open_md_file)
+        self.open_btn.pack(side="left", padx=0, pady=0)
+        self.save_as_btn = tk.Button(self.bar_one, text="Save As", command=self.save_as_md_file)
+        self.save_as_btn.pack(side="left", padx=0, pady=0)
+        self.save_btn = tk.Button(self.bar_one, text="Save", command=self.save_md_file)
+        self.save_btn.pack(side="left", padx=0, pady=0)
+        self.export_as_btn = tk.Button(self.bar_one, text="Export HTML", command=self.save_as_html_file)
+        self.export_as_btn.pack(side="left", padx=0, pady=0)
+        # Create editor style menu button. Items are created further down.
+        self.style_opt_btn = tk.Menubutton(self.bar_one, text="Editor Style", relief="raised")
+        self.style_opt_btn.pack(side="left", padx=0, pady=0)
         # Create editor type menu button and items.
-        self.edit_type_opt_btn = tk.Menubutton(self.top_bar, text="Editor Type", relief="raised")
+        self.edit_type_opt_btn = tk.Menubutton(self.bar_one, text="Editor Type", relief="raised")
         self.edit_type_menu = tk.Menu(self.edit_type_opt_btn, tearoff=False)
         self.edit_type_menu.add_command(label="HTML", command=lambda: self.change_editor_type())
         self.edit_type_menu.add_command(label="Markdown", command=lambda: self.change_editor_type())
         self.edit_type_opt_btn["menu"] = self.edit_type_menu
         self.edit_type_opt_btn.pack(side="left", padx=0, pady=0)
-        
-        self.top_bar.pack(side="top", fill="x")
+        self.bar_one.pack(side="top", fill="x")
 
-        # Creating the widgets
-        self.editor_pw = tk.PanedWindow(self.master, orient="horizontal")
-        self.editor_frame = ScrolledTextBox(self.editor_pw)
-        self.text_area = self.editor_frame.tbox
+        # Toolbar two.
+        self.bar_two = tk.Frame(self.editor_frame)
+        self.undo_btn = tk.Button(self.bar_two, text="Undo", command=lambda: self.text_area.event_generate("<<Undo>>"))
+        self.undo_btn.pack(side="left", padx=0, pady=0)
+        self.redo_btn = tk.Button(self.bar_two, text="Redo", command=lambda: self.text_area.event_generate("<<Redo>>"))
+        self.redo_btn.pack(side="left", padx=0, pady=0)
+        self.cut_btn = tk.Button(self.bar_two, text="Cut", command=lambda: self.text_area.event_generate("<<Cut>>"))
+        self.cut_btn.pack(side="left", padx=0, pady=0)
+        self.copy_btn = tk.Button(self.bar_two, text="Copy", command=lambda: self.text_area.event_generate("<<Copy>>"))
+        self.copy_btn.pack(side="left", padx=0, pady=0)
+        self.paste_btn = tk.Button(self.bar_two, text="Paste", command=lambda: self.text_area.event_generate("<<Paste>>"))
+        self.paste_btn.pack(side="left", padx=0, pady=0)
+        self.find_btn = tk.Button(self.bar_two, text="Find", command=self.find)
+        self.find_btn.pack(side="left", padx=0, pady=0)
+        self.bold_btn = tk.Button(self.bar_two, text="Bold", command=lambda: self.check_markdown_both_sides(constants.bold_md_syntax, constants.bold_md_ignore, constants.bold_md_special))
+        self.bold_btn.pack(side="left", padx=0, pady=0)
+        self.italic_btn = tk.Button(self.bar_two, text="Italic", command=lambda: self.check_markdown_both_sides(constants.italic_md_syntax, constants.italic_md_ignore, constants.italic_md_special))
+        self.italic_btn.pack(side="left", padx=0, pady=0)
+        self.bold_italic_btn = tk.Button(self.bar_two, text="Bold Italic", command=lambda: self.check_markdown_both_sides(constants.bold_italic_md_syntax, constants.bold_italic_md_ignore, constants.bold_italic_md_special))
+        self.bold_italic_btn.pack(side="left", padx=0, pady=0)
+        self.strikethrough_btn = tk.Button(self.bar_two, text="Strikethrough", command=lambda: self.check_markdown_both_sides(constants.strikethrough_md_syntax, constants.strikethrough_md_ignore, md_special=None, strikethrough=True))
+        self.strikethrough_btn.pack(side="left", padx=0, pady=0)
+        # self.heading_btn = tk.Button(self.bar_two, text="Heading")
+        # self.heading_btn.pack(side="left", padx=0, pady=0)
+        # self.unordered_list_btn = tk.Button(self.bar_two, text="Unordered List")
+        # self.unordered_list_btn.pack(side="left", padx=0, pady=0)
+        # self.ordered_list_btn = tk.Button(self.bar_two, text="Ordered List")
+        # self.ordered_list_btn.pack(side="left", padx=0, pady=0)
+        # self.checklist_btn = tk.Button(self.bar_two, text="Checklist")
+        # self.checklist_btn.pack(side="left", padx=0, pady=0)
+        # self.blockquote_btn = tk.Button(self.bar_two, text="Blockquote")
+        # self.blockquote_btn.pack(side="left", padx=0, pady=0)
+        # self.codeblock_btn = tk.Button(self.bar_two, text="Codeblock")
+        # self.codeblock_btn.pack(side="left", padx=0, pady=0)
+        # self.table_btn = tk.Button(self.bar_two, text="Table")
+        # self.table_btn.pack(side="left", padx=0, pady=0)
+        # self.link_btn = tk.Button(self.bar_two, text="Link")
+        # self.link_btn.pack(side="left", padx=0, pady=0)
+        # self.image_btn = tk.Button(self.bar_two, text="Image")
+        # self.image_btn.pack(side="left", padx=0, pady=0)
+        self.bar_two.pack(side="top", fill="x")
+        # Editor area.
+        self.editor_text = ScrolledTextBox(self.editor_frame)
+        self.text_area = self.editor_text.tbox
+        self.editor_text.pack(side="left", fill="both", expand=1)
+
         self.preview_tabs = Notebook(self.editor_pw)
         #make the previews
         self.preview_area = HtmlFrame(self.preview_tabs)
@@ -140,7 +147,7 @@ class TkintermdFrame(tk.Frame):
         self.style_opt_btn["menu"] = self.style_menu
 
         # Set Pygments syntax highlighting style.
-        self.lexer = Lexer()
+        self.md_lexer = Lexer()
         self.syntax_highlighting_tags = self.load_style("monokai")
         # Default markdown string.
         default_text = constants.default_md_string
@@ -398,7 +405,7 @@ class TkintermdFrame(tk.Frame):
         for t in self.syntax_highlighting_tags:
             self.text_area.tag_remove(t, start, "range_start +%ic" % len(self.data))
         # parse text
-        for token, content in lex(self.data, self.lexer):
+        for token, content in lex(self.data, self.md_lexer):
             self.text_area.mark_set("range_end", "range_start + %ic" % len(content))
             for t in token.split():
                 self.text_area.tag_add(str(t), "range_start", "range_end")
