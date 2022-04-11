@@ -486,6 +486,7 @@ class TkintermdFrame(tk.Frame):
             self.apply_markdown_both_sides(self.cur_selection, self.md_syntax)
 
     def change_editor_type(self, change_to=str):
+        """Changes editor content to and from markdown or HTML."""
         self.change_to = change_to
         if self.change_to == "html":
             self.md_to_html()
@@ -493,6 +494,7 @@ class TkintermdFrame(tk.Frame):
             self.html_to_md()
 
     def md_to_html(self):
+        """Converts editor content to HTML."""
         md2html = Markdown()
         markdownText = self.text_area.get("1.0", END)
         html = md2html.convert(markdownText)
@@ -506,6 +508,7 @@ class TkintermdFrame(tk.Frame):
         self.text_area.edit_modified(0) # resets the text widget to generate another event when another change occours
 
     def html_to_md(self):
+        """Converts editor content to markdown."""
         html_text = self.text_area.get("1.0", END)
         html2md = markdownify(html_text, heading_style="ATX")
         self.text_area.delete("1.0" , END)
