@@ -63,8 +63,9 @@ class TkintermdFrame(tk.Frame):
         # Create editor type menu button and items.
         self.edit_type_opt_btn = tk.Menubutton(self.bar_one, text="Editor Type", relief="raised")
         self.edit_type_menu = tk.Menu(self.edit_type_opt_btn, tearoff=False)
-        self.edit_type_menu.add_command(label="HTML", command=lambda: self.change_editor_type())
-        self.edit_type_menu.add_command(label="Markdown", command=lambda: self.change_editor_type())
+        self.edit_type_menu.add_command(label="HTML", command=lambda: self.change_editor_type(change_to="html"))
+        self.edit_type_menu.add_command(label="Markdown", command=lambda: self.change_editor_type(change_to="markdown"))
+        
         self.edit_type_opt_btn["menu"] = self.edit_type_menu
         self.edit_type_opt_btn.pack(side="left", padx=0, pady=0)
         self.bar_one.pack(side="top", fill="x")
@@ -483,8 +484,29 @@ class TkintermdFrame(tk.Frame):
         else:
             self.apply_markdown_both_sides(self.cur_selection, self.md_syntax)
 
-    def change_editor_type(self):
+    def change_editor_type(self, change_to=str):
+        self.change_to = change_to
+        if self.change_to == "html":
+            self.md_to_html()
+        if self.change_to == "markdown":
+            self.html_to_md()
+
+    def md_to_html(self):
+        md2html = Markdown()
+        markdownText = self.text_area.get("1.0", END)
+        html = md2html.convert(markdownText)
+        self.text_area.delete("1.0" , END)
+        self.text_area.insert(END, html)
+        self.preview_html.delete("1.0" , END)
+        self.preview_html.insert(END, html)
+        self.preview_area.load_html(html)
+        self.preview_area.add_css(self.css)
+        # self.check_markdown_highlighting(start="1.0", end=END)
+        self.text_area.edit_modified(0) # resets the text widget to generate another event when another change occours
+
+    def html_to_md(self):
         pass
+            
 
 
 class Lexer(MarkdownLexer):
