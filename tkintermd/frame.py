@@ -495,12 +495,14 @@ class TkintermdFrame(tk.Frame):
 
     def convert_editor_to_html(self):
         """Converts editor content to HTML."""
+        # This should be refactored so it can be called from on_input_change and
+        # allow us to remove duplicate code.
         md2html = Markdown(extensions=constants.extensions, extension_configs=constants.extension_configs)
         markdownText = self.text_area.get("1.0", END)
         html = md2html.convert(markdownText)
         self.text_area.delete("1.0" , END)
         self.text_area.insert(END, html)
-        self.text_area.edit_modified(0) # resets the text widget to generate another event when another change occours
+        self.focus_get().event_generate("<<Modified>>")
 
     def convert_editor_to_md(self):
         """Converts editor content to markdown."""
@@ -508,7 +510,7 @@ class TkintermdFrame(tk.Frame):
         html2md = markdownify(html_text, heading_style="ATX")
         self.text_area.delete("1.0" , END)
         self.text_area.insert(END, html2md)
-        self.text_area.edit_modified(0) # resets the text widget to generate another event when another change occours
+        self.focus_get().event_generate("<<Modified>>")
 
 class Lexer(MarkdownLexer):
     """Extend MarkdownLexer to add markup for bold-italic. 
