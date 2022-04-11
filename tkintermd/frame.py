@@ -1,5 +1,5 @@
 import tkintermd.constants as constants
-import tkintermd.log as log
+import tkintermd.log as logger
 
 from pathlib import Path
 import tkinter as tk
@@ -40,7 +40,7 @@ class TkintermdFrame(tk.Frame):
     def __init__(self, master, **kwargs):
         tk.Frame.__init__(self, master) # no need for super
 
-        self.logger = log.create_logger()
+        self.log = logger.create_logger()
 
         # Toolbar.
         self.top_bar = tk.Frame(self.master)
@@ -121,7 +121,7 @@ class TkintermdFrame(tk.Frame):
                 # test them for compatability
                 self.load_style(style_name)
             except Exception as E:
-                self.logger.exception(f"WARNING: style {style_name} failed ({E}), removing from style menu.")
+                self.log.exception(f"WARNING: style {style_name} failed ({E}), removing from style menu.")
                 continue # don't add them to the menu
             # add the rest to the menu
             self.style_menu.add_command(
@@ -344,6 +344,8 @@ class TkintermdFrame(tk.Frame):
         - Set the background and text colour CSS values to match the values of 
             the currently selected style.
         - Load the CSS into the HTML previeW area.
+
+        Original source: <https://stackoverflow.com/questions/65192363/markdown-text-highlighting-performance-issues-tkinter/65200005#65200005>
         """
         self.style = get_style_by_name(stylename)
         self.syntax_highlighting_tags = []
@@ -375,7 +377,10 @@ class TkintermdFrame(tk.Frame):
         return self.syntax_highlighting_tags    
 
     def check_markdown_highlighting(self, start='insert linestart', end='insert lineend'):
-        """Formats editor content using the Pygments style."""
+        """Formats editor content using the Pygments style.
+        
+        Original source: <https://stackoverflow.com/questions/65192363/markdown-text-highlighting-performance-issues-tkinter/65200005#65200005>
+        """
         self.data = self.text_area.get(start, end)
         while self.data and self.data[0] == '\n':
             start = self.text_area.index('%s+1c' % start)
