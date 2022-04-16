@@ -125,6 +125,8 @@ class TkintermdFrame(tk.Frame):
         self.template_combobox = Combobox(self.export_options_row_a, textvariable=self.template_combobox_value, values=constants.template_list)
         self.template_combobox.current(0)
         self.template_combobox.pack(side="left")
+        self.export_options_edit_btn = tk.Button(self.export_options_row_a, text="Edit Before Export", command=self.enable_edit)
+        self.export_options_edit_btn.pack(side="left", padx=0, pady=0)
         self.export_options_export_btn = tk.Button(self.export_options_row_a, text="Export HTML", command=self.save_as_html_file)
         self.export_options_export_btn.pack(side="left", padx=0, pady=0)
         self.export_options_row_a.pack(fill="both")
@@ -132,6 +134,7 @@ class TkintermdFrame(tk.Frame):
         # HTML code preview/edit before export with scrollbar and text area.
         self.export_options_text_area_frame = ScrolledTextBox(self.export_options_root_frame)
         self.export_options_text_area = self.export_options_text_area_frame.tbox
+        self.export_options_text_area.configure(state="disabled")
         self.export_options_text_area_frame.pack(fill="both", expand=1)
         # Add the rendered preview and export options to the Notebook tabs.
         self.preview_tabs.add(self.preview_document, text="Preview Document")
@@ -362,8 +365,11 @@ class TkintermdFrame(tk.Frame):
         markdownText = self.text_area.get("1.0", END)
         html = md2html.convert(markdownText)
         final = f"{self.template_top}\n{self.css}\n{self.template_middle}\n{html}\n{self.template_bottom}"
+        self.export_options_text_area.configure(state="normal")
         self.export_options_text_area.delete("1.0" , END)
         self.export_options_text_area.insert(END, final)
+        self.export_options_text_area.configure(state="disabled")
+        self.export_options_edit_btn.configure(state="normal")
         self.preview_document.load_html(final)
         # self.preview_document.add_css(self.css)
         self.check_markdown_highlighting(start="1.0", end=END)
@@ -398,11 +404,13 @@ class TkintermdFrame(tk.Frame):
         self.text_area.configure(bg=self.style.background_color or 'white',
                         fg=self.text_area.tag_cget("Token.Text", "foreground") or 'black',
                         selectbackground=self.style.highlight_color,
+                        insertbackground=self.text_area.tag_cget("Token.Text", "foreground") or 'black',
                         )
         self.text_area.tag_configure(str(Generic.StrongEmph), font=('Monospace', 10, 'bold', 'italic'))
         self.export_options_text_area.configure(bg=self.style.background_color or 'white',
                         fg=self.export_options_text_area.tag_cget("Token.Text", "foreground") or 'black',
                         selectbackground=self.style.highlight_color,
+                        insertbackground=self.text_area.tag_cget("Token.Text", "foreground") or 'black',
                         )
         # self.export_options_text_area.tag_configure(str(Generic.StrongEmph), font=('Monospace', 10, 'bold', 'italic'))
         self.syntax_highlighting_tags.append(str(Generic.StrongEmph))
@@ -416,6 +424,7 @@ class TkintermdFrame(tk.Frame):
             self.pygments
             )#used string%interpolation here because f'string' interpolation is too annoying with embeded { and }
         # self.preview_document.add_css(self.css)
+        self.text_area.event_generate("<<Modified>>")
         return self.syntax_highlighting_tags    
 
     def check_markdown_highlighting(self, start='insert linestart', end='insert lineend'):
@@ -515,7 +524,11 @@ class TkintermdFrame(tk.Frame):
                 self.template_middle = val[1]
                 self.template_bottom = val[2]
         self.text_area.event_generate("<<Modified>>")
-
+    
+    def enable_edit(self):
+        mbox.showwarning(title="Warning", message=constants.edit_warning)
+        self.export_options_text_area.configure(state="normal")
+        self.export_options_edit_btn.configure(state="disabled")
 
 class Lexer(MarkdownLexer):
     """Extend MarkdownLexer to add markup for bold-italic. 
