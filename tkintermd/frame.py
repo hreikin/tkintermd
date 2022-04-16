@@ -326,7 +326,7 @@ class TkintermdFrame(tk.Frame):
         - Check the markdown and apply formatting to the text area
         - Reset the modified flag
         """
-        md2html = Markdown()
+        md2html = Markdown(extensions=constants.extensions, extension_configs=constants.extension_configs)
         markdownText = self.text_area.get("1.0", END)
         html = md2html.convert(markdownText)
         self.preview_html.delete("1.0" , END)
