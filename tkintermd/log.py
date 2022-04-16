@@ -29,7 +29,7 @@ def create_logger():
 
 # Example Usage
 #
-#     import tkintermd.log as logg
+#     import tkintermd.log as logger
 #
 #     logger = log.create_logger()
 #     logger.debug("DEBUG")
