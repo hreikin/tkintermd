@@ -19,6 +19,7 @@ provided by `tkinterweb`.
 ### Built With
 
 - [Pygments](https://github.com/pygments/pygments)
+- [Pymdownx](https://facelessuser.github.io/pymdown-extensions/)
 - [Python](https://www.python.org/)
 - [Python Markdown](https://github.com/Python-Markdown/markdown)
 - [tkinter](https://docs.python.org/3/library/tkinter.html)
