@@ -123,6 +123,8 @@ class TkintermdFrame(tk.Frame):
         self.template_label.pack(side="left")
         self.template_combobox = Combobox(self.export_options_row_a, values=constants.template_list)
         self.template_combobox.pack(side="left")
+        self.export_options_export_btn = tk.Button(self.export_options_row_a, text="Export HTML", command=self.save_as_html_file)
+        self.export_options_export_btn.pack(side="left", padx=0, pady=0)
         self.export_options_row_a.pack(fill="both")
         self.export_options_frame.pack(fill="both")
         # HTML code preview/edit before export with scrollbar and text area.
