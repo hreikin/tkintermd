@@ -6,6 +6,7 @@ import tkinter as tk
 from tkinter import filedialog, simpledialog
 from tkinter import messagebox as mbox
 from tkinter.constants import *
+from tkinter.ttk import Combobox
 from tkinterweb import HtmlFrame, Notebook
 from tkinterweb.utilities import ScrolledTextBox
 
@@ -115,9 +116,15 @@ class TkintermdFrame(tk.Frame):
         self.export_options_root_frame = tk.Frame(self.preview_tabs)
         # Export options frame.
         self.export_options_frame = tk.Frame(self.export_options_root_frame)
-        self.export_options_placeholder = tk.Label(self.export_options_frame, text="Placeholder", justify="center")
-        self.export_options_placeholder.pack(fill="both", expand=1)
-        self.export_options_frame.pack(fill="both", expand=1)
+        # self.export_options_placeholder = tk.Label(self.export_options_frame, text="Placeholder", justify="center")
+        # self.export_options_placeholder.pack(fill="both", expand=1)
+        self.export_options_row_a = tk.Frame(self.export_options_frame)
+        self.template_label = tk.Label(self.export_options_row_a, text="Choose template:\t")
+        self.template_label.pack(side="left")
+        self.template_combobox = Combobox(self.export_options_row_a, values=constants.template_list)
+        self.template_combobox.pack(side="left")
+        self.export_options_row_a.pack(fill="both")
+        self.export_options_frame.pack(fill="both")
         # HTML code preview/edit before export with scrollbar and text area.
         self.export_options_text_area_frame = ScrolledTextBox(self.export_options_root_frame)
         self.export_options_text_area = self.export_options_text_area_frame.tbox
@@ -347,12 +354,13 @@ class TkintermdFrame(tk.Frame):
         markdownText = self.text_area.get("1.0", END)
         html = md2html.convert(markdownText)
         template_top = constants.default_template_top
+        template_middle = constants.default_template_middle
         template_bottom = constants.default_template_bottom
-        final = f"{template_top}\n{html}\n{template_bottom}"
+        final = f"{template_top}\n{self.css}\n{template_middle}\n{html}\n{template_bottom}"
         self.export_options_text_area.delete("1.0" , END)
         self.export_options_text_area.insert(END, final)
         self.preview_document.load_html(final)
-        self.preview_document.add_css(self.css)
+        # self.preview_document.add_css(self.css)
         self.check_markdown_highlighting(start="1.0", end=END)
         self.text_area.edit_modified(0) # resets the text widget to generate another event when another change occours
 
@@ -402,7 +410,7 @@ class TkintermdFrame(tk.Frame):
             self.style.background_color,
             self.pygments
             )#used string%interpolation here because f'string' interpolation is too annoying with embeded { and }
-        self.preview_document.add_css(self.css)
+        # self.preview_document.add_css(self.css)
         return self.syntax_highlighting_tags    
 
     def check_markdown_highlighting(self, start='insert linestart', end='insert lineend'):
