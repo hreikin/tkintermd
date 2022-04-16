@@ -288,3 +288,15 @@ centered_template_middle="""
 centered_template_bottom = """</Body>
 </Html>"""
 template_list = ["default", "centered"]
+template_dict = {
+    "default": [
+        default_template_top,
+        default_template_middle,
+        default_template_bottom,
+    ],
+    "centered": [
+        centered_template_top,
+        centered_template_middle,
+        centered_template_bottom,
+    ]
+}
