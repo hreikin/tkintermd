@@ -57,6 +57,7 @@ strikethrough_md_ignore = (
     "```", "`",
 )
 extensions = [
+    'markdown.extensions.codehilite',
     'markdown.extensions.tables',
     'pymdownx.magiclink',
     'pymdownx.betterem',
@@ -64,18 +65,22 @@ extensions = [
     'pymdownx.emoji',
     'pymdownx.tasklist',
     'pymdownx.superfences',
-    'pymdownx.saneheaders'
+    'pymdownx.saneheaders',
 ]
 extension_configs = {
+    "codehilite": {
+        "linenums": True,
+        "css_class": "highlight",
+    },
     "pymdownx.magiclink": {
         "repo_url_shortener": True,
         "repo_url_shorthand": True,
         "provider": "github",
         "user": "facelessuser",
-        "repo": "pymdown-extensions"
+        "repo": "pymdown-extensions",
     },
     "pymdownx.tilde": {
-        "subscript": False
+        "subscript": False,
     },
     "pymdownx.emoji": {
         "emoji_index": emoji.gemoji,
@@ -85,10 +90,10 @@ extension_configs = {
             "attributes": {
                 "align": "absmiddle",
                 "height": "20px",
-                "width": "20px"
+                "width": "20px",
             },
             "image_path": "https://assets-cdn.github.com/images/icons/emoji/unicode/",
-            "non_standard_image_path": "https://assets-cdn.github.com/images/icons/emoji/"
+            "non_standard_image_path": "https://assets-cdn.github.com/images/icons/emoji/",
         }
     }
 }
