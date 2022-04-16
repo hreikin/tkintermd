@@ -77,13 +77,13 @@ class TkintermdFrame(tk.Frame):
         self.paste_btn.pack(side="left", padx=0, pady=0)
         self.find_btn = tk.Button(self.editor_toolbar, text="Find", command=self.find)
         self.find_btn.pack(side="left", padx=0, pady=0)
-        self.bold_btn = tk.Button(self.editor_toolbar, text="Bold", command=lambda: self.check_markdown_both_sides(constants.bold_md_syntax, constants.bold_md_ignore, constants.bold_md_special))
+        self.bold_btn = tk.Button(self.editor_toolbar, text="Bold", command=lambda: self.check_markdown_both_sides(constants.BOLD_MD_SYNTAX, constants.BOLD_MD_IGNORE, constants.BOLD_MD_SPECIAL))
         self.bold_btn.pack(side="left", padx=0, pady=0)
-        self.italic_btn = tk.Button(self.editor_toolbar, text="Italic", command=lambda: self.check_markdown_both_sides(constants.italic_md_syntax, constants.italic_md_ignore, constants.italic_md_special))
+        self.italic_btn = tk.Button(self.editor_toolbar, text="Italic", command=lambda: self.check_markdown_both_sides(constants.ITALIC_MD_SYNTAX, constants.ITALIC_MD_IGNORE, constants.ITALIC_MD_SPECIAL))
         self.italic_btn.pack(side="left", padx=0, pady=0)
-        self.bold_italic_btn = tk.Button(self.editor_toolbar, text="Bold Italic", command=lambda: self.check_markdown_both_sides(constants.bold_italic_md_syntax, constants.bold_italic_md_ignore, constants.bold_italic_md_special))
+        self.bold_italic_btn = tk.Button(self.editor_toolbar, text="Bold Italic", command=lambda: self.check_markdown_both_sides(constants.BOLD_ITALIC_MD_SYNTAX, constants.BOLD_ITALIC_MD_IGNORE, constants.BOLD_ITALIC_MD_SPECIAL))
         self.bold_italic_btn.pack(side="left", padx=0, pady=0)
-        self.strikethrough_btn = tk.Button(self.editor_toolbar, text="Strikethrough", command=lambda: self.check_markdown_both_sides(constants.strikethrough_md_syntax, constants.strikethrough_md_ignore, md_special=None, strikethrough=True))
+        self.strikethrough_btn = tk.Button(self.editor_toolbar, text="Strikethrough", command=lambda: self.check_markdown_both_sides(constants.STRIKETHROUGH_MD_SYNTAX, constants.STRIKETHROUGH_MD_IGNORE, md_special=None, strikethrough=True))
         self.strikethrough_btn.pack(side="left", padx=0, pady=0)
         # self.heading_btn = tk.Button(self.editor_toolbar, text="Heading")
         # self.heading_btn.pack(side="left", padx=0, pady=0)
@@ -167,11 +167,11 @@ class TkintermdFrame(tk.Frame):
         self.syntax_highlighting_tags = self.load_style("stata")
         # self.syntax_highlighting_tags = self.load_style("material")
         # Default markdown string.
-        default_text = constants.default_md_string
+        default_text = constants.DEFAULT_MD_STRING
         self.text_area.insert(0.0, default_text)
-        self.template_top = constants.default_template_top
-        self.template_middle = constants.default_template_middle
-        self.template_bottom = constants.default_template_bottom
+        self.template_top = constants.DEFAULT_TEMPLATE_TOP
+        self.template_middle = constants.DEFAULT_TEMPLATE_MIDDLE
+        self.template_bottom = constants.DEFAULT_TEMPLATE_BOTTOM
         # Applies markdown formatting to default file.
         self.check_markdown_highlighting(start="1.0", end=END)
         self.text_area.focus_set()
@@ -364,7 +364,7 @@ class TkintermdFrame(tk.Frame):
         - Check the markdown and apply formatting to the text area.
         - Reset the modified flag.
         """
-        md2html = Markdown(extensions=constants.extensions, extension_configs=constants.extension_configs)
+        md2html = Markdown(extensions=constants.EXTENSIONS, extension_configs=constants.EXTENSION_CONFIGS)
         markdownText = self.text_area.get("1.0", END)
         html = md2html.convert(markdownText)
         final = f"{self.template_top}\n{self.css}\n{self.template_middle}\n{html}\n{self.template_bottom}"

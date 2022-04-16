@@ -2,72 +2,72 @@
 
 Args:
     cur_file (Path): Variable for tracking current open file.
-    bold_md_syntax (tuple): Markdown syntax for bold highlighting.
-    bold_md_ignore (tuple): Markdown syntax to ignore for bold highlighting.
-    bold_md_special (tuple): Markdown syntax to ignore for bold highlighting 
-        that requires special handling.
-    italic_md_syntax (tuple): Markdown syntax for italic highlighting.
-    italic_md_ignore (tuple): Markdown syntax to ignore for italic highlighting.
-    italic_md_special (tuple): Markdown syntax to ignore for italic highlighting 
-        that requires special handling.
-    bold_italic_md_syntax (tuple): Markdown syntax for bold-italic highlighting.
-    bold_italic_md_ignore (tuple): Markdown syntax to ignore for bold-italic 
-        highlighting.
-    bold_italic_md_special (tuple): Markdown syntax to ignore for bold-italic 
-        highlighting that requires special handling.
-    strikethrough_md_syntax (tuple): Markdown syntax for strikethrough 
-        highlighting.
-    strikethrough_md_ignore (tuple): Markdown syntax to ignore for strikethrough 
-        highlighting.
-    default_md_string (str): Default string to show in the editor when it loads.
-    default_template_top (str): Default template, top portion.
-    default_template_middle (str): Default template, middle portion.
-    default_template_bottom (str): Default template, bottom portion.
-    centered_template_top (str): Centered template, top portion.
-    centered_template_middle (str): Centered template, middle portion.
-    centered_template_bottom (str): Centered template, bottom portion.
+    edit_warning (str): Warning message displayed to user when enabling edit 
+        before export functionality.
     template_list (list): List of available template names.
     template_dict (dict): Dictionary containing lists of template values linked 
         with the appropriate name.
-    edit_warning (str): Warning message displayed to user when enabling edit 
-        before export functionality.
+    BOLD_MD_SYNTAX (tuple): Markdown syntax for bold highlighting.
+    BOLD_MD_IGNORE (tuple): Markdown syntax to ignore for bold highlighting.
+    BOLD_MD_SPECIAL (tuple): Markdown syntax to ignore for bold highlighting 
+        that requires special handling.
+    ITALIC_MD_SYNTAX (tuple): Markdown syntax for italic highlighting.
+    ITALIC_MD_IGNORE (tuple): Markdown syntax to ignore for italic highlighting.
+    ITALIC_MD_SPECIAL (tuple): Markdown syntax to ignore for italic highlighting 
+        that requires special handling.
+    BOLD_ITALIC_MD_SYNTAX (tuple): Markdown syntax for bold-italic highlighting.
+    BOLD_ITALIC_MD_IGNORE (tuple): Markdown syntax to ignore for bold-italic 
+        highlighting.
+    BOLD_ITALIC_MD_SPECIAL (tuple): Markdown syntax to ignore for bold-italic 
+        highlighting that requires special handling.
+    STRIKETHROUGH_MD_SYNTAX (tuple): Markdown syntax for strikethrough 
+        highlighting.
+    STRIKETHROUGH_MD_IGNORE (tuple): Markdown syntax to ignore for strikethrough 
+        highlighting.
+    DEFAULT_MD_STRING (str): Default string to show in the editor when it loads.
+    DEFAULT_TEMPLATE_TOP (str): Default template, top portion.
+    DEFAULT_TEMPLATE_MIDDLE (str): Default template, middle portion.
+    DEFAULT_TEMPLATE_BOTTOM (str): Default template, bottom portion.
+    CENTERED_TEMPLATE_TOP (str): Centered template, top portion.
+    CENTERED_TEMPLATE_MIDDLE (str): Centered template, middle portion.
+    CENTERED_TEMPLATE_BOTTOM (str): Centered template, bottom portion.
 """
 from pathlib import Path
 from pymdownx import emoji
 
 cur_file = Path()
-bold_md_syntax = ("**", "__")
-bold_md_ignore = (
+BOLD_MD_SYNTAX = ("**", "__")
+BOLD_MD_IGNORE = (
     "- ", "> ", "# ", "`", 
     "--", ">> ", "## ",
     "***", "___", "---", ">>> ", "### ", "```", "===",
     "####", "#####", "######",
 )
-bold_md_special = ("*","***", "_", "___")
-italic_md_syntax = ("*", "_")
-italic_md_ignore = (
+BOLD_MD_SPECIAL = ("*","***", "_", "___")
+ITALIC_MD_SYNTAX = ("*", "_")
+ITALIC_MD_IGNORE = (
     "- ", "> ", "# ", "`", 
     "**", "__", "--", ">> ", "## ",
     "***", "___", "---", ">>> ", "### ", "```", "===",
     "####", "#####", "######",
 )
-italic_md_special = ("**","***", "__", "___")
-bold_italic_md_syntax = ("***", "___")
-bold_italic_md_ignore = (
+ITALIC_MD_SPECIAL = ("**","***", "__", "___")
+BOLD_ITALIC_MD_SYNTAX = ("***", "___")
+BOLD_ITALIC_MD_IGNORE = (
     "- ", "> ", "# ", "`", 
     "--", ">> ", "## ",
     "---", ">>> ", "### ", "```", "===",
     "####", "#####", "######",
 )
-bold_italic_md_special = ("*","**", "_", "__")
-strikethrough_md_syntax = ("~~", "~~")
-strikethrough_md_ignore = (
+BOLD_ITALIC_MD_SPECIAL = ("*","**", "_", "__")
+STRIKETHROUGH_MD_SYNTAX = ("~~", "~~")
+STRIKETHROUGH_MD_IGNORE = (
     "#", "##", "###", "####",
     "#####", "######", "======",
     "------", "- ", "* ", "> ", ">> ",
     "```", "`",
 )
-extensions = [
+EXTENSIONS = [
     'markdown.extensions.codehilite',
     'markdown.extensions.tables',
     'pymdownx.magiclink',
@@ -78,7 +78,7 @@ extensions = [
     'pymdownx.superfences',
     'pymdownx.saneheaders',
 ]
-extension_configs = {
+EXTENSION_CONFIGS = {
     "codehilite": {
         "linenums": True,
         "css_class": "highlight",
@@ -108,7 +108,7 @@ extension_configs = {
         }
     }
 }
-default_md_string = """# Heading 1
+DEFAULT_MD_STRING = """# Heading 1
 ## Heading 2
 ### Heading 3
 #### Heading 4
@@ -255,7 +255,7 @@ ___Bold Italic___
 >  *do* **normally**.
 
 """
-default_template_top = """<!DOCTYPE html>
+DEFAULT_TEMPLATE_TOP = """<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -269,13 +269,13 @@ default_template_top = """<!DOCTYPE html>
         font-family: sans-serif;  
         align-items: center;
     }"""
-default_template_middle = """
+DEFAULT_TEMPLATE_MIDDLE = """
   </style>
 </head>
 <Body>"""
-default_template_bottom = """</Body>
+DEFAULT_TEMPLATE_BOTTOM = """</Body>
 </Html>"""
-centered_template_top = """<!DOCTYPE html>
+CENTERED_TEMPLATE_TOP = """<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -292,23 +292,23 @@ centered_template_top = """<!DOCTYPE html>
     h1, h2, h3, h4, h5, h6 {
         text-align: center;
     }"""
-centered_template_middle="""
+CENTERED_TEMPLATE_MIDDLE = """
   </style>
 </head>
 <Body>"""
-centered_template_bottom = """</Body>
+CENTERED_TEMPLATE_BOTTOM = """</Body>
 </Html>"""
 template_list = ["default", "centered"]
 template_dict = {
     "default": [
-        default_template_top,
-        default_template_middle,
-        default_template_bottom,
+        DEFAULT_TEMPLATE_TOP,
+        DEFAULT_TEMPLATE_MIDDLE,
+        DEFAULT_TEMPLATE_BOTTOM,
     ],
     "centered": [
-        centered_template_top,
-        centered_template_middle,
-        centered_template_bottom,
+        CENTERED_TEMPLATE_TOP,
+        CENTERED_TEMPLATE_MIDDLE,
+        CENTERED_TEMPLATE_BOTTOM,
     ]
 }
 edit_warning = """
