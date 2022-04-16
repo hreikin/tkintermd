@@ -22,6 +22,7 @@ Args:
     default_md_string (str): Default string to show in the editor when it loads.
 """
 from pathlib import Path
+from pymdownx import emoji
 
 cur_file = Path()
 bold_md_syntax = ("**", "__")
@@ -55,6 +56,42 @@ strikethrough_md_ignore = (
     "------", "- ", "* ", "> ", ">> ",
     "```", "`",
 )
+extensions = [
+    'markdown.extensions.tables',
+    'pymdownx.magiclink',
+    'pymdownx.betterem',
+    'pymdownx.tilde',
+    'pymdownx.emoji',
+    'pymdownx.tasklist',
+    'pymdownx.superfences',
+    'pymdownx.saneheaders'
+]
+extension_configs = {
+    "pymdownx.magiclink": {
+        "repo_url_shortener": True,
+        "repo_url_shorthand": True,
+        "provider": "github",
+        "user": "facelessuser",
+        "repo": "pymdown-extensions"
+    },
+    "pymdownx.tilde": {
+        "subscript": False
+    },
+    "pymdownx.emoji": {
+        "emoji_index": emoji.gemoji,
+        "emoji_generator": emoji.to_png,
+        "alt": "short",
+        "options": {
+            "attributes": {
+                "align": "absmiddle",
+                "height": "20px",
+                "width": "20px"
+            },
+            "image_path": "https://assets-cdn.github.com/images/icons/emoji/unicode/",
+            "non_standard_image_path": "https://assets-cdn.github.com/images/icons/emoji/"
+        }
+    }
+}
 default_md_string = """# Heading 1
 ## Heading 2
 ### Heading 3
@@ -62,19 +99,97 @@ default_md_string = """# Heading 1
 ##### Heading 5
 ###### Heading 6
 
-Here is an `inline` code block.
+Here is some normal text. Here is an `inline` code block. Here is some normal text.
+
+``` python
+
+# This is an untabbed, fenced code block with the language defined.
+# There is a space after the start tag before the language and after the end tag.
+def foo():
+    print("Bar")
+
+``` 
+
+Here is some text.
+
+``` 
+
+# This is an untabbed, fenced code block without the language defined.
+# There is a space after the start tag before the language and after the end tag.
+def foo():
+    print("Bar")
+
+``` 
+
+Here is some text.
+
+``` python
+	
+	# This is a tabbed, fenced code block with the language defined.
+    # There is a space after the start tag before the language and after the end tag.
+	def foo():
+	    print("Bar")
+	
+``` 
+
+Here is some text.
+
+``` 
+	
+	# This is a tabbed, fenced code block without the language defined.
+   	# There is a space after the start tag before the language and after the end tag.
+	def foo():
+	    print("Bar")
+	
+``` 
+
+Here is some normal text.
 
 ```python
-# This is a fenced code block with the language defined.
+
+# This is an untabbed, fenced code block with the language defined.
+# There is no space after the tags.
 def foo():
     print("Bar")
-```
 
 ```
-# This is a fenced code block without the language defined.
+
+Here is some text.
+
+```
+
+# This is an untabbed, fenced code block without the language defined.
+# There is no space after the tags.
 def foo():
     print("Bar")
+
 ```
+
+Here is some text.
+
+```python
+	
+	# This is a tabbed, fenced code block with the language defined.
+    # There is no space after the tags.
+	def foo():
+	    print("Bar")
+	
+```
+
+Here is some text.
+
+```
+	
+	# This is a tabbed, fenced code block without the language defined.
+    # There is no space after the tags.
+	def foo():
+	    print("Bar")
+	
+```
+
+Here is some normal text.   
+
+Here is some normal text.  
 
 Heading 1
 =========
