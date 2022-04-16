@@ -121,7 +121,9 @@ class TkintermdFrame(tk.Frame):
         self.export_options_row_a = tk.Frame(self.export_options_frame)
         self.template_label = tk.Label(self.export_options_row_a, text="Choose template:\t")
         self.template_label.pack(side="left")
-        self.template_combobox = Combobox(self.export_options_row_a, values=constants.template_list)
+        self.template_combobox_value = tk.StringVar()
+        self.template_combobox = Combobox(self.export_options_row_a, textvariable=self.template_combobox_value, values=constants.template_list,)
+        self.template_combobox.current(0)
         self.template_combobox.pack(side="left")
         self.export_options_export_btn = tk.Button(self.export_options_row_a, text="Export HTML", command=self.save_as_html_file)
         self.export_options_export_btn.pack(side="left", padx=0, pady=0)
@@ -163,12 +165,15 @@ class TkintermdFrame(tk.Frame):
         # Default markdown string.
         default_text = constants.default_md_string
         self.text_area.insert(0.0, default_text)
+        self.template_top = constants.default_template_top
+        self.template_middle = constants.default_template_middle
+        self.template_bottom = constants.default_template_bottom
         # Applies markdown formatting to default file.
         self.check_markdown_highlighting(start="1.0", end=END)
         self.text_area.focus_set()
 
         # Create right click menu layout for the editor.
-        self.right_click = tk.Menu(self.text_area)
+        self.right_click = tk.Menu(self.text_area, tearoff=False)
         self.right_click.add_command(label="Copy", command=lambda: self.focus_get().event_generate("<<Copy>>"), accelerator="Ctrl+C")
         self.right_click.add_command(label="Cut", command=lambda: self.focus_get().event_generate("<<Cut>>"), accelerator="Ctrl+X")
         self.right_click.add_command(label="Paste", command=lambda: self.focus_get().event_generate("<<Paste>>"), accelerator="Ctrl+V")
@@ -355,10 +360,7 @@ class TkintermdFrame(tk.Frame):
         md2html = Markdown(extensions=constants.extensions, extension_configs=constants.extension_configs)
         markdownText = self.text_area.get("1.0", END)
         html = md2html.convert(markdownText)
-        template_top = constants.default_template_top
-        template_middle = constants.default_template_middle
-        template_bottom = constants.default_template_bottom
-        final = f"{template_top}\n{self.css}\n{template_middle}\n{html}\n{template_bottom}"
+        final = f"{self.template_top}\n{self.css}\n{self.template_middle}\n{html}\n{self.template_bottom}"
         self.export_options_text_area.delete("1.0" , END)
         self.export_options_text_area.insert(END, final)
         self.preview_document.load_html(final)
