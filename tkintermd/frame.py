@@ -12,6 +12,7 @@ from tkinterweb.utilities import ScrolledTextBox
 from markdown import Markdown
 from pygments import lex
 from pygments.lexers.markup import MarkdownLexer
+from pygments.formatters.html import HtmlFormatter
 from pygments.token import Generic
 from pygments.lexer import bygroups
 from pygments.styles import get_style_by_name, get_all_styles
@@ -389,10 +390,15 @@ class TkintermdFrame(tk.Frame):
                         )
         # self.export_options_text_area.tag_configure(str(Generic.StrongEmph), font=('Monospace', 10, 'bold', 'italic'))
         self.syntax_highlighting_tags.append(str(Generic.StrongEmph))
-        self.css = 'body {background-color: %s; color: %s}' % (
-            self.style.background_color or 'white',
-            self.text_area.tag_cget("Token.Text", "foreground") or 'black',
-            )# used string%interpolation here because f'string' interpolation is too annoying with embeded { and }
+        self.formatter = HtmlFormatter()
+        self.pygments = self.formatter.get_style_defs(".highlight")
+        # Previous version.
+        self.css = 'body {background-color: %s; color: %s }\nbody .highlight{ background-color: %s; }\n%s' % (
+            self.style.background_color,
+            self.text_area.tag_cget("Token.Text", "foreground"),
+            self.style.background_color,
+            self.pygments
+            )#used string%interpolation here because f'string' interpolation is too annoying with embeded { and }
         self.preview_document.add_css(self.css)
         return self.syntax_highlighting_tags    
 
