@@ -20,6 +20,17 @@ Args:
     strikethrough_md_ignore (tuple): Markdown syntax to ignore for strikethrough 
         highlighting.
     default_md_string (str): Default string to show in the editor when it loads.
+    default_template_top (str): Default template, top portion.
+    default_template_middle (str): Default template, middle portion.
+    default_template_bottom (str): Default template, bottom portion.
+    centered_template_top (str): Centered template, top portion.
+    centered_template_middle (str): Centered template, middle portion.
+    centered_template_bottom (str): Centered template, bottom portion.
+    template_list (list(str)): List of available template names.
+    template_dict (dict(list)): Lists of template values linked with the 
+        appropriate name.
+    edit_warning (str): Warning message displayed to user when enabling edit 
+        before export functionality.
 """
 from pathlib import Path
 from pymdownx import emoji

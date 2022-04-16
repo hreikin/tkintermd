@@ -206,13 +206,13 @@ class TkintermdFrame(tk.Frame):
         
         Provides the following options:
         
-        - Cut
-        - Copy
-        - Paste
-        - Undo
-        - Redo
-        - Find
-        - Select All
+        - Cut.
+        - Copy.
+        - Paste.
+        - Undo.
+        - Redo.
+        - Find.
+        - Select All.
         """
         self.right_click.tk_popup(event.x_root, event.y_root)
 
@@ -356,11 +356,13 @@ class TkintermdFrame(tk.Frame):
         
         When the user types:
         
-        - Get the current text area contents 
-        - Convert the markdown formatted string to HTML
-        - Load the HTML string and apply CSS styling to the HTML frame.
-        - Check the markdown and apply formatting to the text area
-        - Reset the modified flag
+        - Get the current text area contents.
+        - Convert the markdown formatted string to HTML.
+        - Merge the converted markdown with the currently selected template.
+        - Load the merged HTML into the document preview.
+        - Update the HTML content/states within the export options edit area.
+        - Check the markdown and apply formatting to the text area.
+        - Reset the modified flag.
         """
         md2html = Markdown(extensions=constants.extensions, extension_configs=constants.extension_configs)
         markdownText = self.text_area.get("1.0", END)
@@ -381,9 +383,9 @@ class TkintermdFrame(tk.Frame):
         
         - Load and configure the text area and `tags` with the Pygments styles 
             and custom `Lexer` tags.
-        - Set the background and text colour CSS values to match the values of 
-            the currently selected style.
-        - Load the CSS into the HTML previeW area.
+        - Create the CSS styling to be merged with the HTML template
+        - Generate a `<<Modified>>` event to update the styles when a new style 
+            is chosen.
         """
         self.style = get_style_by_name(stylename)
         self.syntax_highlighting_tags = []
@@ -518,6 +520,12 @@ class TkintermdFrame(tk.Frame):
             self.apply_markdown_both_sides(self.cur_selection, self.md_syntax)
 
     def change_template(self, template_name):
+        """Change the currently selected template.
+        
+        Get the selected template name from the `StringVar` for the `Combobox` 
+        and compare it with the templates dictionary. If the name matches the 
+        key then set the relevant template values and update all the previews.
+        """
         template_name = self.template_combobox_value.get()
         for key, val in constants.template_dict.items():
             if template_name == key:
@@ -527,6 +535,10 @@ class TkintermdFrame(tk.Frame):
         self.text_area.event_generate("<<Modified>>")
     
     def enable_edit(self):
+        """Enable editing of HTML before export.
+        
+        Displays a warning to the user and enables HTML editing prior to export.
+        """
         mbox.showwarning(title="Warning", message=constants.edit_warning)
         self.export_options_text_area.configure(state="normal")
         self.export_options_edit_btn.configure(state="disabled")
