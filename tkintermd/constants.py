@@ -257,7 +257,8 @@ default_template_top = """<!DOCTYPE html>
         background-size: cover;  
         font-family: sans-serif;  
         align-items: center;
-    }
+    }"""
+default_template_middle = """
   </style>
 </head>
 <Body>"""
@@ -279,9 +280,11 @@ centered_template_top = """<!DOCTYPE html>
     }
     h1, h2, h3, h4, h5, h6 {
         text-align: center;
-    }
+    }"""
+centered_template_middle="""
   </style>
 </head>
 <Body>"""
 centered_template_bottom = """</Body>
 </Html>"""
+template_list = ["default", "centered"]
