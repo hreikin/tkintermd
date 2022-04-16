@@ -300,3 +300,11 @@ template_dict = {
         centered_template_bottom,
     ]
 }
+edit_warning = """
+Warning: Any edits made in the HTML code WILL NOT be reflected in the markdown \
+editor.
+        
+Additionally, any changes to the markdown editor will reset the HTML and disable \
+editing. Use this functionality just before exporting to make any required \
+adjustments to the HTML.
+"""
