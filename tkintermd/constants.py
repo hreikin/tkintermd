@@ -244,3 +244,44 @@ ___Bold Italic___
 >  *do* **normally**.
 
 """
+default_template_top = """<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>tkintermd - Default Template</title>
+  <style>
+    body {
+        padding: 30px;  
+        background-size: cover;  
+        font-family: sans-serif;  
+        align-items: center;
+    }
+  </style>
+</head>
+<Body>"""
+default_template_bottom = """</Body>
+</Html>"""
+centered_template_top = """<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>tkintermd - Default Template</title>
+  <style>
+    body {
+        padding: 30px;  
+        background-size: cover;  
+        font-family: sans-serif;  
+        align-items: center;
+    }
+    h1, h2, h3, h4, h5, h6 {
+        text-align: center;
+    }
+  </style>
+</head>
+<Body>"""
+centered_template_bottom = """</Body>
+</Html>"""
