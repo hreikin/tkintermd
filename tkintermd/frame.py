@@ -359,6 +359,7 @@ class TkintermdFrame(tk.Frame):
             kwargs['font'] = font
             kwargs['underline'] = opts['underline']
             self.text_area.tag_configure(str(token), **kwargs)
+            self.preview_html.tag_configure(str(token), **kwargs)
             self.syntax_highlighting_tags.append(str(token))
         # print(self.style.background_color or 'white', self.text_area.tag_cget("Token.Text", "foreground") or 'black', stylename)
         self.text_area.configure(bg=self.style.background_color or 'white',
@@ -366,6 +367,11 @@ class TkintermdFrame(tk.Frame):
                         selectbackground=self.style.highlight_color,
                         )
         self.text_area.tag_configure(str(Generic.StrongEmph), font=('Monospace', 10, 'bold', 'italic'))
+        self.preview_html.configure(bg=self.style.background_color or 'white',
+                        fg=self.preview_html.tag_cget("Token.Text", "foreground") or 'black',
+                        selectbackground=self.style.highlight_color,
+                        )
+        self.preview_html.tag_configure(str(Generic.StrongEmph), font=('Monospace', 10, 'bold', 'italic'))
         self.syntax_highlighting_tags.append(str(Generic.StrongEmph))
         self.css = 'body {background-color: %s; color: %s}' % (
             self.style.background_color or 'white',
