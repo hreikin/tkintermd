@@ -122,7 +122,7 @@ class TkintermdFrame(tk.Frame):
         self.template_label = tk.Label(self.export_options_row_a, text="Choose template:\t")
         self.template_label.pack(side="left")
         self.template_combobox_value = tk.StringVar()
-        self.template_combobox = Combobox(self.export_options_row_a, textvariable=self.template_combobox_value, values=constants.template_list,)
+        self.template_combobox = Combobox(self.export_options_row_a, textvariable=self.template_combobox_value, values=constants.template_list)
         self.template_combobox.current(0)
         self.template_combobox.pack(side="left")
         self.export_options_export_btn = tk.Button(self.export_options_row_a, text="Export HTML", command=self.save_as_html_file)
@@ -185,6 +185,7 @@ class TkintermdFrame(tk.Frame):
         self.right_click.add_command(label="Select All", command=self.select_all, accelerator="Ctrl+A")
 
         # Bind mouse/key events to functions.
+        self.template_combobox.bind("<<ComboboxSelected>>", self.change_template)
         self.text_area.bind("<<Modified>>", self.on_input_change)
         self.text_area.edit_modified(0)#resets the text widget to generate another event when another change occours
         
@@ -505,6 +506,15 @@ class TkintermdFrame(tk.Frame):
             self.remove_markdown_both_sides(self.cur_selection, self.md_syntax)
         else:
             self.apply_markdown_both_sides(self.cur_selection, self.md_syntax)
+
+    def change_template(self, template_name):
+        template_name = self.template_combobox_value.get()
+        for key, val in constants.template_dict.items():
+            if template_name == key:
+                self.template_top = val[0]
+                self.template_middle = val[1]
+                self.template_bottom = val[2]
+        self.text_area.event_generate("<<Modified>>")
 
 
 class Lexer(MarkdownLexer):
