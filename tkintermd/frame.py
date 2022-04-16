@@ -104,10 +104,16 @@ class TkintermdFrame(tk.Frame):
         #make the previews
         self.preview_document = HtmlFrame(self.preview_tabs)
         
-        self.export_options_frame = ScrolledTextBox(self.preview_tabs)
-        self.export_options = self.export_options_frame.tbox
+        self.export_options_root_frame = tk.Frame(self.preview_tabs)
+        self.export_options_frame = tk.Frame(self.export_options_root_frame)
+        self.export_options_placeholder = tk.Label(self.export_options_frame, text="Placeholder", justify="center")
+        self.export_options_placeholder.pack(fill="both", expand=1)
+        self.export_options_frame.pack(fill="both", expand=1)
+        self.export_options_text_area_frame = ScrolledTextBox(self.export_options_root_frame)
+        self.export_options_text_area = self.export_options_text_area_frame.tbox
+        self.export_options_text_area_frame.pack(fill="both", expand=1)
         self.preview_tabs.add(self.preview_document, text="Preview Document")
-        self.preview_tabs.add(self.export_options_frame, text="Export Options")
+        self.preview_tabs.add(self.export_options_root_frame, text="Export Options")
         #add the areas to the paned window
         self.editor_pw.add(self.editor_frame)
         self.editor_pw.add(self.preview_tabs)
@@ -305,7 +311,7 @@ class TkintermdFrame(tk.Frame):
         - If a filename is provided then `try` to open it in "write" mode.
         - If any of the above fails then display an error message.
         """
-        html_file_data = self.export_options.get("1.0" , END)
+        html_file_data = self.export_options_text_area.get("1.0" , END)
         self.html_save_filename = filedialog.asksaveasfilename(filetypes = (("HTML file", ("*.html", "*.htm")),) , title="Save HTML File")
         if self.html_save_filename:
             try:
@@ -329,8 +335,8 @@ class TkintermdFrame(tk.Frame):
         md2html = Markdown(extensions=constants.extensions, extension_configs=constants.extension_configs)
         markdownText = self.text_area.get("1.0", END)
         html = md2html.convert(markdownText)
-        self.export_options.delete("1.0" , END)
-        self.export_options.insert(END, html)
+        self.export_options_text_area.delete("1.0" , END)
+        self.export_options_text_area.insert(END, html)
         self.preview_document.load_html(html)
         self.preview_document.add_css(self.css)
         self.check_markdown_highlighting(start="1.0", end=END)
@@ -359,7 +365,7 @@ class TkintermdFrame(tk.Frame):
             kwargs['font'] = font
             kwargs['underline'] = opts['underline']
             self.text_area.tag_configure(str(token), **kwargs)
-            self.export_options.tag_configure(str(token), **kwargs)
+            self.export_options_text_area.tag_configure(str(token), **kwargs)
             self.syntax_highlighting_tags.append(str(token))
         # print(self.style.background_color or 'white', self.text_area.tag_cget("Token.Text", "foreground") or 'black', stylename)
         self.text_area.configure(bg=self.style.background_color or 'white',
@@ -367,11 +373,11 @@ class TkintermdFrame(tk.Frame):
                         selectbackground=self.style.highlight_color,
                         )
         self.text_area.tag_configure(str(Generic.StrongEmph), font=('Monospace', 10, 'bold', 'italic'))
-        self.export_options.configure(bg=self.style.background_color or 'white',
-                        fg=self.export_options.tag_cget("Token.Text", "foreground") or 'black',
+        self.export_options_text_area.configure(bg=self.style.background_color or 'white',
+                        fg=self.export_options_text_area.tag_cget("Token.Text", "foreground") or 'black',
                         selectbackground=self.style.highlight_color,
                         )
-        self.export_options.tag_configure(str(Generic.StrongEmph), font=('Monospace', 10, 'bold', 'italic'))
+        # self.export_options_text_area.tag_configure(str(Generic.StrongEmph), font=('Monospace', 10, 'bold', 'italic'))
         self.syntax_highlighting_tags.append(str(Generic.StrongEmph))
         self.css = 'body {background-color: %s; color: %s}' % (
             self.style.background_color or 'white',
