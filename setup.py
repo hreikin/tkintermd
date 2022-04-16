@@ -22,10 +22,13 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
     ],
     packages=["tkintermd"],
     include_package_data=True,
-    install_requires=["markdown", "pygments", "tkinterweb"],
+    install_requires=["markdown", "pygments", "pymdown-extensions", "tkinterweb"],
     entry_points={
         "console_scripts": [
             "tkintermd=tkintermd.__main__:main",
