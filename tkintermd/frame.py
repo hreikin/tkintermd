@@ -346,9 +346,12 @@ class TkintermdFrame(tk.Frame):
         md2html = Markdown(extensions=constants.extensions, extension_configs=constants.extension_configs)
         markdownText = self.text_area.get("1.0", END)
         html = md2html.convert(markdownText)
+        template_top = constants.default_template_top
+        template_bottom = constants.default_template_bottom
+        final = f"{template_top}\n{html}\n{template_bottom}"
         self.export_options_text_area.delete("1.0" , END)
-        self.export_options_text_area.insert(END, html)
-        self.preview_document.load_html(html)
+        self.export_options_text_area.insert(END, final)
+        self.preview_document.load_html(final)
         self.preview_document.add_css(self.css)
         self.check_markdown_highlighting(start="1.0", end=END)
         self.text_area.edit_modified(0) # resets the text widget to generate another event when another change occours
