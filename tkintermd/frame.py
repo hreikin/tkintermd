@@ -102,12 +102,12 @@ class TkintermdFrame(tk.Frame):
         self.text_area = self.editor_frame.tbox
         self.preview_tabs = Notebook(self.editor_pw)
         #make the previews
-        self.preview_area = HtmlFrame(self.preview_tabs)
+        self.preview_document = HtmlFrame(self.preview_tabs)
         
-        self.preview_html_frame = ScrolledTextBox(self.preview_tabs)
-        self.preview_html = self.preview_html_frame.tbox
-        self.preview_tabs.add(self.preview_area, text="Preview Format")
-        self.preview_tabs.add(self.preview_html_frame, text="Preview HTML code")
+        self.export_options_frame = ScrolledTextBox(self.preview_tabs)
+        self.export_options = self.export_options_frame.tbox
+        self.preview_tabs.add(self.preview_document, text="Preview Document")
+        self.preview_tabs.add(self.export_options_frame, text="Export Options")
         #add the areas to the paned window
         self.editor_pw.add(self.editor_frame)
         self.editor_pw.add(self.preview_tabs)
@@ -163,7 +163,7 @@ class TkintermdFrame(tk.Frame):
 
         # # This links the scrollbars but is currently causing issues. 
         # Changing the settings to make the scrolling work
-        # self.preview_area.html['yscrollcommand'] = self.on_mousewheel
+        # self.preview_document.html['yscrollcommand'] = self.on_mousewheel
 
     def popup(self, event):
         """Right-click popup at mouse location within the text area only.
@@ -187,7 +187,7 @@ class TkintermdFrame(tk.Frame):
     #     """
     #     self.text_area.yview(*args)
     #     # # This links the scrollbars but is currently causing issues.
-    #     # self.preview_area.html.yview(*args)
+    #     # self.preview_document.html.yview(*args)
 
     # def on_mousewheel(self, *args):
     #     """Moves the scrollbar and scrolls the text area on mousewheel event.
@@ -198,7 +198,7 @@ class TkintermdFrame(tk.Frame):
     #     """
     #     self.scrollbar.set(*args)
     #     # # This links the scrollbars but is currently causing issues.
-    #     # self.preview_area.vsb.set(*args)
+    #     # self.preview_document.vsb.set(*args)
     #     self.on_scrollbar('moveto', args[0])
 
     def select_all(self, *args):
@@ -305,7 +305,7 @@ class TkintermdFrame(tk.Frame):
         - If a filename is provided then `try` to open it in "write" mode.
         - If any of the above fails then display an error message.
         """
-        html_file_data = self.preview_html.get("1.0" , END)
+        html_file_data = self.export_options.get("1.0" , END)
         self.html_save_filename = filedialog.asksaveasfilename(filetypes = (("HTML file", ("*.html", "*.htm")),) , title="Save HTML File")
         if self.html_save_filename:
             try:
@@ -329,10 +329,10 @@ class TkintermdFrame(tk.Frame):
         md2html = Markdown(extensions=constants.extensions, extension_configs=constants.extension_configs)
         markdownText = self.text_area.get("1.0", END)
         html = md2html.convert(markdownText)
-        self.preview_html.delete("1.0" , END)
-        self.preview_html.insert(END, html)
-        self.preview_area.load_html(html)
-        self.preview_area.add_css(self.css)
+        self.export_options.delete("1.0" , END)
+        self.export_options.insert(END, html)
+        self.preview_document.load_html(html)
+        self.preview_document.add_css(self.css)
         self.check_markdown_highlighting(start="1.0", end=END)
         self.text_area.edit_modified(0) # resets the text widget to generate another event when another change occours
 
@@ -359,7 +359,7 @@ class TkintermdFrame(tk.Frame):
             kwargs['font'] = font
             kwargs['underline'] = opts['underline']
             self.text_area.tag_configure(str(token), **kwargs)
-            self.preview_html.tag_configure(str(token), **kwargs)
+            self.export_options.tag_configure(str(token), **kwargs)
             self.syntax_highlighting_tags.append(str(token))
         # print(self.style.background_color or 'white', self.text_area.tag_cget("Token.Text", "foreground") or 'black', stylename)
         self.text_area.configure(bg=self.style.background_color or 'white',
@@ -367,17 +367,17 @@ class TkintermdFrame(tk.Frame):
                         selectbackground=self.style.highlight_color,
                         )
         self.text_area.tag_configure(str(Generic.StrongEmph), font=('Monospace', 10, 'bold', 'italic'))
-        self.preview_html.configure(bg=self.style.background_color or 'white',
-                        fg=self.preview_html.tag_cget("Token.Text", "foreground") or 'black',
+        self.export_options.configure(bg=self.style.background_color or 'white',
+                        fg=self.export_options.tag_cget("Token.Text", "foreground") or 'black',
                         selectbackground=self.style.highlight_color,
                         )
-        self.preview_html.tag_configure(str(Generic.StrongEmph), font=('Monospace', 10, 'bold', 'italic'))
+        self.export_options.tag_configure(str(Generic.StrongEmph), font=('Monospace', 10, 'bold', 'italic'))
         self.syntax_highlighting_tags.append(str(Generic.StrongEmph))
         self.css = 'body {background-color: %s; color: %s}' % (
             self.style.background_color or 'white',
             self.text_area.tag_cget("Token.Text", "foreground") or 'black',
             )# used string%interpolation here because f'string' interpolation is too annoying with embeded { and }
-        self.preview_area.add_css(self.css)
+        self.preview_document.add_css(self.css)
         return self.syntax_highlighting_tags    
 
     def check_markdown_highlighting(self, start='insert linestart', end='insert lineend'):
