@@ -165,7 +165,7 @@ class TkintermdFrame(tk.Frame):
         # Set Pygments syntax highlighting style.
         self.lexer = Lexer()
         self.syntax_highlighting_tags = self.load_style("stata")
-        self.syntax_highlighting_tags = self.load_style("material")
+        # self.syntax_highlighting_tags = self.load_style("material")
         # Default markdown string.
         default_text = constants.default_md_string
         self.text_area.insert(0.0, default_text)
