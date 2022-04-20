@@ -35,6 +35,7 @@ Args:
 from pathlib import Path
 from pymdownx import emoji
 
+input_type = "markdown"
 cur_file = Path()
 BOLD_MD_SYNTAX = ("**", "__")
 BOLD_MD_IGNORE = (

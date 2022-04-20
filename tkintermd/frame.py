@@ -11,6 +11,7 @@ from tkinterweb import HtmlFrame, Notebook
 from tkinterweb.utilities import ScrolledTextBox
 
 from markdown import Markdown
+from markdownify import markdownify
 from pygments import lex
 from pygments.lexers.markup import MarkdownLexer
 from pygments.formatters.html import HtmlFormatter
@@ -105,13 +106,6 @@ class TkintermdFrame(tk.Frame):
         self.text_area = self.editor_frame.tbox
         self.editor_frame.pack(fill="both", expand=1)
 
-        self.html_text_area_frame = ScrolledTextBox(self.editor_root_frame)
-        self.html_text_area = self.html_text_area_frame.tbox
-        # self.html_text_area.configure(state="disabled")
-        self.html_text_area_frame.pack(fill="both", expand=1)
-        self.html_text_area_frame.pack_forget()
-
-
         # Preview area
         self.preview_area_root_frame = tk.Frame(self.editor_pw)
         self.preview_area_toolbar = tk.Frame(self.preview_area_root_frame)
@@ -121,7 +115,7 @@ class TkintermdFrame(tk.Frame):
         self.template_combobox = Combobox(self.preview_area_toolbar, textvariable=self.template_combobox_value, values=constants.template_list)
         self.template_combobox.current(0)
         self.template_combobox.pack(side="left")
-        self.export_options_edit_btn = tk.Button(self.preview_area_toolbar, text="Edit Before Export", command=self.enable_edit)
+        self.export_options_edit_btn = tk.Button(self.preview_area_toolbar, text="Editor Mode", command=self.convert_editor_content)
         self.export_options_edit_btn.pack(side="left", padx=0, pady=0)
         self.export_options_export_btn = tk.Button(self.preview_area_toolbar, text="Export HTML", command=self.save_as_html_file)
         self.export_options_export_btn.pack(side="left", padx=0, pady=0)
@@ -130,53 +124,10 @@ class TkintermdFrame(tk.Frame):
         self.preview_document = HtmlFrame(self.preview_area_root_frame)
         self.preview_document.pack(fill="both", expand=1)
 
-
-
-
-
-
-
-
-        # Tabs for the preview and export options.
-        # self.preview_tabs = Notebook(self.editor_pw)
-        # HTML rendered preview.
-        # self.preview_document = HtmlFrame(self.preview_tabs)
-        # Root frame for export options.
-        # self.export_options_root_frame = tk.Frame(self.preview_tabs)
-        # Export options frame.
-        # self.export_options_frame = tk.Frame(self.export_options_root_frame)
-        # self.export_options_placeholder = tk.Label(self.export_options_frame, text="Placeholder", justify="center")
-        # self.export_options_placeholder.pack(fill="both", expand=1)
-        # self.export_options_row_a = tk.Frame(self.export_options_frame)
-        # self.template_label = tk.Label(self.export_options_row_a, text="Choose template:\t")
-        # self.template_label.pack(side="left")
-        # self.template_combobox_value = tk.StringVar()
-        # self.template_combobox = Combobox(self.export_options_row_a, textvariable=self.template_combobox_value, values=constants.template_list)
-        # self.template_combobox.current(0)
-        # self.template_combobox.pack(side="left")
-        # self.export_options_edit_btn = tk.Button(self.export_options_row_a, text="Edit Before Export", command=self.enable_edit)
-        # self.export_options_edit_btn.pack(side="left", padx=0, pady=0)
-        # self.export_options_export_btn = tk.Button(self.export_options_row_a, text="Export HTML", command=self.save_as_html_file)
-        # self.export_options_export_btn.pack(side="left", padx=0, pady=0)
-        # self.export_options_row_a.pack(fill="both")
-        # self.export_options_frame.pack(fill="both")
-        # HTML code preview/edit before export with scrollbar and text area.
-        # self.export_options_text_area_frame = ScrolledTextBox(self.export_options_root_frame)
-        # self.export_options_text_area = self.export_options_text_area_frame.tbox
-        # self.export_options_text_area.configure(state="disabled")
-        # self.export_options_text_area_frame.pack(fill="both", expand=1)
-        # Add the rendered preview and export options to the Notebook tabs.
-        # self.preview_tabs.add(self.preview_document, text="Preview Document")
-        # self.preview_tabs.add(self.export_options_root_frame, text="Export Options")
         # Add the editor and preview/export areas to the paned window.
         self.editor_pw.add(self.editor_root_frame)
         self.editor_pw.add(self.preview_area_root_frame)
         self.editor_pw.pack(side="left", fill="both", expand=1)
-
-
-
-
-
 
         # Load the self.style_opt_btn menu, this needs to be after the editor.
         self.style_menu = tk.Menu(self.style_opt_btn, tearoff=False)
@@ -231,9 +182,6 @@ class TkintermdFrame(tk.Frame):
         self.text_area.bind_all("<Control-a>", self.select_all)
         self.text_area.bind("<Button-3>", self.popup)
 
-        # # This links the scrollbars but is currently causing issues. 
-        # Changing the settings to make the scrolling work
-        # self.preview_document.html['yscrollcommand'] = self.on_mousewheel
 
     def popup(self, event):
         """Right-click popup at mouse location within the text area only.
@@ -249,27 +197,6 @@ class TkintermdFrame(tk.Frame):
         - Select All.
         """
         self.right_click.tk_popup(event.x_root, event.y_root)
-
-    # def on_scrollbar(self, *args):
-    #     """Scrolls the text area scrollbar when clicked/dragged with a mouse.
-        
-    #     - Queries and changes the vertical position of the text area view.
-    #     """
-    #     self.text_area.yview(*args)
-    #     # # This links the scrollbars but is currently causing issues.
-    #     # self.preview_document.html.yview(*args)
-
-    # def on_mousewheel(self, *args):
-    #     """Moves the scrollbar and scrolls the text area on mousewheel event.
-        
-    #     - Sets the fractional values of the slider position (upper and lower 
-    #         ends as value between 0 and 1).
-    #     - Calls `on_scrollbar` function.
-    #     """
-    #     self.scrollbar.set(*args)
-    #     # # This links the scrollbars but is currently causing issues.
-    #     # self.preview_document.vsb.set(*args)
-    #     self.on_scrollbar('moveto', args[0])
 
     def select_all(self, *args):
         """Select all text within the editor window.
@@ -398,17 +325,13 @@ class TkintermdFrame(tk.Frame):
         - Check the markdown and apply formatting to the text area.
         - Reset the modified flag.
         """
-        md2html = Markdown(extensions=constants.EXTENSIONS, extension_configs=constants.EXTENSION_CONFIGS)
-        markdownText = self.text_area.get("1.0", END)
-        html = md2html.convert(markdownText)
-        final = f"{self.template_top}\n{self.css}\n{self.template_middle}\n{html}\n{self.template_bottom}"
-        # self.export_options_text_area.configure(state="normal")
-        self.html_text_area.delete("1.0" , END)
-        self.html_text_area.insert(END, final)
-        # self.export_options_text_area.configure(state="disabled")
-        # self.export_options_edit_btn.configure(state="normal")
-        self.preview_document.load_html(final)
-        # self.preview_document.add_css(self.css)
+        if constants.input_type == "markdown":
+            self.html = self.md_to_html()
+            # self.final = f"{self.template_top}\n{self.css}\n{self.template_middle}\n{self.html}\n{self.template_bottom}"
+        if constants.input_type == "html":
+            self.html = self.text_area.get("1.0", END)
+        self.preview_document.load_html(self.html)
+        self.preview_document.add_css(self.css)
         self.check_markdown_highlighting(start="1.0", end=END)
         self.text_area.edit_modified(0) # resets the text widget to generate another event when another change occours
 
@@ -435,7 +358,6 @@ class TkintermdFrame(tk.Frame):
             kwargs['font'] = font
             kwargs['underline'] = opts['underline']
             self.text_area.tag_configure(str(token), **kwargs)
-            # self.export_options_text_area.tag_configure(str(token), **kwargs)
             self.syntax_highlighting_tags.append(str(token))
         # print(self.style.background_color or 'white', self.text_area.tag_cget("Token.Text", "foreground") or 'black', stylename)
         self.text_area.configure(bg=self.style.background_color or 'white',
@@ -444,12 +366,6 @@ class TkintermdFrame(tk.Frame):
                         insertbackground=self.text_area.tag_cget("Token.Text", "foreground") or 'black',
                         )
         self.text_area.tag_configure(str(Generic.StrongEmph), font=('Monospace', 10, 'bold', 'italic'))
-        # self.export_options_text_area.configure(bg=self.style.background_color or 'white',
-        #                 fg=self.export_options_text_area.tag_cget("Token.Text", "foreground") or 'black',
-        #                 selectbackground=self.style.highlight_color,
-        #                 insertbackground=self.text_area.tag_cget("Token.Text", "foreground") or 'black',
-        #                 )
-        # self.export_options_text_area.tag_configure(str(Generic.StrongEmph), font=('Monospace', 10, 'bold', 'italic'))
         self.syntax_highlighting_tags.append(str(Generic.StrongEmph))
         self.formatter = HtmlFormatter()
         self.pygments = self.formatter.get_style_defs(".highlight")
@@ -460,7 +376,7 @@ class TkintermdFrame(tk.Frame):
             self.style.background_color,
             self.pygments
             )#used string%interpolation here because f'string' interpolation is too annoying with embeded { and }
-        # self.preview_document.add_css(self.css)
+        self.preview_document.add_css(self.css)
         self.text_area.event_generate("<<Modified>>")
         return self.syntax_highlighting_tags    
 
@@ -568,22 +484,30 @@ class TkintermdFrame(tk.Frame):
                 self.template_bottom = val[2]
         self.text_area.event_generate("<<Modified>>")
     
-    def enable_edit(self, to_html=False):
-        """Enable editing of HTML before export.
-        
-        Displays a warning to the user and enables HTML editing prior to export.
-        """
-        if to_html == False:
-            mbox.showwarning(title="Warning", message=constants.edit_warning)
-            # self.html_text_area.configure(state="normal")
-            self.editor_frame.pack_forget()
-            self.html_text_area_frame.pack(fill="both", expand=1)
-            self.export_options_edit_btn.configure(text="Edit Markdown", command=lambda: self.enable_edit(to_html=True))
-        if to_html == True:
-            mbox.showwarning(title="Warning", message="Any changes made to the HTML will be lost when returning to markdown mode.")
-            self.html_text_area_frame.pack_forget()
-            self.editor_frame.pack(fill="both", expand=1)
-            self.export_options_edit_btn.configure(text="Edit Before Export", command=lambda: self.enable_edit(to_html=False))
+    def convert_editor_content(self, input_type="markdown"):
+        if constants.input_type == "markdown":
+            html = self.md_to_html()
+            self.text_area.delete("1.0", END)
+            self.text_area.insert("1.0", html)
+            constants.input_type = "html"
+        elif constants.input_type == "html":
+            md = self.html_to_md()
+            self.text_area.delete("1.0", END)
+            self.text_area.insert("1.0", md)
+            constants.input_type = "markdown"
+        self.text_area.edit_modified(0) # resets the text widget to generate another event when another change occours
+
+    def md_to_html(self):
+        md2html = Markdown(extensions=constants.EXTENSIONS, extension_configs=constants.EXTENSION_CONFIGS)
+        markdown_text = self.text_area.get("1.0", END)
+        html = md2html.convert(markdown_text)
+        return html
+
+    def html_to_md(self):
+        html_text = self.text_area.get("1.0", END)
+        md = markdownify(html_text)
+        return md
+
 
 class Lexer(MarkdownLexer):
     """Extend MarkdownLexer to add markup for bold-italic. 
