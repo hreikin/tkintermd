@@ -115,10 +115,10 @@ class TkintermdFrame(tk.Frame):
         self.template_combobox = Combobox(self.preview_area_toolbar, textvariable=self.template_combobox_value, values=constants.template_list)
         self.template_combobox.current(0)
         self.template_combobox.pack(side="left")
-        self.export_options_edit_btn = tk.Button(self.preview_area_toolbar, text="Editor Mode", command=self.convert_editor_content)
-        self.export_options_edit_btn.pack(side="left", padx=0, pady=0)
-        self.export_options_export_btn = tk.Button(self.preview_area_toolbar, text="Export HTML", command=self.save_as_html_file)
-        self.export_options_export_btn.pack(side="left", padx=0, pady=0)
+        self.edit_mode_btn = tk.Button(self.preview_area_toolbar, text="Editor Mode", command=self.convert_editor_content)
+        self.edit_mode_btn.pack(side="left", padx=0, pady=0)
+        self.export_btn = tk.Button(self.preview_area_toolbar, text="Export HTML", command=self.save_as_html_file)
+        self.export_btn.pack(side="left", padx=0, pady=0)
         self.preview_area_toolbar.pack(side="top", fill="x")
         # Rendered HTML preview.
         self.preview_document = HtmlFrame(self.preview_area_root_frame)
@@ -302,7 +302,7 @@ class TkintermdFrame(tk.Frame):
         - If a filename is provided then `try` to open it in "write" mode.
         - If any of the above fails then display an error message.
         """
-        html_file_data = self.export_options_text_area.get("1.0" , END)
+        html_file_data = self.html
         self.html_save_filename = filedialog.asksaveasfilename(filetypes = (("HTML file", ("*.html", "*.htm")),) , title="Save HTML File")
         if self.html_save_filename:
             try:
