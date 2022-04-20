@@ -44,27 +44,27 @@ class TkintermdFrame(tk.Frame):
 
         self.logger = log.create_logger()
 
-        # Toolbar.
-        self.root_toolbar = tk.Frame(self.master)
-        self.open_btn = tk.Button(self.root_toolbar, text="Open", command=self.open_md_file)
-        self.open_btn.pack(side="left", padx=0, pady=0)
-        self.save_as_btn = tk.Button(self.root_toolbar, text="Save As", command=self.save_as_md_file)
-        self.save_as_btn.pack(side="left", padx=0, pady=0)
-        self.save_btn = tk.Button(self.root_toolbar, text="Save", command=self.save_md_file)
-        self.save_btn.pack(side="left", padx=0, pady=0)
-        self.export_as_btn = tk.Button(self.root_toolbar, text="Export HTML", command=self.save_as_html_file)
-        self.export_as_btn.pack(side="left", padx=0, pady=0)
-        # Button to choose pygments style for editor, preview and HTML.
-        self.style_opt_btn = tk.Menubutton(self.root_toolbar, text="Editor Style", relief="raised")
-        self.style_opt_btn.pack(side="left", padx=0, pady=0)
-        self.root_toolbar.pack(side="top", fill="x")
-
         # Creating the widgets
         self.editor_pw = tk.PanedWindow(self.master, orient="horizontal")
         # Root editor frame
         self.editor_root_frame = tk.Frame(self.editor_pw)
+        # # Toolbar.
+        # self.root_toolbar = tk.Frame(self.editor_root_frame)
+        # self.root_toolbar.pack(side="top", fill="x")
+
         # Toolbar buttons
         self.editor_toolbar = tk.Frame(self.editor_root_frame)
+        self.open_btn = tk.Button(self.editor_toolbar, text="Open", command=self.open_md_file)
+        self.open_btn.pack(side="left", padx=0, pady=0)
+        self.save_as_btn = tk.Button(self.editor_toolbar, text="Save As", command=self.save_as_md_file)
+        self.save_as_btn.pack(side="left", padx=0, pady=0)
+        self.save_btn = tk.Button(self.editor_toolbar, text="Save", command=self.save_md_file)
+        self.save_btn.pack(side="left", padx=0, pady=0)
+        self.export_as_btn = tk.Button(self.editor_toolbar, text="Export HTML", command=self.save_as_html_file)
+        self.export_as_btn.pack(side="left", padx=0, pady=0)
+        # Button to choose pygments style for editor, preview and HTML.
+        self.style_opt_btn = tk.Menubutton(self.editor_toolbar, text="Editor Style", relief="raised")
+        self.style_opt_btn.pack(side="left", padx=0, pady=0)
         self.undo_btn = tk.Button(self.editor_toolbar, text="Undo", command=lambda: self.text_area.event_generate("<<Undo>>"))
         self.undo_btn.pack(side="left", padx=0, pady=0)
         self.redo_btn = tk.Button(self.editor_toolbar, text="Redo", command=lambda: self.text_area.event_generate("<<Redo>>"))
