@@ -48,10 +48,6 @@ class TkintermdFrame(tk.Frame):
         self.editor_pw = tk.PanedWindow(self.master, orient="horizontal")
         # Root editor frame
         self.editor_root_frame = tk.Frame(self.editor_pw)
-        # # Toolbar.
-        # self.root_toolbar = tk.Frame(self.editor_root_frame)
-        # self.root_toolbar.pack(side="top", fill="x")
-
         # Toolbar buttons
         self.editor_toolbar = tk.Frame(self.editor_root_frame)
         self.open_btn = tk.Button(self.editor_toolbar, text="Open", command=self.open_md_file)
@@ -108,41 +104,79 @@ class TkintermdFrame(tk.Frame):
         self.editor_frame = ScrolledTextBox(self.editor_root_frame)
         self.text_area = self.editor_frame.tbox
         self.editor_frame.pack(fill="both", expand=1)
-        # Tabs for the preview and export options.
-        self.preview_tabs = Notebook(self.editor_pw)
-        # HTML rendered preview.
-        self.preview_document = HtmlFrame(self.preview_tabs)
-        # Root frame for export options.
-        self.export_options_root_frame = tk.Frame(self.preview_tabs)
-        # Export options frame.
-        self.export_options_frame = tk.Frame(self.export_options_root_frame)
-        # self.export_options_placeholder = tk.Label(self.export_options_frame, text="Placeholder", justify="center")
-        # self.export_options_placeholder.pack(fill="both", expand=1)
-        self.export_options_row_a = tk.Frame(self.export_options_frame)
-        self.template_label = tk.Label(self.export_options_row_a, text="Choose template:\t")
+
+        self.html_text_area_frame = ScrolledTextBox(self.editor_root_frame)
+        self.html_text_area = self.html_text_area_frame.tbox
+        # self.html_text_area.configure(state="disabled")
+        self.html_text_area_frame.pack(fill="both", expand=1)
+        self.html_text_area_frame.pack_forget()
+
+
+        # Preview area
+        self.preview_area_root_frame = tk.Frame(self.editor_pw)
+        self.preview_area_toolbar = tk.Frame(self.preview_area_root_frame)
+        self.template_label = tk.Label(self.preview_area_toolbar, text="Choose template:\t")
         self.template_label.pack(side="left")
         self.template_combobox_value = tk.StringVar()
-        self.template_combobox = Combobox(self.export_options_row_a, textvariable=self.template_combobox_value, values=constants.template_list)
+        self.template_combobox = Combobox(self.preview_area_toolbar, textvariable=self.template_combobox_value, values=constants.template_list)
         self.template_combobox.current(0)
         self.template_combobox.pack(side="left")
-        self.export_options_edit_btn = tk.Button(self.export_options_row_a, text="Edit Before Export", command=self.enable_edit)
+        self.export_options_edit_btn = tk.Button(self.preview_area_toolbar, text="Edit Before Export", command=self.enable_edit)
         self.export_options_edit_btn.pack(side="left", padx=0, pady=0)
-        self.export_options_export_btn = tk.Button(self.export_options_row_a, text="Export HTML", command=self.save_as_html_file)
+        self.export_options_export_btn = tk.Button(self.preview_area_toolbar, text="Export HTML", command=self.save_as_html_file)
         self.export_options_export_btn.pack(side="left", padx=0, pady=0)
-        self.export_options_row_a.pack(fill="both")
-        self.export_options_frame.pack(fill="both")
+        self.preview_area_toolbar.pack(side="top", fill="x")
+        # Rendered HTML preview.
+        self.preview_document = HtmlFrame(self.preview_area_root_frame)
+        self.preview_document.pack(fill="both", expand=1)
+
+
+
+
+
+
+
+
+        # Tabs for the preview and export options.
+        # self.preview_tabs = Notebook(self.editor_pw)
+        # HTML rendered preview.
+        # self.preview_document = HtmlFrame(self.preview_tabs)
+        # Root frame for export options.
+        # self.export_options_root_frame = tk.Frame(self.preview_tabs)
+        # Export options frame.
+        # self.export_options_frame = tk.Frame(self.export_options_root_frame)
+        # self.export_options_placeholder = tk.Label(self.export_options_frame, text="Placeholder", justify="center")
+        # self.export_options_placeholder.pack(fill="both", expand=1)
+        # self.export_options_row_a = tk.Frame(self.export_options_frame)
+        # self.template_label = tk.Label(self.export_options_row_a, text="Choose template:\t")
+        # self.template_label.pack(side="left")
+        # self.template_combobox_value = tk.StringVar()
+        # self.template_combobox = Combobox(self.export_options_row_a, textvariable=self.template_combobox_value, values=constants.template_list)
+        # self.template_combobox.current(0)
+        # self.template_combobox.pack(side="left")
+        # self.export_options_edit_btn = tk.Button(self.export_options_row_a, text="Edit Before Export", command=self.enable_edit)
+        # self.export_options_edit_btn.pack(side="left", padx=0, pady=0)
+        # self.export_options_export_btn = tk.Button(self.export_options_row_a, text="Export HTML", command=self.save_as_html_file)
+        # self.export_options_export_btn.pack(side="left", padx=0, pady=0)
+        # self.export_options_row_a.pack(fill="both")
+        # self.export_options_frame.pack(fill="both")
         # HTML code preview/edit before export with scrollbar and text area.
-        self.export_options_text_area_frame = ScrolledTextBox(self.export_options_root_frame)
-        self.export_options_text_area = self.export_options_text_area_frame.tbox
-        self.export_options_text_area.configure(state="disabled")
-        self.export_options_text_area_frame.pack(fill="both", expand=1)
+        # self.export_options_text_area_frame = ScrolledTextBox(self.export_options_root_frame)
+        # self.export_options_text_area = self.export_options_text_area_frame.tbox
+        # self.export_options_text_area.configure(state="disabled")
+        # self.export_options_text_area_frame.pack(fill="both", expand=1)
         # Add the rendered preview and export options to the Notebook tabs.
-        self.preview_tabs.add(self.preview_document, text="Preview Document")
-        self.preview_tabs.add(self.export_options_root_frame, text="Export Options")
+        # self.preview_tabs.add(self.preview_document, text="Preview Document")
+        # self.preview_tabs.add(self.export_options_root_frame, text="Export Options")
         # Add the editor and preview/export areas to the paned window.
         self.editor_pw.add(self.editor_root_frame)
-        self.editor_pw.add(self.preview_tabs)
+        self.editor_pw.add(self.preview_area_root_frame)
         self.editor_pw.pack(side="left", fill="both", expand=1)
+
+
+
+
+
 
         # Load the self.style_opt_btn menu, this needs to be after the editor.
         self.style_menu = tk.Menu(self.style_opt_btn, tearoff=False)
@@ -368,11 +402,11 @@ class TkintermdFrame(tk.Frame):
         markdownText = self.text_area.get("1.0", END)
         html = md2html.convert(markdownText)
         final = f"{self.template_top}\n{self.css}\n{self.template_middle}\n{html}\n{self.template_bottom}"
-        self.export_options_text_area.configure(state="normal")
-        self.export_options_text_area.delete("1.0" , END)
-        self.export_options_text_area.insert(END, final)
-        self.export_options_text_area.configure(state="disabled")
-        self.export_options_edit_btn.configure(state="normal")
+        # self.export_options_text_area.configure(state="normal")
+        self.html_text_area.delete("1.0" , END)
+        self.html_text_area.insert(END, final)
+        # self.export_options_text_area.configure(state="disabled")
+        # self.export_options_edit_btn.configure(state="normal")
         self.preview_document.load_html(final)
         # self.preview_document.add_css(self.css)
         self.check_markdown_highlighting(start="1.0", end=END)
@@ -401,7 +435,7 @@ class TkintermdFrame(tk.Frame):
             kwargs['font'] = font
             kwargs['underline'] = opts['underline']
             self.text_area.tag_configure(str(token), **kwargs)
-            self.export_options_text_area.tag_configure(str(token), **kwargs)
+            # self.export_options_text_area.tag_configure(str(token), **kwargs)
             self.syntax_highlighting_tags.append(str(token))
         # print(self.style.background_color or 'white', self.text_area.tag_cget("Token.Text", "foreground") or 'black', stylename)
         self.text_area.configure(bg=self.style.background_color or 'white',
@@ -410,11 +444,11 @@ class TkintermdFrame(tk.Frame):
                         insertbackground=self.text_area.tag_cget("Token.Text", "foreground") or 'black',
                         )
         self.text_area.tag_configure(str(Generic.StrongEmph), font=('Monospace', 10, 'bold', 'italic'))
-        self.export_options_text_area.configure(bg=self.style.background_color or 'white',
-                        fg=self.export_options_text_area.tag_cget("Token.Text", "foreground") or 'black',
-                        selectbackground=self.style.highlight_color,
-                        insertbackground=self.text_area.tag_cget("Token.Text", "foreground") or 'black',
-                        )
+        # self.export_options_text_area.configure(bg=self.style.background_color or 'white',
+        #                 fg=self.export_options_text_area.tag_cget("Token.Text", "foreground") or 'black',
+        #                 selectbackground=self.style.highlight_color,
+        #                 insertbackground=self.text_area.tag_cget("Token.Text", "foreground") or 'black',
+        #                 )
         # self.export_options_text_area.tag_configure(str(Generic.StrongEmph), font=('Monospace', 10, 'bold', 'italic'))
         self.syntax_highlighting_tags.append(str(Generic.StrongEmph))
         self.formatter = HtmlFormatter()
@@ -534,14 +568,22 @@ class TkintermdFrame(tk.Frame):
                 self.template_bottom = val[2]
         self.text_area.event_generate("<<Modified>>")
     
-    def enable_edit(self):
+    def enable_edit(self, to_html=False):
         """Enable editing of HTML before export.
         
         Displays a warning to the user and enables HTML editing prior to export.
         """
-        mbox.showwarning(title="Warning", message=constants.edit_warning)
-        self.export_options_text_area.configure(state="normal")
-        self.export_options_edit_btn.configure(state="disabled")
+        if to_html == False:
+            mbox.showwarning(title="Warning", message=constants.edit_warning)
+            # self.html_text_area.configure(state="normal")
+            self.editor_frame.pack_forget()
+            self.html_text_area_frame.pack(fill="both", expand=1)
+            self.export_options_edit_btn.configure(text="Edit Markdown", command=lambda: self.enable_edit(to_html=True))
+        if to_html == True:
+            mbox.showwarning(title="Warning", message="Any changes made to the HTML will be lost when returning to markdown mode.")
+            self.html_text_area_frame.pack_forget()
+            self.editor_frame.pack(fill="both", expand=1)
+            self.export_options_edit_btn.configure(text="Edit Before Export", command=lambda: self.enable_edit(to_html=False))
 
 class Lexer(MarkdownLexer):
     """Extend MarkdownLexer to add markup for bold-italic. 
