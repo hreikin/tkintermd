@@ -509,6 +509,11 @@ class TkintermdFrame(tk.Frame):
         self.text_area.event_generate("<<Modified>>")
     
     def convert_editor_content(self):
+        if constants.switch_editor_mode_message_shown == False:
+            if mbox.askokcancel(title="Experimental Feature", message=f"NOTICE:\n\nThis feature is experimental, please ensure you have saved your markdown file before proceeding.\n\nClick 'OK' to proceed or 'Cancel' to go back.", icon="warning") == True:
+                constants.switch_editor_mode_message_shown = True
+            else:
+                return
         if constants.input_type == "markdown":
             html = self.md_to_html()
             self.text_area.delete("1.0", END)

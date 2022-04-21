@@ -40,6 +40,7 @@ editor_toolbar_formatting_buttons = []
 input_type = "markdown"
 cur_file = Path()
 cur_template_name = "default.html"
+switch_editor_mode_message_shown = False
 BOLD_MD_SYNTAX = ("**", "__")
 BOLD_MD_IGNORE = (
     "- ", "> ", "# ", "`", 
