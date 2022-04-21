@@ -19,6 +19,7 @@ from pygments.formatters.html import HtmlFormatter
 from pygments.token import Generic
 from pygments.lexer import bygroups
 from pygments.styles import get_style_by_name, get_all_styles
+from jinja2 import Environment, PackageLoader
 
 class TkintermdFrame(tk.Frame):
     """A Markdown editor with HTML preview for use in tkinter projects. 
@@ -177,9 +178,10 @@ class TkintermdFrame(tk.Frame):
         # Default markdown string.
         default_text = constants.DEFAULT_MD_STRING
         self.text_area.insert(0.0, default_text)
-        self.template_top = constants.DEFAULT_TEMPLATE_TOP
-        self.template_middle = constants.DEFAULT_TEMPLATE_MIDDLE
-        self.template_bottom = constants.DEFAULT_TEMPLATE_BOTTOM
+        # self.template_top = constants.DEFAULT_TEMPLATE_TOP
+        # self.template_middle = constants.DEFAULT_TEMPLATE_MIDDLE
+        # self.template_bottom = constants.DEFAULT_TEMPLATE_BOTTOM
+        self.template_loader = Environment(loader=PackageLoader("tkintermd"))
         # Applies markdown formatting to default file.
         self.check_syntax_highlighting(start="1.0", end=END)
         self.text_area.focus_set()
@@ -353,8 +355,12 @@ class TkintermdFrame(tk.Frame):
             # self.final = f"{self.template_top}\n{self.css}\n{self.template_middle}\n{self.html}\n{self.template_bottom}"
         if constants.input_type == "html":
             self.html = self.text_area.get("1.0", END)
-        self.preview_document.load_html(self.html)
-        self.preview_document.add_css(self.css)
+        self.cur_template = self.template_loader.get_template(constants.cur_template_name)
+        # print(template)
+        self.theme_style = f"<style>\n{self.css}\n</style>"
+        self.html_final = self.cur_template.render(content=self.html, theme_style=self.theme_style)
+        self.preview_document.load_html(self.html_final)
+        # self.preview_document.add_css(self.css)
         self.check_syntax_highlighting(start="1.0", end=END)
         self.text_area.edit_modified(0) # resets the text widget to generate another event when another change occours
 
@@ -399,7 +405,6 @@ class TkintermdFrame(tk.Frame):
             self.style.background_color,
             self.pygments
             )#used string%interpolation here because f'string' interpolation is too annoying with embeded { and }
-        self.preview_document.add_css(self.css)
         self.text_area.event_generate("<<Modified>>")
         return self.syntax_highlighting_tags    
 
