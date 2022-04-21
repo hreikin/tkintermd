@@ -169,7 +169,7 @@ class TkintermdFrame(tk.Frame):
         self.style_opt_btn["menu"] = self.style_menu
 
         # Set Pygments syntax highlighting style.
-        self.lexer = Lexer()
+        self.md_lexer = CustomMarkdownLexer()
         self.syntax_highlighting_tags = self.load_style("stata")
         # self.syntax_highlighting_tags = self.load_style("material")
         # Default markdown string.
@@ -360,7 +360,7 @@ class TkintermdFrame(tk.Frame):
         """Load Pygments style for syntax highlighting within the editor.
         
         - Load and configure the text area and `tags` with the Pygments styles 
-            and custom `Lexer` tags.
+            and `CustomMarkdownLexer` tags.
         - Create the CSS styling to be merged with the HTML template
         - Generate a `<<Modified>>` event to update the styles when a new style 
             is chosen.
@@ -412,7 +412,7 @@ class TkintermdFrame(tk.Frame):
         for t in self.syntax_highlighting_tags:
             self.text_area.tag_remove(t, start, "range_start +%ic" % len(self.data))
         # parse text
-        for token, content in lex(self.data, self.lexer):
+        for token, content in lex(self.data, self.md_lexer):
             self.text_area.mark_set("range_end", "range_start + %ic" % len(content))
             for t in token.split():
                 self.text_area.tag_add(str(t), "range_start", "range_end")
@@ -534,7 +534,7 @@ class TkintermdFrame(tk.Frame):
         return md
 
 
-class Lexer(MarkdownLexer):
+class CustomMarkdownLexer(MarkdownLexer):
     """Extend MarkdownLexer to add markup for bold-italic. 
     
     This needs extending further before being complete.
