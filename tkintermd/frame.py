@@ -142,7 +142,7 @@ class TkintermdFrame(tk.Frame):
         # Button to choose pygments style for editor, preview and HTML.
         self.style_opt_btn = tk.Menubutton(self.preview_area_toolbar, text="Theme", relief="raised")
         self.style_opt_btn.pack(side="left", padx=0, pady=0)
-        self.export_btn = tk.Button(self.preview_area_toolbar, text="Export HTML", command=self.save_as_html_file)
+        self.export_btn = tk.Button(self.preview_area_toolbar, text="Export HTML", command=self.export_html_file)
         self.export_btn.pack(side="left", padx=0, pady=0)
         self.preview_area_toolbar.pack(side="top", fill="x")
         # Rendered HTML preview.
@@ -319,7 +319,7 @@ class TkintermdFrame(tk.Frame):
         except:
             self.save_as_md_file()
 
-    def save_as_html_file(self):
+    def export_html_file(self):
         """Exports the current contents of the HTML preview pane to the given filename.
         
         Opens a native OS dialog for saving the file with a html
@@ -329,13 +329,12 @@ class TkintermdFrame(tk.Frame):
         - If a filename is provided then `try` to open it in "write" mode.
         - If any of the above fails then display an error message.
         """
-        html_file_data = self.html
+        html_file_data = self.html_final
         self.html_save_filename = filedialog.asksaveasfilename(filetypes = (("HTML file", ("*.html", "*.htm")),) , title="Save HTML File")
         if self.html_save_filename:
             try:
                 with open(self.html_save_filename, "w") as stream:
                     stream.write(html_file_data)
-                    #constants.cur_file = Path(self.html_save_filename)
             except:
                 mbox.showerror(title="Error", message=f"Error Saving File\n\nThe file: {self.html_save_filename} can not be saved!")
 
