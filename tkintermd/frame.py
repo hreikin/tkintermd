@@ -47,6 +47,10 @@ class TkintermdFrame(tk.Frame):
 
         self.logger = log.create_logger()
         self.template_loader = Environment(loader=PackageLoader("tkintermd"))
+        self.md2html = Markdown(extensions=constants.EXTENSIONS, extension_configs=constants.EXTENSION_CONFIGS)
+        self.md_lexer = CustomMarkdownLexer()
+        self.html_lexer = HtmlLexer()
+        self.html_formatter = HtmlFormatter()
 
         # Creating the widgets
         self.editor_pw = tk.PanedWindow(self.master, orient="horizontal")
@@ -173,16 +177,11 @@ class TkintermdFrame(tk.Frame):
         self.style_opt_btn["menu"] = self.style_menu
 
         # Set Pygments syntax highlighting style.
-        self.md_lexer = CustomMarkdownLexer()
-        self.html_lexer = HtmlLexer()
         self.syntax_highlighting_tags = self.load_style("stata")
-        # self.syntax_highlighting_tags = self.load_style("material")
+
         # Default markdown string.
         default_text = constants.DEFAULT_MD_STRING
         self.text_area.insert(0.0, default_text)
-        # self.template_top = constants.DEFAULT_TEMPLATE_TOP
-        # self.template_middle = constants.DEFAULT_TEMPLATE_MIDDLE
-        # self.template_bottom = constants.DEFAULT_TEMPLATE_BOTTOM
 
         # Applies markdown formatting to default file.
         self.check_syntax_highlighting(start="1.0", end=END)
@@ -353,15 +352,12 @@ class TkintermdFrame(tk.Frame):
         """
         if constants.input_type == "markdown":
             self.html = self.md_to_html()
-            # self.final = f"{self.template_top}\n{self.css}\n{self.template_middle}\n{self.html}\n{self.template_bottom}"
         if constants.input_type == "html":
             self.html = self.text_area.get("1.0", END)
         self.cur_template = self.template_loader.get_template(constants.cur_template_name)
-        # print(template)
         self.theme_style = f"<style>\n{self.css}\n</style>"
         self.html_final = self.cur_template.render(content=self.html, theme_style=self.theme_style)
         self.preview_document.load_html(self.html_final)
-        # self.preview_document.add_css(self.css)
         self.check_syntax_highlighting(start="1.0", end=END)
         self.text_area.edit_modified(0) # resets the text widget to generate another event when another change occours
 
@@ -397,15 +393,14 @@ class TkintermdFrame(tk.Frame):
                         )
         self.text_area.tag_configure(str(Generic.StrongEmph), font=('Monospace', 10, 'bold', 'italic'))
         self.syntax_highlighting_tags.append(str(Generic.StrongEmph))
-        self.html_formatter = HtmlFormatter()
         self.pygments = self.html_formatter.get_style_defs(".highlight")
-        # Previous version.
+        # Create CSS from selected style.
         self.css = 'body {background-color: %s; color: %s }\nbody .highlight{ background-color: %s; }\n%s' % (
             self.style.background_color,
             self.text_area.tag_cget("Token.Text", "foreground"),
             self.style.background_color,
             self.pygments
-            )#used string%interpolation here because f'string' interpolation is too annoying with embeded { and }
+            ) # used string%interpolation here because f'string' interpolation is too annoying with embeded { and }
         self.text_area.event_generate("<<Modified>>")
         return self.syntax_highlighting_tags    
 
@@ -531,9 +526,8 @@ class TkintermdFrame(tk.Frame):
         self.text_area.edit_modified(0) # resets the text widget to generate another event when another change occours
 
     def md_to_html(self):
-        md2html = Markdown(extensions=constants.EXTENSIONS, extension_configs=constants.EXTENSION_CONFIGS)
         markdown_text = self.text_area.get("1.0", END)
-        html = md2html.convert(markdown_text)
+        html = self.md2html.convert(markdown_text)
         return html
 
     def html_to_md(self):
@@ -548,9 +542,9 @@ class CustomMarkdownLexer(MarkdownLexer):
     This needs extending further before being complete.
     """
     tokens = {key: val.copy() for key, val in MarkdownLexer.tokens.items()}
-    # # bold-italic fenced by '***'
+    # bold-italic fenced by '***'
     tokens['inline'].insert(2, (r'(\*\*\*[^* \n][^*\n]*\*\*\*)',
                                 bygroups(Generic.StrongEmph)))
-    # # bold-italic fenced by '___'
+    # bold-italic fenced by '___'
     tokens['inline'].insert(2, (r'(\_\_\_[^_ \n][^_\n]*\_\_\_)',
                                 bygroups(Generic.StrongEmph)))
