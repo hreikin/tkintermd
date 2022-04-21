@@ -158,6 +158,9 @@ class TkintermdFrame(tk.Frame):
         self.theme_combobox_value = tk.StringVar()
         self.theme_combobox = Combobox(self.preview_area_toolbar, textvariable=self.theme_combobox_value)
         self.theme_combobox.pack(side="left")
+        self.lock_theme_state = tk.IntVar()
+        self.lock_theme_checkbutton = tk.Checkbutton(self.preview_area_toolbar, text="Match Editor Style", variable=self.lock_theme_state, command=self.lock_theme)
+        self.lock_theme_checkbutton.pack(side="left")
         self.export_btn = tk.Button(self.preview_area_toolbar, text="Export HTML", command=self.export_html_file)
         self.export_btn.pack(side="left", padx=0, pady=0)
         self.preview_area_toolbar.pack(side="top", fill="x")
@@ -200,6 +203,10 @@ class TkintermdFrame(tk.Frame):
         # Applies markdown formatting to default file.
         self.check_syntax_highlighting(start="1.0", end=END)
         self.text_area.focus_set()
+
+        # Match the editor theme by default.
+        self.lock_theme_checkbutton.toggle()
+        self.lock_theme()
 
         # Create right click menu layout for the editor.
         self.right_click = tk.Menu(self.text_area, tearoff=False)
@@ -371,8 +378,8 @@ class TkintermdFrame(tk.Frame):
         if constants.input_type == "html":
             self.html = self.text_area.get("1.0", END)
         self.cur_template = self.template_loader.get_template(constants.cur_template_name)
-        self.theme_style = f"<style>\n{self.css}\n</style>"
-        self.html_final = self.cur_template.render(content=self.html, theme_style=self.theme_style)
+        self.theme_style_css = f"<style>\n{self.css}\n</style>"
+        self.html_final = self.cur_template.render(content=self.html, theme_style_css=self.theme_style_css)
         self.preview_document.load_html(self.html_final)
         self.check_syntax_highlighting(start="1.0", end=END)
         self.text_area.edit_modified(0) # resets the text widget to generate another event when another change occours
@@ -548,6 +555,10 @@ class TkintermdFrame(tk.Frame):
         """
         style_name = self.style_combobox_value.get()
         constants.cur_style_name = style_name
+        if self.lock_theme_state.get() == 1:
+            style_index = self.style_combobox.current()
+            self.theme_combobox.current(style_index)
+            self.load_theme(style_name)
         self.load_style(style_name)
         self.text_area.event_generate("<<Modified>>")
 
@@ -562,6 +573,17 @@ class TkintermdFrame(tk.Frame):
         constants.cur_theme_name = theme_name
         self.load_theme(theme_name)
         self.text_area.event_generate("<<Modified>>")
+
+    def lock_theme(self):
+        if self.lock_theme_state.get() == 1:
+            style_index = self.style_combobox.current()
+            style_name = self.style_combobox_value.get()
+            self.theme_combobox.current(style_index)
+            self.theme_combobox.configure(state="disabled")
+            self.load_theme(style_name)
+        else:
+            self.theme_combobox.configure(state="normal")
+
     
     def convert_editor_content(self):
         if constants.switch_editor_mode_message_shown == False:
