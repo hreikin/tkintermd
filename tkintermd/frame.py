@@ -63,9 +63,6 @@ class TkintermdFrame(tk.Frame):
         self.edit_mode_btn = tk.Button(self.editor_toolbar, text="Editor Mode", command=self.convert_editor_content)
         self.edit_mode_btn.pack(side="left", padx=0, pady=0)
         constants.editor_toolbar_menu_buttons.append(self.edit_mode_btn)
-        # self.export_as_btn = tk.Button(self.editor_toolbar, text="Export HTML", command=self.save_as_html_file)
-        # self.export_as_btn.pack(side="left", padx=0, pady=0)
-        # Button to choose pygments style for editor, preview and HTML.
         self.undo_btn = tk.Button(self.editor_toolbar, text="Undo", command=lambda: self.text_area.event_generate("<<Undo>>"))
         self.undo_btn.pack(side="left", padx=0, pady=0)
         constants.editor_toolbar_formatting_buttons.append(self.undo_btn)
@@ -138,6 +135,7 @@ class TkintermdFrame(tk.Frame):
         self.template_combobox = Combobox(self.preview_area_toolbar, textvariable=self.template_combobox_value, values=constants.template_list)
         self.template_combobox.current(0)
         self.template_combobox.pack(side="left")
+        # Button to choose pygments style for editor, preview and HTML.
         self.style_opt_btn = tk.Menubutton(self.preview_area_toolbar, text="Theme", relief="raised")
         self.style_opt_btn.pack(side="left", padx=0, pady=0)
         self.export_btn = tk.Button(self.preview_area_toolbar, text="Export HTML", command=self.save_as_html_file)
@@ -512,11 +510,15 @@ class TkintermdFrame(tk.Frame):
             html = self.md_to_html()
             self.text_area.delete("1.0", END)
             self.text_area.insert("1.0", html)
+            for button in constants.editor_toolbar_formatting_buttons:
+                button.configure(state="disabled")
             constants.input_type = "html"
         elif constants.input_type == "html":
             md = self.html_to_md()
             self.text_area.delete("1.0", END)
             self.text_area.insert("1.0", md)
+            for button in constants.editor_toolbar_formatting_buttons:
+                button.configure(state="normal")
             constants.input_type = "markdown"
         self.text_area.edit_modified(0) # resets the text widget to generate another event when another change occours
 
