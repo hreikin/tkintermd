@@ -181,7 +181,7 @@ class TkintermdFrame(tk.Frame):
         self.template_middle = constants.DEFAULT_TEMPLATE_MIDDLE
         self.template_bottom = constants.DEFAULT_TEMPLATE_BOTTOM
         # Applies markdown formatting to default file.
-        self.check_markdown_highlighting(start="1.0", end=END)
+        self.check_syntax_highlighting(start="1.0", end=END)
         self.text_area.focus_set()
 
         # Create right click menu layout for the editor.
@@ -274,7 +274,7 @@ class TkintermdFrame(tk.Frame):
                     open_filename_contents = stream.read()
                 self.text_area.delete(1.0, END)
                 self.text_area.insert(END, open_filename_contents)
-                self.check_markdown_highlighting(start="1.0", end=END)
+                self.check_syntax_highlighting(start="1.0", end=END)
                 constants.cur_file = Path(open_filename_md)
             except:
                 mbox.showerror(title="Error", message=f"Error Opening Selected File\n\nThe file you selected: {open_filename_md} can not be opened!")
@@ -355,7 +355,7 @@ class TkintermdFrame(tk.Frame):
             self.html = self.text_area.get("1.0", END)
         self.preview_document.load_html(self.html)
         self.preview_document.add_css(self.css)
-        self.check_markdown_highlighting(start="1.0", end=END)
+        self.check_syntax_highlighting(start="1.0", end=END)
         self.text_area.edit_modified(0) # resets the text widget to generate another event when another change occours
 
     def load_style(self, stylename):
@@ -390,8 +390,8 @@ class TkintermdFrame(tk.Frame):
                         )
         self.text_area.tag_configure(str(Generic.StrongEmph), font=('Monospace', 10, 'bold', 'italic'))
         self.syntax_highlighting_tags.append(str(Generic.StrongEmph))
-        self.formatter = HtmlFormatter()
-        self.pygments = self.formatter.get_style_defs(".highlight")
+        self.html_formatter = HtmlFormatter()
+        self.pygments = self.html_formatter.get_style_defs(".highlight")
         # Previous version.
         self.css = 'body {background-color: %s; color: %s }\nbody .highlight{ background-color: %s; }\n%s' % (
             self.style.background_color,
@@ -403,7 +403,7 @@ class TkintermdFrame(tk.Frame):
         self.text_area.event_generate("<<Modified>>")
         return self.syntax_highlighting_tags    
 
-    def check_markdown_highlighting(self, start='insert linestart', end='insert lineend'):
+    def check_syntax_highlighting(self, start='insert linestart', end='insert lineend'):
         """Formats editor content using the Pygments style."""
         self.data = self.text_area.get(start, end)
         while self.data and self.data[0] == '\n':

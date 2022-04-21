@@ -17,7 +17,7 @@ authors:
         - save_as_html_file
         - on_input_change
         - load_style
-        - check_markdown_highlighting
+        - check_syntax_highlighting
         - apply_markdown_both_sides
         - remove_markdown_both_sides
         - check_markdown_both_sides
