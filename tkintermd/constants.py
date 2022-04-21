@@ -39,7 +39,7 @@ editor_toolbar_menu_buttons = []
 editor_toolbar_formatting_buttons = []
 input_type = "markdown"
 cur_file = Path()
-cur_template_name = "centered.html"
+cur_template_name = "default.html"
 BOLD_MD_SYNTAX = ("**", "__")
 BOLD_MD_IGNORE = (
     "- ", "> ", "# ", "`", 

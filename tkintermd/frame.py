@@ -46,6 +46,7 @@ class TkintermdFrame(tk.Frame):
         tk.Frame.__init__(self, master) # no need for super
 
         self.logger = log.create_logger()
+        self.template_loader = Environment(loader=PackageLoader("tkintermd"))
 
         # Creating the widgets
         self.editor_pw = tk.PanedWindow(self.master, orient="horizontal")
@@ -134,8 +135,9 @@ class TkintermdFrame(tk.Frame):
         self.template_label = tk.Label(self.preview_area_toolbar, text="Template : ")
         self.template_label.pack(side="left")
         self.template_combobox_value = tk.StringVar()
-        self.template_combobox = Combobox(self.preview_area_toolbar, textvariable=self.template_combobox_value, values=constants.template_list)
-        self.template_combobox.current(0)
+        self.template_list = self.template_loader.list_templates()
+        self.template_combobox = Combobox(self.preview_area_toolbar, textvariable=self.template_combobox_value, values=self.template_list)
+        self.template_combobox.current(1)
         self.template_combobox.pack(side="left")
         # Button to choose pygments style for editor, preview and HTML.
         self.style_opt_btn = tk.Menubutton(self.preview_area_toolbar, text="Theme", relief="raised")
@@ -181,7 +183,7 @@ class TkintermdFrame(tk.Frame):
         # self.template_top = constants.DEFAULT_TEMPLATE_TOP
         # self.template_middle = constants.DEFAULT_TEMPLATE_MIDDLE
         # self.template_bottom = constants.DEFAULT_TEMPLATE_BOTTOM
-        self.template_loader = Environment(loader=PackageLoader("tkintermd"))
+
         # Applies markdown formatting to default file.
         self.check_syntax_highlighting(start="1.0", end=END)
         self.text_area.focus_set()
@@ -501,7 +503,7 @@ class TkintermdFrame(tk.Frame):
         else:
             self.apply_markdown_both_sides(self.cur_selection, self.md_syntax)
 
-    def change_template(self, template_name):
+    def change_template(self, event):
         """Change the currently selected template.
         
         Get the selected template name from the `StringVar` for the `Combobox` 
@@ -509,11 +511,7 @@ class TkintermdFrame(tk.Frame):
         key then set the relevant template values and update all the previews.
         """
         template_name = self.template_combobox_value.get()
-        for key, val in constants.template_dict.items():
-            if template_name == key:
-                self.template_top = val[0]
-                self.template_middle = val[1]
-                self.template_bottom = val[2]
+        constants.cur_template_name = template_name
         self.text_area.event_generate("<<Modified>>")
     
     def convert_editor_content(self):
