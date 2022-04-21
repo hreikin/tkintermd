@@ -14,6 +14,7 @@ from markdown import Markdown
 from markdownify import markdownify
 from pygments import lex
 from pygments.lexers.markup import MarkdownLexer
+from pygments.lexers.html import HtmlLexer
 from pygments.formatters.html import HtmlFormatter
 from pygments.token import Generic
 from pygments.lexer import bygroups
@@ -170,6 +171,7 @@ class TkintermdFrame(tk.Frame):
 
         # Set Pygments syntax highlighting style.
         self.md_lexer = CustomMarkdownLexer()
+        self.html_lexer = HtmlLexer()
         self.syntax_highlighting_tags = self.load_style("stata")
         # self.syntax_highlighting_tags = self.load_style("material")
         # Default markdown string.
@@ -412,7 +414,11 @@ class TkintermdFrame(tk.Frame):
         for t in self.syntax_highlighting_tags:
             self.text_area.tag_remove(t, start, "range_start +%ic" % len(self.data))
         # parse text
-        for token, content in lex(self.data, self.md_lexer):
+        if constants.input_type == "markdown":
+            lexer = self.md_lexer
+        if constants.input_type == "html":
+            lexer = self.html_lexer
+        for token, content in lex(self.data, lexer):
             self.text_area.mark_set("range_end", "range_start + %ic" % len(content))
             for t in token.split():
                 self.text_area.tag_add(str(t), "range_start", "range_end")
