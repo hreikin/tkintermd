@@ -50,7 +50,8 @@ class TkintermdFrame(tk.Frame):
         self.md2html = Markdown(extensions=constants.EXTENSIONS, extension_configs=constants.EXTENSION_CONFIGS)
         self.md_lexer = CustomMarkdownLexer()
         self.html_lexer = HtmlLexer()
-        self.html_formatter = HtmlFormatter()
+        self.style_html_formatter = HtmlFormatter()
+        self.theme_html_formatter = HtmlFormatter()
 
         # Creating the widgets
         self.editor_pw = tk.PanedWindow(self.master, orient="horizontal")
@@ -70,6 +71,13 @@ class TkintermdFrame(tk.Frame):
         self.edit_mode_btn = tk.Button(self.editor_toolbar, text="Editor Mode", command=self.convert_editor_content)
         self.edit_mode_btn.pack(side="left", padx=0, pady=0)
         constants.editor_toolbar_menu_buttons.append(self.edit_mode_btn)
+        # Editor style chooser.
+        self.style_label = tk.Label(self.editor_toolbar, text="Editor Style : ")
+        self.style_label.pack(side="left")
+        self.style_combobox_value = tk.StringVar()
+        self.style_combobox = Combobox(self.editor_toolbar, textvariable=self.style_combobox_value)
+        self.style_combobox.pack(side="left")
+        # Formatting buttons.
         self.undo_btn = tk.Button(self.editor_toolbar, text="Undo", command=lambda: self.text_area.event_generate("<<Undo>>"))
         self.undo_btn.pack(side="left", padx=0, pady=0)
         constants.editor_toolbar_formatting_buttons.append(self.undo_btn)
@@ -136,6 +144,7 @@ class TkintermdFrame(tk.Frame):
         # Preview area
         self.preview_area_root_frame = tk.Frame(self.editor_pw)
         self.preview_area_toolbar = tk.Frame(self.preview_area_root_frame)
+        # Template chooser.
         self.template_label = tk.Label(self.preview_area_toolbar, text="Template : ")
         self.template_label.pack(side="left")
         self.template_combobox_value = tk.StringVar()
@@ -143,9 +152,12 @@ class TkintermdFrame(tk.Frame):
         self.template_combobox = Combobox(self.preview_area_toolbar, textvariable=self.template_combobox_value, values=self.template_list)
         self.template_combobox.current(1)
         self.template_combobox.pack(side="left")
-        # Button to choose pygments style for editor, preview and HTML.
-        self.style_opt_btn = tk.Menubutton(self.preview_area_toolbar, text="Theme", relief="raised")
-        self.style_opt_btn.pack(side="left", padx=0, pady=0)
+        # Theme chooser.
+        self.theme_label = tk.Label(self.preview_area_toolbar, text="Theme : ")
+        self.theme_label.pack(side="left")
+        self.theme_combobox_value = tk.StringVar()
+        self.theme_combobox = Combobox(self.preview_area_toolbar, textvariable=self.theme_combobox_value)
+        self.theme_combobox.pack(side="left")
         self.export_btn = tk.Button(self.preview_area_toolbar, text="Export HTML", command=self.export_html_file)
         self.export_btn.pack(side="left", padx=0, pady=0)
         self.preview_area_toolbar.pack(side="top", fill="x")
@@ -159,25 +171,27 @@ class TkintermdFrame(tk.Frame):
         self.editor_pw.pack(side="left", fill="both", expand=1)
 
         # Load the self.style_opt_btn menu, this needs to be after the editor.
-        self.style_menu = tk.Menu(self.style_opt_btn, tearoff=False)
+        # self.style_menu = tk.Menu(self.style_opt_btn, tearoff=False)
+        self.style_list = []
+        self.theme_list = []
         for style_name in get_all_styles():
             # dynamcially get names of styles exported by pygments
             try:
                 # test them for compatability
                 self.load_style(style_name)
+                self.style_list.append(style_name)
+                self.theme_list.append(style_name)
             except Exception as E:
                 self.logger.exception(f"WARNING: style {style_name} failed ({E}), removing from style menu.")
-                continue # don't add them to the menu
-            # add the rest to the menu
-            self.style_menu.add_command(
-                label=style_name,
-                command=(lambda sn:lambda: self.load_style(sn))(style_name)
-                # unfortunately lambdas inside loops need to be stacked 2 deep to get closure variables instead of cell variables
-                )
-        self.style_opt_btn["menu"] = self.style_menu
+
+        self.style_combobox.configure(values=self.style_list)
+        self.theme_combobox.configure(values=self.theme_list)
+        self.style_combobox.current(0)
+        self.theme_combobox.current(0)
 
         # Set Pygments syntax highlighting style.
-        self.syntax_highlighting_tags = self.load_style("stata")
+        self.syntax_highlighting_tags = self.load_style("default")
+        self.load_theme("default")
 
         # Default markdown string.
         default_text = constants.DEFAULT_MD_STRING
@@ -201,6 +215,8 @@ class TkintermdFrame(tk.Frame):
 
         # Bind mouse/key events to functions.
         self.template_combobox.bind("<<ComboboxSelected>>", self.change_template)
+        self.style_combobox.bind("<<ComboboxSelected>>", self.change_style)
+        self.theme_combobox.bind("<<ComboboxSelected>>", self.change_theme)
         self.text_area.bind("<<Modified>>", self.on_input_change)
         self.text_area.edit_modified(0)#resets the text widget to generate another event when another change occours
         
@@ -361,7 +377,29 @@ class TkintermdFrame(tk.Frame):
         self.check_syntax_highlighting(start="1.0", end=END)
         self.text_area.edit_modified(0) # resets the text widget to generate another event when another change occours
 
-    def load_style(self, stylename):
+    def load_theme(self, themename):
+        """Load Pygments style for syntax highlighting within the editor.
+        
+        - Load and configure the text area and `tags` with the Pygments styles 
+            and `CustomMarkdownLexer` tags.
+        - Create the CSS styling to be merged with the HTML template
+        - Generate a `<<Modified>>` event to update the styles when a new style 
+            is chosen.
+        """
+        self.theme = get_style_by_name(themename)
+        pygments = self.theme_html_formatter.get_style_defs(".highlight")
+        # Create CSS from selected style.
+        self.css = 'body {background-color: %s; color: %s }\nbody .highlight{ background-color: %s; }\n%s' % (
+            self.theme.background_color,
+            self.text_area.tag_cget("Token.Text", "foreground"),
+            self.theme.background_color,
+            pygments
+            ) # used string%interpolation here because f'string' interpolation is too annoying with embeded { and }
+        
+        self.text_area.event_generate("<<Modified>>")
+        return
+
+    def load_style(self, stylename, theme=False):
         """Load Pygments style for syntax highlighting within the editor.
         
         - Load and configure the text area and `tags` with the Pygments styles 
@@ -393,14 +431,7 @@ class TkintermdFrame(tk.Frame):
                         )
         self.text_area.tag_configure(str(Generic.StrongEmph), font=('Monospace', 10, 'bold', 'italic'))
         self.syntax_highlighting_tags.append(str(Generic.StrongEmph))
-        self.pygments = self.html_formatter.get_style_defs(".highlight")
-        # Create CSS from selected style.
-        self.css = 'body {background-color: %s; color: %s }\nbody .highlight{ background-color: %s; }\n%s' % (
-            self.style.background_color,
-            self.text_area.tag_cget("Token.Text", "foreground"),
-            self.style.background_color,
-            self.pygments
-            ) # used string%interpolation here because f'string' interpolation is too annoying with embeded { and }
+        
         self.text_area.event_generate("<<Modified>>")
         return self.syntax_highlighting_tags    
 
@@ -506,6 +537,30 @@ class TkintermdFrame(tk.Frame):
         """
         template_name = self.template_combobox_value.get()
         constants.cur_template_name = template_name
+        self.text_area.event_generate("<<Modified>>")
+
+    def change_style(self, event):
+        """Change the currently selected template.
+        
+        Get the selected template name from the `StringVar` for the `Combobox` 
+        and compare it with the templates dictionary. If the name matches the 
+        key then set the relevant template values and update all the previews.
+        """
+        style_name = self.style_combobox_value.get()
+        constants.cur_style_name = style_name
+        self.load_style(style_name)
+        self.text_area.event_generate("<<Modified>>")
+
+    def change_theme(self, event):
+        """Change the currently selected template.
+        
+        Get the selected template name from the `StringVar` for the `Combobox` 
+        and compare it with the templates dictionary. If the name matches the 
+        key then set the relevant template values and update all the previews.
+        """
+        theme_name = self.theme_combobox_value.get()
+        constants.cur_theme_name = theme_name
+        self.load_theme(theme_name)
         self.text_area.event_generate("<<Modified>>")
     
     def convert_editor_content(self):
