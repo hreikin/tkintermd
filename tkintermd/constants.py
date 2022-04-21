@@ -35,6 +35,8 @@ Args:
 from pathlib import Path
 from pymdownx import emoji
 
+editor_toolbar_menu_buttons = []
+editor_toolbar_formatting_buttons = []
 input_type = "markdown"
 cur_file = Path()
 BOLD_MD_SYNTAX = ("**", "__")
