@@ -35,7 +35,13 @@ Args:
 from pathlib import Path
 from pymdownx import emoji
 
+editor_toolbar_menu_buttons = []
+editor_toolbar_formatting_buttons = []
+input_type = "markdown"
 cur_file = Path()
+cur_template_name = "default.html"
+cur_style_name = "default"
+switch_editor_mode_message_shown = False
 BOLD_MD_SYNTAX = ("**", "__")
 BOLD_MD_IGNORE = (
     "- ", "> ", "# ", "`", 

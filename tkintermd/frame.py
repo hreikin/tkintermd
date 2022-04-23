@@ -11,12 +11,15 @@ from tkinterweb import HtmlFrame, Notebook
 from tkinterweb.utilities import ScrolledTextBox
 
 from markdown import Markdown
+from markdownify import markdownify
 from pygments import lex
 from pygments.lexers.markup import MarkdownLexer
+from pygments.lexers.html import HtmlLexer
 from pygments.formatters.html import HtmlFormatter
 from pygments.token import Generic
 from pygments.lexer import bygroups
 from pygments.styles import get_style_by_name, get_all_styles
+from jinja2 import Environment, PackageLoader
 
 class TkintermdFrame(tk.Frame):
     """A Markdown editor with HTML preview for use in tkinter projects. 
@@ -43,138 +46,187 @@ class TkintermdFrame(tk.Frame):
         tk.Frame.__init__(self, master) # no need for super
 
         self.logger = log.create_logger()
-
-        # Toolbar.
-        self.root_toolbar = tk.Frame(self.master)
-        self.open_btn = tk.Button(self.root_toolbar, text="Open", command=self.open_md_file)
-        self.open_btn.pack(side="left", padx=0, pady=0)
-        self.save_as_btn = tk.Button(self.root_toolbar, text="Save As", command=self.save_as_md_file)
-        self.save_as_btn.pack(side="left", padx=0, pady=0)
-        self.save_btn = tk.Button(self.root_toolbar, text="Save", command=self.save_md_file)
-        self.save_btn.pack(side="left", padx=0, pady=0)
-        self.export_as_btn = tk.Button(self.root_toolbar, text="Export HTML", command=self.save_as_html_file)
-        self.export_as_btn.pack(side="left", padx=0, pady=0)
-        # Button to choose pygments style for editor, preview and HTML.
-        self.style_opt_btn = tk.Menubutton(self.root_toolbar, text="Editor Style", relief="raised")
-        self.style_opt_btn.pack(side="left", padx=0, pady=0)
-        self.root_toolbar.pack(side="top", fill="x")
+        self.template_loader = Environment(loader=PackageLoader("tkintermd"))
+        self.md2html = Markdown(extensions=constants.EXTENSIONS, extension_configs=constants.EXTENSION_CONFIGS)
+        self.md_lexer = CustomMarkdownLexer()
+        self.html_lexer = HtmlLexer()
+        self.style_html_formatter = HtmlFormatter()
+        self.theme_html_formatter = HtmlFormatter()
 
         # Creating the widgets
         self.editor_pw = tk.PanedWindow(self.master, orient="horizontal")
         # Root editor frame
         self.editor_root_frame = tk.Frame(self.editor_pw)
         # Toolbar buttons
-        self.editor_toolbar = tk.Frame(self.editor_root_frame)
-        self.undo_btn = tk.Button(self.editor_toolbar, text="Undo", command=lambda: self.text_area.event_generate("<<Undo>>"))
+        self.editor_toolbar_top = tk.Frame(self.editor_root_frame)
+        self.open_btn = tk.Button(self.editor_toolbar_top, text="Open", command=self.open_md_file)
+        self.open_btn.pack(side="left", padx=0, pady=0)
+        constants.editor_toolbar_menu_buttons.append(self.open_btn)
+        self.save_as_btn = tk.Button(self.editor_toolbar_top, text="Save As", command=self.save_as_md_file)
+        self.save_as_btn.pack(side="left", padx=0, pady=0)
+        constants.editor_toolbar_menu_buttons.append(self.save_as_btn)
+        self.save_btn = tk.Button(self.editor_toolbar_top, text="Save", command=self.save_md_file)
+        self.save_btn.pack(side="left", padx=0, pady=0)
+        constants.editor_toolbar_menu_buttons.append(self.save_btn)
+        self.edit_mode_btn = tk.Button(self.editor_toolbar_top, text="Editor Mode", command=self.convert_editor_content)
+        self.edit_mode_btn.pack(side="left", padx=0, pady=0)
+        constants.editor_toolbar_menu_buttons.append(self.edit_mode_btn)
+        # Editor style chooser.
+        self.style_label = tk.Label(self.editor_toolbar_top, text="Editor Style : ")
+        self.style_label.pack(side="left")
+        self.style_combobox_value = tk.StringVar()
+        self.style_combobox = Combobox(self.editor_toolbar_top, textvariable=self.style_combobox_value)
+        self.style_combobox.pack(side="left")
+        self.editor_toolbar_top.pack(side="top", fill="x")
+
+        # Formatting buttons.
+        self.editor_toolbar_bottom = tk.Frame(self.editor_root_frame)
+        self.undo_btn = tk.Button(self.editor_toolbar_bottom, text="Undo", command=lambda: self.text_area.event_generate("<<Undo>>"))
         self.undo_btn.pack(side="left", padx=0, pady=0)
-        self.redo_btn = tk.Button(self.editor_toolbar, text="Redo", command=lambda: self.text_area.event_generate("<<Redo>>"))
+        constants.editor_toolbar_formatting_buttons.append(self.undo_btn)
+        self.redo_btn = tk.Button(self.editor_toolbar_bottom, text="Redo", command=lambda: self.text_area.event_generate("<<Redo>>"))
         self.redo_btn.pack(side="left", padx=0, pady=0)
-        self.cut_btn = tk.Button(self.editor_toolbar, text="Cut", command=lambda: self.text_area.event_generate("<<Cut>>"))
+        constants.editor_toolbar_formatting_buttons.append(self.redo_btn)
+        self.cut_btn = tk.Button(self.editor_toolbar_bottom, text="Cut", command=lambda: self.text_area.event_generate("<<Cut>>"))
         self.cut_btn.pack(side="left", padx=0, pady=0)
-        self.copy_btn = tk.Button(self.editor_toolbar, text="Copy", command=lambda: self.text_area.event_generate("<<Copy>>"))
+        constants.editor_toolbar_formatting_buttons.append(self.cut_btn)
+        self.copy_btn = tk.Button(self.editor_toolbar_bottom, text="Copy", command=lambda: self.text_area.event_generate("<<Copy>>"))
         self.copy_btn.pack(side="left", padx=0, pady=0)
-        self.paste_btn = tk.Button(self.editor_toolbar, text="Paste", command=lambda: self.text_area.event_generate("<<Paste>>"))
+        constants.editor_toolbar_formatting_buttons.append(self.copy_btn)
+        self.paste_btn = tk.Button(self.editor_toolbar_bottom, text="Paste", command=lambda: self.text_area.event_generate("<<Paste>>"))
         self.paste_btn.pack(side="left", padx=0, pady=0)
-        self.find_btn = tk.Button(self.editor_toolbar, text="Find", command=self.find)
+        constants.editor_toolbar_formatting_buttons.append(self.paste_btn)
+        self.find_btn = tk.Button(self.editor_toolbar_bottom, text="Find", command=self.find)
         self.find_btn.pack(side="left", padx=0, pady=0)
-        self.bold_btn = tk.Button(self.editor_toolbar, text="Bold", command=lambda: self.check_markdown_both_sides(constants.BOLD_MD_SYNTAX, constants.BOLD_MD_IGNORE, constants.BOLD_MD_SPECIAL))
+        constants.editor_toolbar_formatting_buttons.append(self.find_btn)
+        self.bold_btn = tk.Button(self.editor_toolbar_bottom, text="Bold", command=lambda: self.check_markdown_both_sides(constants.BOLD_MD_SYNTAX, constants.BOLD_MD_IGNORE, constants.BOLD_MD_SPECIAL))
         self.bold_btn.pack(side="left", padx=0, pady=0)
-        self.italic_btn = tk.Button(self.editor_toolbar, text="Italic", command=lambda: self.check_markdown_both_sides(constants.ITALIC_MD_SYNTAX, constants.ITALIC_MD_IGNORE, constants.ITALIC_MD_SPECIAL))
+        constants.editor_toolbar_formatting_buttons.append(self.bold_btn)
+        self.italic_btn = tk.Button(self.editor_toolbar_bottom, text="Italic", command=lambda: self.check_markdown_both_sides(constants.ITALIC_MD_SYNTAX, constants.ITALIC_MD_IGNORE, constants.ITALIC_MD_SPECIAL))
         self.italic_btn.pack(side="left", padx=0, pady=0)
-        self.bold_italic_btn = tk.Button(self.editor_toolbar, text="Bold Italic", command=lambda: self.check_markdown_both_sides(constants.BOLD_ITALIC_MD_SYNTAX, constants.BOLD_ITALIC_MD_IGNORE, constants.BOLD_ITALIC_MD_SPECIAL))
+        constants.editor_toolbar_formatting_buttons.append(self.italic_btn)
+        self.bold_italic_btn = tk.Button(self.editor_toolbar_bottom, text="Bold Italic", command=lambda: self.check_markdown_both_sides(constants.BOLD_ITALIC_MD_SYNTAX, constants.BOLD_ITALIC_MD_IGNORE, constants.BOLD_ITALIC_MD_SPECIAL))
         self.bold_italic_btn.pack(side="left", padx=0, pady=0)
-        self.strikethrough_btn = tk.Button(self.editor_toolbar, text="Strikethrough", command=lambda: self.check_markdown_both_sides(constants.STRIKETHROUGH_MD_SYNTAX, constants.STRIKETHROUGH_MD_IGNORE, md_special=None, strikethrough=True))
+        constants.editor_toolbar_formatting_buttons.append(self.bold_italic_btn)
+        self.strikethrough_btn = tk.Button(self.editor_toolbar_bottom, text="Strikethrough", command=lambda: self.check_markdown_both_sides(constants.STRIKETHROUGH_MD_SYNTAX, constants.STRIKETHROUGH_MD_IGNORE, md_special=None, strikethrough=True))
         self.strikethrough_btn.pack(side="left", padx=0, pady=0)
-        # self.heading_btn = tk.Button(self.editor_toolbar, text="Heading")
+        constants.editor_toolbar_formatting_buttons.append(self.strikethrough_btn)
+        # self.heading_btn = tk.Button(self.editor_toolbar_bottom, text="Heading")
         # self.heading_btn.pack(side="left", padx=0, pady=0)
-        # self.unordered_list_btn = tk.Button(self.editor_toolbar, text="Unordered List")
+        # constants.editor_toolbar_formatting_buttons.append(self.heading_btn)
+        # self.unordered_list_btn = tk.Button(self.editor_toolbar_bottom, text="Unordered List")
         # self.unordered_list_btn.pack(side="left", padx=0, pady=0)
-        # self.ordered_list_btn = tk.Button(self.editor_toolbar, text="Ordered List")
+        # constants.editor_toolbar_formatting_buttons.append(self.unordered_list_btn)
+        # self.ordered_list_btn = tk.Button(self.editor_toolbar_bottom, text="Ordered List")
         # self.ordered_list_btn.pack(side="left", padx=0, pady=0)
-        # self.checklist_btn = tk.Button(self.editor_toolbar, text="Checklist")
+        # constants.editor_toolbar_formatting_buttons.append(self.ordered_list_btn)
+        # self.checklist_btn = tk.Button(self.editor_toolbar_bottom, text="Checklist")
         # self.checklist_btn.pack(side="left", padx=0, pady=0)
-        # self.blockquote_btn = tk.Button(self.editor_toolbar, text="Blockquote")
+        # constants.editor_toolbar_formatting_buttons.append(self.checklist_btn)
+        # self.blockquote_btn = tk.Button(self.editor_toolbar_bottom, text="Blockquote")
         # self.blockquote_btn.pack(side="left", padx=0, pady=0)
-        # self.codeblock_btn = tk.Button(self.editor_toolbar, text="Codeblock")
+        # constants.editor_toolbar_formatting_buttons.append(self.blockquote_btn)
+        # self.codeblock_btn = tk.Button(self.editor_toolbar_bottom, text="Codeblock")
         # self.codeblock_btn.pack(side="left", padx=0, pady=0)
-        # self.table_btn = tk.Button(self.editor_toolbar, text="Table")
+        # constants.editor_toolbar_formatting_buttons.append(self.codeblock_btn)
+        # self.table_btn = tk.Button(self.editor_toolbar_bottom, text="Table")
         # self.table_btn.pack(side="left", padx=0, pady=0)
-        # self.link_btn = tk.Button(self.editor_toolbar, text="Link")
+        # constants.editor_toolbar_formatting_buttons.append(self.table_btn)
+        # self.link_btn = tk.Button(self.editor_toolbar_bottom, text="Link")
         # self.link_btn.pack(side="left", padx=0, pady=0)
-        # self.image_btn = tk.Button(self.editor_toolbar, text="Image")
+        # constants.editor_toolbar_formatting_buttons.append(self.link_btn)
+        # self.image_btn = tk.Button(self.editor_toolbar_bottom, text="Image")
         # self.image_btn.pack(side="left", padx=0, pady=0)
-        self.editor_toolbar.pack(side="top", fill="x")
+        # constants.editor_toolbar_formatting_buttons.append(self.image_btn)
+        self.editor_toolbar_bottom.pack(side="top", fill="x")
         # Editor frame with scrollbar and text area.
         self.editor_frame = ScrolledTextBox(self.editor_root_frame)
         self.text_area = self.editor_frame.tbox
         self.editor_frame.pack(fill="both", expand=1)
-        # Tabs for the preview and export options.
-        self.preview_tabs = Notebook(self.editor_pw)
-        # HTML rendered preview.
-        self.preview_document = HtmlFrame(self.preview_tabs)
-        # Root frame for export options.
-        self.export_options_root_frame = tk.Frame(self.preview_tabs)
-        # Export options frame.
-        self.export_options_frame = tk.Frame(self.export_options_root_frame)
-        # self.export_options_placeholder = tk.Label(self.export_options_frame, text="Placeholder", justify="center")
-        # self.export_options_placeholder.pack(fill="both", expand=1)
-        self.export_options_row_a = tk.Frame(self.export_options_frame)
-        self.template_label = tk.Label(self.export_options_row_a, text="Choose template:\t")
+
+        # Preview area
+        self.preview_area_root_frame = tk.Frame(self.editor_pw)
+        self.preview_area_toolbar = tk.Frame(self.preview_area_root_frame)
+        # Column A
+        self.preview_area_toolbar_col_a = tk.Frame(self.preview_area_toolbar)
+        # Template chooser.
+        self.preview_area_toolbar_col_a_row_a = tk.Frame(self.preview_area_toolbar_col_a)
+        self.template_label = tk.Label(self.preview_area_toolbar_col_a_row_a, text="Template : ")
         self.template_label.pack(side="left")
         self.template_combobox_value = tk.StringVar()
-        self.template_combobox = Combobox(self.export_options_row_a, textvariable=self.template_combobox_value, values=constants.template_list)
-        self.template_combobox.current(0)
-        self.template_combobox.pack(side="left")
-        self.export_options_edit_btn = tk.Button(self.export_options_row_a, text="Edit Before Export", command=self.enable_edit)
-        self.export_options_edit_btn.pack(side="left", padx=0, pady=0)
-        self.export_options_export_btn = tk.Button(self.export_options_row_a, text="Export HTML", command=self.save_as_html_file)
-        self.export_options_export_btn.pack(side="left", padx=0, pady=0)
-        self.export_options_row_a.pack(fill="both")
-        self.export_options_frame.pack(fill="both")
-        # HTML code preview/edit before export with scrollbar and text area.
-        self.export_options_text_area_frame = ScrolledTextBox(self.export_options_root_frame)
-        self.export_options_text_area = self.export_options_text_area_frame.tbox
-        self.export_options_text_area.configure(state="disabled")
-        self.export_options_text_area_frame.pack(fill="both", expand=1)
-        # Add the rendered preview and export options to the Notebook tabs.
-        self.preview_tabs.add(self.preview_document, text="Preview Document")
-        self.preview_tabs.add(self.export_options_root_frame, text="Export Options")
+        self.template_list = self.template_loader.list_templates()
+        self.template_combobox = Combobox(self.preview_area_toolbar_col_a_row_a, textvariable=self.template_combobox_value, values=self.template_list)
+        self.template_combobox.current(1)
+        self.template_combobox.pack(side="right")
+        self.preview_area_toolbar_col_a_row_a.pack(side="top", fill="x")
+        self.preview_area_toolbar_col_a.pack(side="left", fill="x")
+        # Theme chooser.
+        self.preview_area_toolbar_col_a_row_b = tk.Frame(self.preview_area_toolbar_col_a)
+        self.theme_label = tk.Label(self.preview_area_toolbar_col_a_row_b, text="Theme : ")
+        self.theme_label.pack(side="left")
+        self.theme_combobox_value = tk.StringVar()
+        self.theme_combobox = Combobox(self.preview_area_toolbar_col_a_row_b, textvariable=self.theme_combobox_value)
+        self.theme_combobox.pack(side="right")
+        self.preview_area_toolbar_col_a_row_b.pack(side="top", fill="x")
+        # Column B
+        self.preview_area_toolbar_col_b = tk.Frame(self.preview_area_toolbar)
+        self.edit_before_export_state = tk.IntVar()
+        self.edit_before_export_checkbutton = tk.Checkbutton(self.preview_area_toolbar_col_b, text="Edit Before Export", variable=self.edit_before_export_state)
+        self.edit_before_export_checkbutton.pack(side="top")
+        self.lock_theme_state = tk.IntVar()
+        self.lock_theme_checkbutton = tk.Checkbutton(self.preview_area_toolbar_col_b, text="Match Editor Style", variable=self.lock_theme_state, command=self.lock_theme)
+        self.lock_theme_checkbutton.pack(side="top")
+        self.preview_area_toolbar_col_b.pack(side="left", fill="x")
+        # Column C
+        self.preview_area_toolbar_col_c = tk.Frame(self.preview_area_toolbar)
+        self.export_btn = tk.Button(self.preview_area_toolbar_col_c, text="Export HTML", command=self.export_html_file)
+        self.export_btn.pack(side="top", padx=0, pady=0)
+        self.preview_area_toolbar_col_c.pack(side="left", fill="both")
+        # Pack the toolbar
+        self.preview_area_toolbar.pack(side="top", fill="x")
+        # Rendered HTML preview.
+        self.preview_document = HtmlFrame(self.preview_area_root_frame)
+        self.preview_document.pack(fill="both", expand=1)
+
         # Add the editor and preview/export areas to the paned window.
         self.editor_pw.add(self.editor_root_frame)
-        self.editor_pw.add(self.preview_tabs)
+        self.editor_pw.add(self.preview_area_root_frame)
         self.editor_pw.pack(side="left", fill="both", expand=1)
 
         # Load the self.style_opt_btn menu, this needs to be after the editor.
-        self.style_menu = tk.Menu(self.style_opt_btn, tearoff=False)
+        # self.style_menu = tk.Menu(self.style_opt_btn, tearoff=False)
+        self.style_list = []
+        self.theme_list = []
         for style_name in get_all_styles():
             # dynamcially get names of styles exported by pygments
             try:
                 # test them for compatability
                 self.load_style(style_name)
+                self.style_list.append(style_name)
+                self.theme_list.append(style_name)
             except Exception as E:
                 self.logger.exception(f"WARNING: style {style_name} failed ({E}), removing from style menu.")
-                continue # don't add them to the menu
-            # add the rest to the menu
-            self.style_menu.add_command(
-                label=style_name,
-                command=(lambda sn:lambda: self.load_style(sn))(style_name)
-                # unfortunately lambdas inside loops need to be stacked 2 deep to get closure variables instead of cell variables
-                )
-        self.style_opt_btn["menu"] = self.style_menu
+
+        self.style_combobox.configure(values=self.style_list)
+        self.theme_combobox.configure(values=self.theme_list)
+        self.style_combobox.current(0)
+        self.theme_combobox.current(0)
 
         # Set Pygments syntax highlighting style.
-        self.lexer = Lexer()
-        self.syntax_highlighting_tags = self.load_style("stata")
-        # self.syntax_highlighting_tags = self.load_style("material")
+        self.syntax_highlighting_tags = self.load_style("default")
+        self.load_theme("default")
+
         # Default markdown string.
         default_text = constants.DEFAULT_MD_STRING
         self.text_area.insert(0.0, default_text)
-        self.template_top = constants.DEFAULT_TEMPLATE_TOP
-        self.template_middle = constants.DEFAULT_TEMPLATE_MIDDLE
-        self.template_bottom = constants.DEFAULT_TEMPLATE_BOTTOM
+
         # Applies markdown formatting to default file.
-        self.check_markdown_highlighting(start="1.0", end=END)
+        self.check_syntax_highlighting(start="1.0", end=END)
         self.text_area.focus_set()
+
+        # Match the editor theme by default.
+        self.lock_theme_checkbutton.toggle()
+        self.lock_theme()
 
         # Create right click menu layout for the editor.
         self.right_click = tk.Menu(self.text_area, tearoff=False)
@@ -190,6 +242,8 @@ class TkintermdFrame(tk.Frame):
 
         # Bind mouse/key events to functions.
         self.template_combobox.bind("<<ComboboxSelected>>", self.change_template)
+        self.style_combobox.bind("<<ComboboxSelected>>", self.change_style)
+        self.theme_combobox.bind("<<ComboboxSelected>>", self.change_theme)
         self.text_area.bind("<<Modified>>", self.on_input_change)
         self.text_area.edit_modified(0)#resets the text widget to generate another event when another change occours
         
@@ -197,9 +251,6 @@ class TkintermdFrame(tk.Frame):
         self.text_area.bind_all("<Control-a>", self.select_all)
         self.text_area.bind("<Button-3>", self.popup)
 
-        # # This links the scrollbars but is currently causing issues. 
-        # Changing the settings to make the scrolling work
-        # self.preview_document.html['yscrollcommand'] = self.on_mousewheel
 
     def popup(self, event):
         """Right-click popup at mouse location within the text area only.
@@ -215,27 +266,6 @@ class TkintermdFrame(tk.Frame):
         - Select All.
         """
         self.right_click.tk_popup(event.x_root, event.y_root)
-
-    # def on_scrollbar(self, *args):
-    #     """Scrolls the text area scrollbar when clicked/dragged with a mouse.
-        
-    #     - Queries and changes the vertical position of the text area view.
-    #     """
-    #     self.text_area.yview(*args)
-    #     # # This links the scrollbars but is currently causing issues.
-    #     # self.preview_document.html.yview(*args)
-
-    # def on_mousewheel(self, *args):
-    #     """Moves the scrollbar and scrolls the text area on mousewheel event.
-        
-    #     - Sets the fractional values of the slider position (upper and lower 
-    #         ends as value between 0 and 1).
-    #     - Calls `on_scrollbar` function.
-    #     """
-    #     self.scrollbar.set(*args)
-    #     # # This links the scrollbars but is currently causing issues.
-    #     # self.preview_document.vsb.set(*args)
-    #     self.on_scrollbar('moveto', args[0])
 
     def select_all(self, *args):
         """Select all text within the editor window.
@@ -290,7 +320,7 @@ class TkintermdFrame(tk.Frame):
                     open_filename_contents = stream.read()
                 self.text_area.delete(1.0, END)
                 self.text_area.insert(END, open_filename_contents)
-                self.check_markdown_highlighting(start="1.0", end=END)
+                self.check_syntax_highlighting(start="1.0", end=END)
                 constants.cur_file = Path(open_filename_md)
             except:
                 mbox.showerror(title="Error", message=f"Error Opening Selected File\n\nThe file you selected: {open_filename_md} can not be opened!")
@@ -331,7 +361,7 @@ class TkintermdFrame(tk.Frame):
         except:
             self.save_as_md_file()
 
-    def save_as_html_file(self):
+    def export_html_file(self):
         """Exports the current contents of the HTML preview pane to the given filename.
         
         Opens a native OS dialog for saving the file with a html
@@ -341,13 +371,12 @@ class TkintermdFrame(tk.Frame):
         - If a filename is provided then `try` to open it in "write" mode.
         - If any of the above fails then display an error message.
         """
-        html_file_data = self.export_options_text_area.get("1.0" , END)
+        html_file_data = self.html_final
         self.html_save_filename = filedialog.asksaveasfilename(filetypes = (("HTML file", ("*.html", "*.htm")),) , title="Save HTML File")
         if self.html_save_filename:
             try:
                 with open(self.html_save_filename, "w") as stream:
                     stream.write(html_file_data)
-                    #constants.cur_file = Path(self.html_save_filename)
             except:
                 mbox.showerror(title="Error", message=f"Error Saving File\n\nThe file: {self.html_save_filename} can not be saved!")
 
@@ -364,25 +393,44 @@ class TkintermdFrame(tk.Frame):
         - Check the markdown and apply formatting to the text area.
         - Reset the modified flag.
         """
-        md2html = Markdown(extensions=constants.EXTENSIONS, extension_configs=constants.EXTENSION_CONFIGS)
-        markdownText = self.text_area.get("1.0", END)
-        html = md2html.convert(markdownText)
-        final = f"{self.template_top}\n{self.css}\n{self.template_middle}\n{html}\n{self.template_bottom}"
-        self.export_options_text_area.configure(state="normal")
-        self.export_options_text_area.delete("1.0" , END)
-        self.export_options_text_area.insert(END, final)
-        self.export_options_text_area.configure(state="disabled")
-        self.export_options_edit_btn.configure(state="normal")
-        self.preview_document.load_html(final)
-        # self.preview_document.add_css(self.css)
-        self.check_markdown_highlighting(start="1.0", end=END)
+        if constants.input_type == "markdown":
+            self.html = self.md_to_html()
+        if constants.input_type == "html":
+            self.html = self.text_area.get("1.0", END)
+        self.cur_template = self.template_loader.get_template(constants.cur_template_name)
+        self.theme_style_css = f"<style>\n{self.css}\n</style>"
+        self.html_final = self.cur_template.render(content=self.html, theme_style_css=self.theme_style_css)
+        self.preview_document.load_html(self.html_final)
+        self.check_syntax_highlighting(start="1.0", end=END)
         self.text_area.edit_modified(0) # resets the text widget to generate another event when another change occours
 
-    def load_style(self, stylename):
+    def load_theme(self, themename):
         """Load Pygments style for syntax highlighting within the editor.
         
         - Load and configure the text area and `tags` with the Pygments styles 
-            and custom `Lexer` tags.
+            and `CustomMarkdownLexer` tags.
+        - Create the CSS styling to be merged with the HTML template
+        - Generate a `<<Modified>>` event to update the styles when a new style 
+            is chosen.
+        """
+        self.theme = get_style_by_name(themename)
+        pygments = self.theme_html_formatter.get_style_defs(".highlight")
+        # Create CSS from selected style.
+        self.css = 'body {background-color: %s; color: %s }\nbody .highlight{ background-color: %s; }\n%s' % (
+            self.theme.background_color,
+            self.text_area.tag_cget("Token.Text", "foreground"),
+            self.theme.background_color,
+            pygments
+            ) # used string%interpolation here because f'string' interpolation is too annoying with embeded { and }
+        
+        self.text_area.event_generate("<<Modified>>")
+        return
+
+    def load_style(self, stylename, theme=False):
+        """Load Pygments style for syntax highlighting within the editor.
+        
+        - Load and configure the text area and `tags` with the Pygments styles 
+            and `CustomMarkdownLexer` tags.
         - Create the CSS styling to be merged with the HTML template
         - Generate a `<<Modified>>` event to update the styles when a new style 
             is chosen.
@@ -401,7 +449,6 @@ class TkintermdFrame(tk.Frame):
             kwargs['font'] = font
             kwargs['underline'] = opts['underline']
             self.text_area.tag_configure(str(token), **kwargs)
-            self.export_options_text_area.tag_configure(str(token), **kwargs)
             self.syntax_highlighting_tags.append(str(token))
         # print(self.style.background_color or 'white', self.text_area.tag_cget("Token.Text", "foreground") or 'black', stylename)
         self.text_area.configure(bg=self.style.background_color or 'white',
@@ -410,27 +457,12 @@ class TkintermdFrame(tk.Frame):
                         insertbackground=self.text_area.tag_cget("Token.Text", "foreground") or 'black',
                         )
         self.text_area.tag_configure(str(Generic.StrongEmph), font=('Monospace', 10, 'bold', 'italic'))
-        self.export_options_text_area.configure(bg=self.style.background_color or 'white',
-                        fg=self.export_options_text_area.tag_cget("Token.Text", "foreground") or 'black',
-                        selectbackground=self.style.highlight_color,
-                        insertbackground=self.text_area.tag_cget("Token.Text", "foreground") or 'black',
-                        )
-        # self.export_options_text_area.tag_configure(str(Generic.StrongEmph), font=('Monospace', 10, 'bold', 'italic'))
         self.syntax_highlighting_tags.append(str(Generic.StrongEmph))
-        self.formatter = HtmlFormatter()
-        self.pygments = self.formatter.get_style_defs(".highlight")
-        # Previous version.
-        self.css = 'body {background-color: %s; color: %s }\nbody .highlight{ background-color: %s; }\n%s' % (
-            self.style.background_color,
-            self.text_area.tag_cget("Token.Text", "foreground"),
-            self.style.background_color,
-            self.pygments
-            )#used string%interpolation here because f'string' interpolation is too annoying with embeded { and }
-        # self.preview_document.add_css(self.css)
+        
         self.text_area.event_generate("<<Modified>>")
         return self.syntax_highlighting_tags    
 
-    def check_markdown_highlighting(self, start='insert linestart', end='insert lineend'):
+    def check_syntax_highlighting(self, start='insert linestart', end='insert lineend'):
         """Formats editor content using the Pygments style."""
         self.data = self.text_area.get(start, end)
         while self.data and self.data[0] == '\n':
@@ -441,7 +473,11 @@ class TkintermdFrame(tk.Frame):
         for t in self.syntax_highlighting_tags:
             self.text_area.tag_remove(t, start, "range_start +%ic" % len(self.data))
         # parse text
-        for token, content in lex(self.data, self.lexer):
+        if constants.input_type == "markdown":
+            lexer = self.md_lexer
+        if constants.input_type == "html":
+            lexer = self.html_lexer
+        for token, content in lex(self.data, lexer):
             self.text_area.mark_set("range_end", "range_start + %ic" % len(content))
             for t in token.split():
                 self.text_area.tag_add(str(t), "range_start", "range_end")
@@ -519,7 +555,7 @@ class TkintermdFrame(tk.Frame):
         else:
             self.apply_markdown_both_sides(self.cur_selection, self.md_syntax)
 
-    def change_template(self, template_name):
+    def change_template(self, event):
         """Change the currently selected template.
         
         Get the selected template name from the `StringVar` for the `Combobox` 
@@ -527,31 +563,90 @@ class TkintermdFrame(tk.Frame):
         key then set the relevant template values and update all the previews.
         """
         template_name = self.template_combobox_value.get()
-        for key, val in constants.template_dict.items():
-            if template_name == key:
-                self.template_top = val[0]
-                self.template_middle = val[1]
-                self.template_bottom = val[2]
+        constants.cur_template_name = template_name
         self.text_area.event_generate("<<Modified>>")
-    
-    def enable_edit(self):
-        """Enable editing of HTML before export.
-        
-        Displays a warning to the user and enables HTML editing prior to export.
-        """
-        mbox.showwarning(title="Warning", message=constants.edit_warning)
-        self.export_options_text_area.configure(state="normal")
-        self.export_options_edit_btn.configure(state="disabled")
 
-class Lexer(MarkdownLexer):
+    def change_style(self, event):
+        """Change the currently selected template.
+        
+        Get the selected template name from the `StringVar` for the `Combobox` 
+        and compare it with the templates dictionary. If the name matches the 
+        key then set the relevant template values and update all the previews.
+        """
+        style_name = self.style_combobox_value.get()
+        constants.cur_style_name = style_name
+        if self.lock_theme_state.get() == 1:
+            style_index = self.style_combobox.current()
+            self.theme_combobox.current(style_index)
+            self.load_theme(style_name)
+        self.load_style(style_name)
+        self.text_area.event_generate("<<Modified>>")
+
+    def change_theme(self, event):
+        """Change the currently selected template.
+        
+        Get the selected template name from the `StringVar` for the `Combobox` 
+        and compare it with the templates dictionary. If the name matches the 
+        key then set the relevant template values and update all the previews.
+        """
+        theme_name = self.theme_combobox_value.get()
+        constants.cur_theme_name = theme_name
+        self.load_theme(theme_name)
+        self.text_area.event_generate("<<Modified>>")
+
+    def lock_theme(self):
+        if self.lock_theme_state.get() == 1:
+            style_index = self.style_combobox.current()
+            style_name = self.style_combobox_value.get()
+            self.theme_combobox.current(style_index)
+            self.theme_combobox.configure(state="disabled")
+            self.load_theme(style_name)
+        else:
+            self.theme_combobox.configure(state="normal")
+
+    
+    def convert_editor_content(self):
+        if constants.switch_editor_mode_message_shown == False:
+            if mbox.askokcancel(title="Experimental Feature", message=f"NOTICE:\n\nThis feature is experimental, please ensure you have saved your markdown file before proceeding.\n\nClick 'OK' to proceed or 'Cancel' to go back.", icon="warning") == True:
+                constants.switch_editor_mode_message_shown = True
+            else:
+                return
+        if constants.input_type == "markdown":
+            html = self.md_to_html()
+            self.text_area.delete("1.0", END)
+            self.text_area.insert("1.0", html)
+            for button in constants.editor_toolbar_formatting_buttons:
+                button.configure(state="disabled")
+            constants.input_type = "html"
+        elif constants.input_type == "html":
+            md = self.html_to_md()
+            self.text_area.delete("1.0", END)
+            self.text_area.insert("1.0", md)
+            for button in constants.editor_toolbar_formatting_buttons:
+                button.configure(state="normal")
+            constants.input_type = "markdown"
+        self.text_area.edit_modified(0) # resets the text widget to generate another event when another change occours
+
+    def md_to_html(self):
+        markdown_text = self.text_area.get("1.0", END)
+        html = self.md2html.convert(markdown_text)
+        return html
+
+    def html_to_md(self):
+        html_text = self.text_area.get("1.0", END)
+        md = markdownify(html_text)
+        return md
+
+
+class CustomMarkdownLexer(MarkdownLexer):
     """Extend MarkdownLexer to add markup for bold-italic. 
     
     This needs extending further before being complete.
     """
     tokens = {key: val.copy() for key, val in MarkdownLexer.tokens.items()}
-    # # bold-italic fenced by '***'
+    # bold-italic fenced by '***'
     tokens['inline'].insert(2, (r'(\*\*\*[^* \n][^*\n]*\*\*\*)',
                                 bygroups(Generic.StrongEmph)))
-    # # bold-italic fenced by '___'
+    # bold-italic fenced by '___'
     tokens['inline'].insert(2, (r'(\_\_\_[^_ \n][^_\n]*\_\_\_)',
                                 bygroups(Generic.StrongEmph)))
