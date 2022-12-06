@@ -1,6 +1,6 @@
 ﻿importlib-metadata==4.11.3
 Markdown==3.3.6
-Pillow==9.1.1
+Pillow==9.3.0
 Pygments==2.11.2
 pymdown-extensions==9.3
 tkinterweb==3.12.2
