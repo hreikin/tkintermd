@@ -49,7 +49,7 @@ pytkdocs==0.16.1
 PyYAML==6.0
 pyyaml-env-tag==0.1
 readme-renderer==34.0
-requests==2.27.1
+requests==2.31.0
 requests-toolbelt==0.9.1
 rfc3986==2.0.0
 rich==12.0.1
