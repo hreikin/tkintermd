@@ -40,7 +40,7 @@ Pillow==9.3.0
 pkginfo==1.8.2
 pycparser==2.21
 pydyf==0.1.2
-Pygments==2.11.2
+Pygments==2.15.1
 pymdown-extensions==10.0
 pyparsing==3.0.7
 pyphen==0.12.0
